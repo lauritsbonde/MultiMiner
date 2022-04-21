@@ -5,6 +5,7 @@ import { mineralStyle } from './mineralStyle';
 import { buildingStyle } from './BuildingStyle';
 import UpdateGameData from './Types/GameTypes';
 import kdTree from './kdTree';
+import BuildingContainer from './Components/BuildingMenus/BuildingContainer';
 
 function App() {
 	const [myId, setMyId] = useState<string>('');
@@ -148,6 +149,12 @@ function App() {
 		<div>
 			<h1>MultiMiner</h1>
 			<Canvas draw={draw} />
+			{gameData.players !== undefined && gameData.players[myId].onBuilding !== '' && (
+				<BuildingContainer
+					building={gameData.players[myId].onBuilding}
+					bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
+				/>
+			)}
 		</div>
 	);
 }

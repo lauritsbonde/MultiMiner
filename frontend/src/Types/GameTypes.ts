@@ -9,6 +9,7 @@ interface PlayerData {
 	id: string;
 	pos: { x: number; y: number };
 	size: { width: number; height: number };
+	onBuilding: string;
 }
 
 interface BuildingData {

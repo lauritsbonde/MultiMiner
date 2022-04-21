@@ -77,7 +77,7 @@ export default class World {
 	addPlayer(id: string) {
 		const randx = Math.floor((Math.random() * this.size.width) / 10);
 		const randy = Math.floor(Math.random() * (this.groundStart - 50 - 300 + 1) + 300);
-		const newPlayer = new Player(id, { x: randx, y: randy }, { width: this.size.width, height: this.size.height });
+		const newPlayer = new Player(id, { x: randx, y: randy }, { width: this.size.width, height: this.size.height }, this.groundStart, this.buildings);
 		this.players[id] = newPlayer;
 		this.playersDto[id] = newPlayer.toDto();
 	}

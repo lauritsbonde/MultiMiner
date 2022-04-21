@@ -1,5 +1,6 @@
 import PlayerDto from './PlayerDto';
 import Mineral from './Mineral';
+import Bulding from './Building';
 
 interface surroundingMinerals {
 	topMineral: Mineral;
@@ -27,13 +28,19 @@ export default class Player {
 	drillingStartDirection: string;
 
 	worldSize: { width: number; height: number };
+	worldGroundLevel: number;
+	worldBuildings: Array<Bulding>;
+	onBuilding: string;
 
-	constructor(id: string, pos: { x: number; y: number }, worldSize: { width: number; height: number }) {
+	constructor(id: string, pos: { x: number; y: number }, worldSize: { width: number; height: number }, worldGroundLevel: number, worldBuildings: Array<Bulding>) {
 		this.id = id;
 		this.pos = pos;
 		this.size = { width: 28, height: 28 };
 
 		this.worldSize = worldSize;
+		this.worldGroundLevel = worldGroundLevel;
+		this.worldBuildings = worldBuildings;
+		this.onBuilding = '';
 
 		this.moving = { up: false, down: false, left: false, right: false };
 		this.speed = { x: 0, y: 0 };
@@ -51,7 +58,7 @@ export default class Player {
 	}
 
 	toDto() {
-		return new PlayerDto(this.id, this.pos, this.size);
+		return new PlayerDto(this.id, this.pos, this.size, this.onBuilding);
 	}
 
 	move(surroundingMinerals: surroundingMinerals) {
@@ -93,7 +100,12 @@ export default class Player {
 		this.applyGravity(movingy, surroundingMinerals.bottomMineral);
 
 		//check if player should start drilling
-		this.collissionDetection(surroundingMinerals);
+		this.mineralCollissionDetection(surroundingMinerals);
+
+		//check for building collision
+		if (this.pos.y < this.worldGroundLevel) {
+			this.onBuilding = this.checkForBuildingCollision();
+		}
 
 		if (this.speed.y < 0) {
 			this.grounded = false;
@@ -108,14 +120,16 @@ export default class Player {
 	}
 
 	applyGravity(movingy: boolean, bottomMineral: Mineral) {
-		if (!movingy || ((this.moving.down || this.gravityAffect) && !this.grounded)) {
-			const bottomy = bottomMineral !== undefined ? bottomMineral.pos.y : this.worldSize.height;
-			if (this.pos.y + this.size.height + this.speed.y <= bottomy) {
-				this.speed.y += 1;
-				this.grounded = false;
-			} else {
-				this.speed.y = 0;
-				this.grounded = true;
+		if (this.onBuilding === '') {
+			if (!movingy || ((this.moving.down || this.gravityAffect) && !this.grounded)) {
+				const bottomy = bottomMineral !== undefined ? bottomMineral.pos.y : this.worldSize.height;
+				if (this.pos.y + this.size.height + this.speed.y <= bottomy) {
+					this.speed.y += 1;
+					this.grounded = false;
+				} else {
+					this.speed.y = 0;
+					this.grounded = true;
+				}
 			}
 		}
 	}
@@ -123,7 +137,7 @@ export default class Player {
 	//check if player collides with surrounding minerals
 	//if so check if they are grounded and if so start drilling
 	//if not stop moving in that direction
-	collissionDetection(surroundingMinerals: surroundingMinerals) {
+	mineralCollissionDetection(surroundingMinerals: surroundingMinerals) {
 		if (this.speed.y > 0 && this.pos.y + this.size.height + this.speed.y >= surroundingMinerals.bottomMineral.pos.y) {
 			if (this.moving.down && this.grounded && surroundingMinerals.bottomMineral.isDrillable) {
 				this.drill(surroundingMinerals.bottomMineral, 'down');
@@ -150,6 +164,23 @@ export default class Player {
 		if (this.speed.y < 0 && surroundingMinerals.topMineral !== undefined && this.pos.y + this.speed.y <= surroundingMinerals.topMineral.pos.y + surroundingMinerals.topMineral.size.height) {
 			this.speed.y = +this.acceleration / 10;
 		}
+	}
+
+	checkForBuildingCollision() {
+		for (const building of this.worldBuildings) {
+			if (
+				this.pos.x + this.size.width > building.pos.x &&
+				this.pos.x < building.pos.x + building.size.width &&
+				this.pos.y + this.size.height > building.pos.y &&
+				this.pos.y < building.pos.y + building.size.height
+			) {
+				if (this.onBuilding === '') {
+					this.speed = { x: 0, y: 0 };
+				}
+				return building.title;
+			}
+		}
+		return '';
 	}
 
 	stayWithinWorld() {
