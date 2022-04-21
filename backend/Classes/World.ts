@@ -1,6 +1,7 @@
 import Mineral from './Mineral';
 import Player from './Player';
 import PlayerDto from './PlayerDto';
+import Bulding from './Building';
 
 export default class World {
 	size: { width: number; height: number };
@@ -12,6 +13,8 @@ export default class World {
 	minerals = Array<Mineral>();
 	mineralSize: number;
 
+	buildings: Array<Bulding>;
+
 	constructor() {
 		this.size = { width: 2000, height: 1000 }; //there is a concrete level after the height
 		this.groundStart = 500;
@@ -22,6 +25,9 @@ export default class World {
 		this.minerals = [];
 		this.mineralSize = 50;
 		this.setupMinerals();
+
+		this.buildings = [];
+		this.setupBuildings();
 	}
 
 	toDto() {
@@ -30,6 +36,7 @@ export default class World {
 			groundStart: this.groundStart,
 			players: this.playersDto,
 			minerals: this.minerals,
+			buildings: this.buildings,
 		};
 	}
 
@@ -45,6 +52,25 @@ export default class World {
 		for (let i = 0; i < this.size.width; i += this.mineralSize) {
 			this.minerals.push(new Mineral(counter, this.mineralSize, i, this.size.height, 'Concrete'));
 			counter++;
+		}
+	}
+
+	setupBuildings() {
+		const buildingsNeeded = ['Fuelstation', 'Mineral Shop', 'Upgrade Shop', 'Research Lab'];
+		const buildingSize = { width: 100, height: 100 };
+		const xDistanceBetweenBuildings = this.size.width / (buildingsNeeded.length + 1);
+
+		for (let i = 0; i < buildingsNeeded.length; i++) {
+			const x = xDistanceBetweenBuildings * (i + 1);
+			const y = this.groundStart - buildingSize.height;
+			this.buildings.push(new Bulding({ x, y }, buildingSize, buildingsNeeded[i]));
+
+			// make the minerals under the buildings concrete
+			for (let j = x - this.mineralSize; j < x + buildingSize.width + this.mineralSize; j += this.mineralSize) {
+				const mineralIndex = Math.floor(j / this.mineralSize);
+				this.minerals[mineralIndex].type = 'Concrete';
+				this.minerals[mineralIndex].isDrillable = false;
+			}
 		}
 	}
 

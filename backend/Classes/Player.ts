@@ -128,6 +128,7 @@ export default class Player {
 			if (this.moving.down && this.grounded && surroundingMinerals.bottomMineral.isDrillable) {
 				this.drill(surroundingMinerals.bottomMineral, 'down');
 			} else if (!surroundingMinerals.bottomMineral.isDrillable) {
+				this.speed.y = 0;
 				this.grounded = true;
 			}
 			// the not drilling collision is handled in the applygravity function

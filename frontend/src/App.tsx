@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react';
 import Canvas from './Components/Canvas';
 import { io } from 'socket.io-client';
 import { mineralStyle } from './mineralStyle';
+import { buildingStyle } from './BuildingStyle';
 import UpdateGameData from './Types/GameTypes';
 import kdTree from './kdTree';
-import PlayerData from './Types/GameTypes';
 
 function App() {
 	const [myId, setMyId] = useState<string>('');
@@ -12,14 +12,34 @@ function App() {
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
 
 	const draw = (ctx: any) => {
+		drawBuildings(ctx);
 		drawMinerals(ctx);
 		drawPlayers(ctx);
+	};
+
+	const drawBuildings = (ctx: any) => {
+		if (gameData.size) {
+			ctx.clearRect(0, 0, gameData.size.width, gameData.size.height);
+		}
+		if (gameData.buildings) {
+			gameData.buildings.forEach((building: any) => {
+				const styling = buildingStyle[building.title];
+				ctx.fillStyle = styling.outerColor;
+				ctx.fillRect(building.pos.x - canvasOffSet.x, building.pos.y - canvasOffSet.y, building.size.width, building.size.height);
+				const border = 5;
+				ctx.fillStyle = styling.innerColor;
+				ctx.fillRect(building.pos.x - canvasOffSet.x + border, building.pos.y - canvasOffSet.y + border, building.size.width - border * 2, building.size.height - border * 2);
+				ctx.fillStyle = '#fff';
+				ctx.font = '10px Arial';
+				ctx.fillText(building.title, building.pos.x - canvasOffSet.x + 20, building.pos.y - canvasOffSet.y + 45);
+			});
+		}
 	};
 
 	const drawMinerals = (ctx: any) => {
 		if (gameData.minerals) {
 			const kdtree = new kdTree(gameData.minerals);
-			const padding = 50; // to secure searchbox is larger than canvas
+			const padding = 100; // to secure searchbox is larger than canvas
 			const range = {
 				minx: 0 + canvasOffSet.x - padding,
 				maxx: window.innerWidth + canvasOffSet.x + padding,
@@ -40,7 +60,7 @@ function App() {
 					elementsToDraw[mineral].size.height - border * 2
 				);
 
-				if (elementsToDraw[mineral].type === 'Concrete') {
+				if (elementsToDraw[mineral].type === 'Concrete' && elementsToDraw[mineral].pos.y !== gameData.groundStart) {
 					ctx.fillStyle = '#fff';
 					ctx.font = '10px Arial';
 					ctx.fillText('BOTTOM', elementsToDraw[mineral].pos.x - canvasOffSet.x + 2, elementsToDraw[mineral].pos.y - canvasOffSet.y + 25);
