@@ -22,6 +22,9 @@ export default class Player {
 	brakes: number; // lower is faster
 	gravityAffect: boolean;
 
+	fuel: { current: number; max: number };
+	useFuel: boolean;
+
 	isDrilling: boolean;
 	drillingMineral?: Mineral;
 	finalDrillPosition: { x?: number; y?: number };
@@ -50,6 +53,9 @@ export default class Player {
 		this.brakes = 0.95;
 		this.grounded = false;
 		this.gravityAffect = true;
+
+		this.fuel = { current: 10, max: 10 };
+		this.useFuel = true;
 
 		this.isDrilling = false;
 		this.drillingMineral = undefined;

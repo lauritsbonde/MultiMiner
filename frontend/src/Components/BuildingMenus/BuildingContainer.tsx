@@ -1,4 +1,5 @@
 import React from 'react';
+import { Socket } from 'socket.io-client';
 import Fuelstation from './Fuelstation';
 import MineralShop from './MineralShop';
 import ResearchLab from './ResearchLab';
@@ -7,9 +8,10 @@ import UpgradeShop from './UpgradeShop';
 interface BuildingContainerProps {
 	building: string;
 	bgColor: string;
+	socket: Socket;
 }
 
-const BuildingContainer: React.FC<BuildingContainerProps> = ({ building, bgColor }) => {
+const BuildingContainer: React.FC<BuildingContainerProps> = ({ building, bgColor, socket }) => {
 	const transparentBg = bgColor + 'd8';
 	const styling = {
 		position: 'absolute',
@@ -26,13 +28,13 @@ const BuildingContainer: React.FC<BuildingContainerProps> = ({ building, bgColor
 	return (
 		<div style={styling}>
 			{building === 'Fuelstation' ? (
-				<Fuelstation />
+				<Fuelstation socket={socket} />
 			) : building === 'Mineral Shop' ? (
-				<MineralShop />
+				<MineralShop socket={socket} />
 			) : building === 'Upgrade Shop' ? (
-				<UpgradeShop />
+				<UpgradeShop socket={socket} />
 			) : building === 'Research Lab' ? (
-				<ResearchLab />
+				<ResearchLab socket={socket} />
 			) : (
 				<h2>Building Error</h2>
 			)}
