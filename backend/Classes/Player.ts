@@ -22,8 +22,9 @@ export default class Player {
 	brakes: number; // lower is faster
 	gravityAffect: boolean;
 
-	fuel: { current: number; max: number };
-	useFuel: boolean;
+	fuel: { current: number; max: number; consumption: number };
+	money: number;
+	isDead: boolean;
 
 	isDrilling: boolean;
 	drillingMineral?: Mineral;
@@ -54,8 +55,9 @@ export default class Player {
 		this.grounded = false;
 		this.gravityAffect = true;
 
-		this.fuel = { current: 10, max: 10 };
-		this.useFuel = true;
+		this.fuel = { current: 10, max: 10, consumption: 0.01 };
+		this.money = 50;
+		this.isDead = false;
 
 		this.isDrilling = false;
 		this.drillingMineral = undefined;
@@ -64,10 +66,11 @@ export default class Player {
 	}
 
 	toDto() {
-		return new PlayerDto(this.id, this.pos, this.size, this.onBuilding);
+		return new PlayerDto(this.id, this.pos, this.size, this.onBuilding, { current: this.fuel.current, max: this.fuel.max }, this.money, this.isDead);
 	}
 
 	move(surroundingMinerals: surroundingMinerals) {
+		this.useFuel();
 		if (this.isDrilling) {
 			this.drill(undefined);
 			return;
@@ -110,7 +113,9 @@ export default class Player {
 
 		//check for building collision
 		if (this.pos.y < this.worldGroundLevel) {
-			this.onBuilding = this.checkForBuildingCollision();
+			if (this.onBuilding !== 'graveyard') {
+				this.onBuilding = this.checkForBuildingCollision();
+			}
 		}
 
 		if (this.speed.y < 0) {
@@ -123,6 +128,16 @@ export default class Player {
 
 		this.pos.x += this.speed.x;
 		this.pos.y += this.speed.y;
+	}
+
+	useFuel() {
+		if (this.onBuilding === '') {
+			this.fuel.current -= this.fuel.consumption;
+			if (this.fuel.current < 0) {
+				this.isDead = true;
+				this.onBuilding = 'graveyard';
+			}
+		}
 	}
 
 	applyGravity(movingy: boolean, bottomMineral: Mineral) {

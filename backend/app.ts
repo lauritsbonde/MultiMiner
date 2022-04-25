@@ -42,6 +42,14 @@ io.on('connection', function (socket: any) {
 		world.players[socket.id].moving[data] = false;
 	});
 
+	socket.on('enterFuelStation', (data: {}, callback: (response: {}) => void) => {
+		callback(world.shopManager.getFuelPrice(world.players[socket.id]));
+	});
+
+	socket.on('purchaseFuel', (data: { amount: number; price: number }) => {
+		world.shopManager.purchaseFuel(world.players[socket.id], data);
+	});
+
 	socket.on('disconnect', () => {
 		world.removePlayer(socket.id);
 		console.log('user disconnected');

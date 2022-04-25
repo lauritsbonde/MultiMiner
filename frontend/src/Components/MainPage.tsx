@@ -93,9 +93,11 @@ function MainPage() {
 	const drawPlayers = (ctx: any) => {
 		if (gameData.players) {
 			for (let player in gameData.players) {
-				const currentPlayer = gameData.players[player];
-				ctx.fillStyle = '#000';
-				ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
+				if (!gameData.players[player].isDead) {
+					const currentPlayer = gameData.players[player];
+					ctx.fillStyle = '#000';
+					ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
+				}
 			}
 		}
 	};
@@ -161,10 +163,27 @@ function MainPage() {
 		};
 	}, []);
 
+	const fuelRatio = gameData.players !== undefined && myId !== '' ? (gameData.players[myId].fuel.current / gameData.players[myId].fuel.max) * 100 : 0;
+
 	return (
 		<div>
+			{gameData.players !== undefined && gameData.players[myId].isDead && <h3>You died!</h3>}
+			{gameData.players && (
+				<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+					<h3 style={{ display: 'flex' }}>
+						Fuel:
+						<div style={{ width: '12vw', minWidth: '40px', height: '3vh', minHeight: '18px', backgroundColor: 'grey', margin: '4px', position: 'relative' }}>
+							<h4 style={{ position: 'absolute', zIndex: 1, top: '0', left: '20%', margin: 0, padding: 0 }}>
+								{gameData.players[myId].fuel.current.toFixed(2)} / {gameData.players[myId].fuel.max} L
+							</h4>
+							<div style={{ width: fuelRatio + '%', height: '100%', backgroundColor: fuelRatio < 15 ? 'red' : fuelRatio < 30 ? 'orange' : 'green' }}></div>
+						</div>
+					</h3>
+					<h3>Money: {gameData.players[myId].money.toFixed(2)}</h3>
+				</div>
+			)}
 			<Canvas draw={draw} />
-			{gameData.players !== undefined && gameData.players[myId].onBuilding !== '' && (
+			{gameData.players !== undefined && gameData.players[myId].onBuilding !== '' && gameData.players[myId].onBuilding !== 'graveyard' && (
 				<BuildingContainer
 					socket={socket}
 					building={gameData.players[myId].onBuilding}

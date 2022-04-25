@@ -1,7 +1,7 @@
 import Mineral from './Mineral';
 import Player from './Player';
 import PlayerDto from './PlayerDto';
-import Bulding from './Building';
+import ShopManager from './ShopManager';
 
 export default class World {
 	size: { width: number; height: number };
@@ -13,7 +13,7 @@ export default class World {
 	minerals = Array<Mineral>();
 	mineralSize: number;
 
-	buildings: Array<Bulding>;
+	shopManager: ShopManager;
 
 	constructor() {
 		this.size = { width: 2000, height: 1000 }; //there is a concrete level after the height
@@ -26,8 +26,8 @@ export default class World {
 		this.mineralSize = 50;
 		this.setupMinerals();
 
-		this.buildings = [];
-		this.setupBuildings();
+		this.shopManager = new ShopManager();
+		this.shopManager.setupBuildings(this.mineralSize, this.size, this.groundStart, (index: number) => this.makeMineralConcrete(index));
 	}
 
 	toDto() {
@@ -36,7 +36,7 @@ export default class World {
 			groundStart: this.groundStart,
 			players: this.playersDto,
 			minerals: this.minerals,
-			buildings: this.buildings,
+			buildings: this.shopManager.buildings,
 		};
 	}
 
@@ -55,29 +55,15 @@ export default class World {
 		}
 	}
 
-	setupBuildings() {
-		const buildingsNeeded = ['Fuelstation', 'Mineral Shop', 'Upgrade Shop', 'Research Lab'];
-		const buildingSize = { width: 100, height: 100 };
-		const xDistanceBetweenBuildings = this.size.width / (buildingsNeeded.length + 1);
-
-		for (let i = 0; i < buildingsNeeded.length; i++) {
-			const x = xDistanceBetweenBuildings * (i + 1);
-			const y = this.groundStart - buildingSize.height;
-			this.buildings.push(new Bulding({ x, y }, buildingSize, buildingsNeeded[i]));
-
-			// make the minerals under the buildings concrete
-			for (let j = x - this.mineralSize; j < x + buildingSize.width + this.mineralSize; j += this.mineralSize) {
-				const mineralIndex = Math.floor(j / this.mineralSize);
-				this.minerals[mineralIndex].type = 'Concrete';
-				this.minerals[mineralIndex].isDrillable = false;
-			}
-		}
+	makeMineralConcrete(index: number) {
+		this.minerals[index].type = 'Concrete';
+		this.minerals[index].isDrillable = false;
 	}
 
 	addPlayer(id: string) {
 		const randx = Math.floor((Math.random() * this.size.width) / 10);
 		const randy = Math.floor(Math.random() * (this.groundStart - 50 - 300 + 1) + 300);
-		const newPlayer = new Player(id, { x: randx, y: randy }, { width: this.size.width, height: this.size.height }, this.groundStart, this.buildings);
+		const newPlayer = new Player(id, { x: randx, y: randy }, { width: this.size.width, height: this.size.height }, this.groundStart, this.shopManager.buildings);
 		this.players[id] = newPlayer;
 		this.playersDto[id] = newPlayer.toDto();
 	}

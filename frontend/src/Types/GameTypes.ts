@@ -10,6 +10,9 @@ interface PlayerData {
 	pos: { x: number; y: number };
 	size: { width: number; height: number };
 	onBuilding: string;
+	fuel: { max: number; current: number };
+	money: number;
+	isDead: boolean;
 }
 
 interface BuildingData {
