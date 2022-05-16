@@ -71,7 +71,8 @@ setInterval(() => {
 }, 1000 / 45);
 
 app.get('/', function (req: any, res: Response) {
-	res.send(req.oidc.isAuthenticated() ? 'Logged in -> ' + req.oidc.user : 'Not logged in');
+	// res.send(req.oidc.isAuthenticated() ? 'Logged in -> ' + req.oidc.user : 'Not logged in');
+	res.send('Hello World!');
 });
 
 http.listen(3333, function () {
