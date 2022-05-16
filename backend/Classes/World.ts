@@ -17,7 +17,7 @@ export default class World {
 	shopManager: ShopManager;
 
 	constructor() {
-		this.size = { width: 2000, height: 10000 }; //there is a concrete level after the height
+		this.size = { width: 4000, height: 3000 }; //there is a concrete level after the height
 		this.groundStart = 500;
 
 		this.players = {};
