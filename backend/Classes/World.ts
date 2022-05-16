@@ -1,3 +1,4 @@
+import { mineralSpawn } from '../Lookups/minerals';
 import Mineral from './Mineral';
 import Player from './Player';
 import PlayerDto from './PlayerDto';
@@ -16,7 +17,7 @@ export default class World {
 	shopManager: ShopManager;
 
 	constructor() {
-		this.size = { width: 2000, height: 1000 }; //there is a concrete level after the height
+		this.size = { width: 2000, height: 10000 }; //there is a concrete level after the height
 		this.groundStart = 500;
 
 		this.players = {};
@@ -44,7 +45,7 @@ export default class World {
 		let counter = 0;
 		for (let i = this.groundStart; i < this.size.height; i += this.mineralSize) {
 			for (let j = 0; j < this.size.width; j += this.mineralSize) {
-				this.minerals.push(new Mineral(counter, this.mineralSize, j, i, 'Mud'));
+				this.minerals.push(this.getMineralToSpawn(i, counter, { x: j, y: i }));
 				counter++;
 			}
 		}
@@ -53,6 +54,12 @@ export default class World {
 			this.minerals.push(new Mineral(counter, this.mineralSize, i, this.size.height, 'Concrete'));
 			counter++;
 		}
+	}
+
+	getMineralToSpawn(depth: number, id: number, pos: { x: number; y: number }) {
+		let type = mineralSpawn(depth, this.groundStart);
+
+		return new Mineral(id, this.mineralSize, pos.x, pos.y, type);
 	}
 
 	makeMineralConcrete(index: number) {

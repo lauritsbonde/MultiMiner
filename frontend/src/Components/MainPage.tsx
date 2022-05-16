@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import Canvas from './Canvas';
 import { io, Socket } from 'socket.io-client';
-import { mineralStyle } from '../mineralStyle';
-import { buildingStyle } from '../BuildingStyle';
+import { mineralStyle } from '../CanvasStyles/mineralStyle';
+import { buildingStyle } from '../CanvasStyles/BuildingStyle';
 import UpdateGameData from '../Types/GameTypes';
 import kdTree from '../kdTree';
 import BuildingContainer from '../Components/BuildingMenus/BuildingContainer';
@@ -80,12 +80,11 @@ function MainPage() {
 					ctx.fillStyle = '#fff';
 					ctx.font = '10px Arial';
 					ctx.fillText('BOTTOM', elementsToDraw[mineral].pos.x - canvasOffSet.x + 2, elementsToDraw[mineral].pos.y - canvasOffSet.y + 25);
+				} else {
+					ctx.fillStyle = '#fff';
+					ctx.font = '10px Arial';
+					ctx.fillText(elementsToDraw[mineral].type, elementsToDraw[mineral].pos.x - canvasOffSet.x + 20, elementsToDraw[mineral].pos.y - canvasOffSet.y + 25);
 				}
-				// else {
-				// 	ctx.fillStyle = '#fff';
-				// 	ctx.font = '10px Arial';
-				// 	ctx.fillText(elementsToDraw[mineral].id, elementsToDraw[mineral].pos.x - canvasOffSet.x + 20, elementsToDraw[mineral].pos.y - canvasOffSet.y + 25);
-				// }
 			}
 		}
 	};
@@ -97,6 +96,8 @@ function MainPage() {
 					const currentPlayer = gameData.players[player];
 					ctx.fillStyle = '#000';
 					ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
+					ctx.fillStyle = '#fff';
+					ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
 				}
 			}
 		}

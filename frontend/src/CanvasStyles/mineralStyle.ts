@@ -1,0 +1,20 @@
+export const mineralStyle: { [key: string]: { outerColor: string; innerColor: string } } = {
+	Empty: { outerColor: '#205530', innerColor: '#205530' },
+	Concrete: { outerColor: '#808076 ', innerColor: '#858586 ' },
+
+	Mud: { outerColor: '#205530', innerColor: '#7a5230' },
+	Coal: { outerColor: '#205530', innerColor: '#090909' },
+	Iron: { outerColor: '#205530', innerColor: '#5e5e5e' },
+	Gold: { outerColor: '#205530', innerColor: '#f9f295' },
+	Diamond: { outerColor: '#205530', innerColor: '#b9f2ff' },
+	Emerald: { outerColor: '#205530', innerColor: '#50c878' },
+	Ruby: { outerColor: '#205530', innerColor: '#9b111e' },
+	Sapphire: { outerColor: '#205530', innerColor: '#0f52ba' },
+	Topaz: { outerColor: '#205530', innerColor: '#ffc87c' },
+	Amethyst: { outerColor: '#205530', innerColor: '#9966cc' },
+	Quartz: { outerColor: '#205530', innerColor: '#e9dfe0' },
+	Amber: { outerColor: '#205530', innerColor: '#ffc200' },
+	Jade: { outerColor: '#205530', innerColor: '#00a86b' },
+	Pearl: { outerColor: '#205530', innerColor: '#eae0c8' },
+	Opal: { outerColor: '#205530', innerColor: '#a8C3bc' },
+};

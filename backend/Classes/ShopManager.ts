@@ -1,6 +1,8 @@
 import Bulding from './Building';
 import Player from './Player';
 
+import { mineralPrices } from '../Lookups/minerals';
+
 export default class ShopManager {
 	buildings: Array<Bulding>;
 
@@ -47,4 +49,20 @@ export default class ShopManager {
 			player.fuel.current = newFuel < player.fuel.max ? newFuel : player.fuel.max;
 		}
 	}
+
+	getBasketPrices(player: Player) {
+		const basket = player.basket;
+		const selling = {} as { [type: string]: { price: number; amount: number; totalPrice: number } };
+		for (const type in basket.items) {
+			if (basket.items.hasOwnProperty(type)) {
+				const price = mineralPrices[type];
+				const amount = basket.items[type];
+				const totalPrice = price * amount;
+				selling[type] = { price, amount, totalPrice };
+			}
+		}
+		return selling;
+	}
+
+	sellMinerals() {}
 }

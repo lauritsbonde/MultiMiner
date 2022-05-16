@@ -13,6 +13,7 @@ interface PlayerData {
 	fuel: { max: number; current: number };
 	money: number;
 	isDead: boolean;
+	basket: { items: { [type: string]: number }; amount: number };
 }
 
 interface BuildingData {

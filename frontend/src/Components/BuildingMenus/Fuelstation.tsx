@@ -11,11 +11,23 @@ const Fuelstation: React.FC<socketProps> = ({ socket }) => {
 		socket.emit('purchaseFuel', fuel);
 	};
 
+	const styling = {
+		container: {
+			margin: 'auto',
+		},
+		item: {
+			display: 'flex',
+			width: '40%',
+			justifyContent: 'space-between',
+			alignItems: 'center',
+		},
+	};
+
 	return (
-		<div style={{ margin: 'auto' }}>
+		<div style={styling.container}>
 			<h3>Fuelstation</h3>
 			{Object.keys(fuelData).map((fuel) => (
-				<div key={fuel} style={{ display: 'flex', width: '40%', justifyContent: 'space-between', alignItems: 'center' }}>
+				<div key={fuel} style={styling.item}>
 					<h4>{fuel} tank</h4>
 					<p>{fuelData[fuel].liters}L</p>
 					<p>{fuelData[fuel].price}$</p>

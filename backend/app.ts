@@ -34,6 +34,8 @@ io.on('connection', function (socket: any) {
 	console.log('a user connected');
 	world.addPlayer(socket.id);
 
+	// PLAYER MOVEMONT
+
 	socket.on('move', (data: string) => {
 		world.players[socket.id].moving[data] = true;
 	});
@@ -42,12 +44,19 @@ io.on('connection', function (socket: any) {
 		world.players[socket.id].moving[data] = false;
 	});
 
+	// FUEL STATION
+
 	socket.on('enterFuelStation', (data: {}, callback: (response: {}) => void) => {
 		callback(world.shopManager.getFuelPrice(world.players[socket.id]));
 	});
 
 	socket.on('purchaseFuel', (data: { amount: number; price: number }) => {
 		world.shopManager.purchaseFuel(world.players[socket.id], data);
+	});
+
+	// MINERAL SHOP
+	socket.on('enterMineralShop', (data: {}, callback: (response: { [type: string]: { price: number; amount: number; totalPrice: number } }) => void) => {
+		callback(world.shopManager.getBasketPrices(world.players[socket.id]));
 	});
 
 	socket.on('disconnect', () => {

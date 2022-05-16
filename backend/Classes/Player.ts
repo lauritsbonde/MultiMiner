@@ -36,6 +36,8 @@ export default class Player {
 	worldBuildings: Array<Bulding>;
 	onBuilding: string;
 
+	basket: { maxItems: number; items: { [type: string]: number }; amount: number };
+
 	constructor(id: string, pos: { x: number; y: number }, worldSize: { width: number; height: number }, worldGroundLevel: number, worldBuildings: Array<Bulding>) {
 		this.id = id;
 		this.pos = pos;
@@ -55,7 +57,7 @@ export default class Player {
 		this.grounded = false;
 		this.gravityAffect = true;
 
-		this.fuel = { current: 10, max: 10, consumption: 0.01 };
+		this.fuel = { current: 10, max: 10, consumption: 0.001 };
 		this.money = 50;
 		this.isDead = false;
 
@@ -63,10 +65,15 @@ export default class Player {
 		this.drillingMineral = undefined;
 		this.finalDrillPosition = { x: undefined, y: undefined };
 		this.drillingStartDirection = '';
+
+		this.basket = { maxItems: 10, items: {}, amount: 0 };
 	}
 
 	toDto() {
-		return new PlayerDto(this.id, this.pos, this.size, this.onBuilding, { current: this.fuel.current, max: this.fuel.max }, this.money, this.isDead);
+		return new PlayerDto(this.id, this.pos, this.size, this.onBuilding, { current: this.fuel.current, max: this.fuel.max }, this.money, this.isDead, {
+			items: this.basket.items,
+			amount: this.basket.amount,
+		});
 	}
 
 	move(surroundingMinerals: surroundingMinerals) {
@@ -277,8 +284,12 @@ export default class Player {
 
 			if (done) {
 				this.isDrilling = false;
+
+				this.addMineralToBasket(this.drillingMineral);
+
 				this.drillingMineral.destroy();
 				this.drillingMineral = undefined;
+
 				this.finalDrillPosition = { x: undefined, y: undefined };
 				this.drillingStartDirection = '';
 				this.speed = { x: 0, y: 0 };
@@ -340,5 +351,12 @@ export default class Player {
 			return { x: mineral.pos.x, y: mineral.pos.y + (mineral.size.height - this.size.height) - 2 };
 		}
 		return { x: mineral.pos.x + mineral.size.width, y: mineral.pos.y };
+	}
+
+	addMineralToBasket(mineral: Mineral) {
+		if (this.basket.amount < this.basket.maxItems) {
+			this.basket.items[mineral.type] = this.basket.items[mineral.type] + 1 || 1;
+			this.basket.amount++;
+		}
 	}
 }
