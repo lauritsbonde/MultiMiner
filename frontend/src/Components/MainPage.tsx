@@ -104,7 +104,7 @@ function MainPage() {
 	};
 
 	useEffect(() => {
-		const socket = io('http://localhost:3333');
+		const socket = io(process.env.BACKEND_URL || 'http://localhost:3333');
 
 		socket.on('connect', () => {
 			setMyId(socket.id);
