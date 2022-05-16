@@ -11,7 +11,7 @@ function MainPage() {
 	const [myId, setMyId] = useState<string>('');
 	const [gameData, setGameData] = useState<UpdateGameData>({} as UpdateGameData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
-	const [skies, setSkies] = useState();
+	// const [skies, setSkies] = useState();
 	const [socket, setSocket] = useState({} as Socket);
 
 	const draw = (ctx: any) => {
