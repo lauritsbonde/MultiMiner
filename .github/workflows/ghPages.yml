@@ -12,9 +12,6 @@ jobs:
       REACT_APP_BACKEND_URL: ${{ secrets.REACT_APP_BACKEND_URL }}
       
     steps:
-      - name: ENV
-        run: echo "$BACKEND_URL"
-    
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
 
