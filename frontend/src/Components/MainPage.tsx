@@ -103,8 +103,12 @@ function MainPage() {
 		}
 	};
 
+	console.log(process.env.REACT_APP_BACKEND_URL);
+
+	const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
+
 	useEffect(() => {
-		const socket = io(process.env.BACKEND_URL as string);
+		const socket = io(BACKEND_URL);
 
 		socket.on('connect', () => {
 			setMyId(socket.id);
