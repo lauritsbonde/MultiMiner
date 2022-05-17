@@ -104,7 +104,6 @@ function MainPage() {
 	};
 
 	useEffect(() => {
-		const;
 		const socket = io(process.env.BACKEND_URL || 'http://localhost:3333');
 
 		socket.on('connect', () => {
