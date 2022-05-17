@@ -6,10 +6,10 @@ on:
       
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest
-    
     env: 
-      REACT_APP_BACKEND_URL: ${{ secrets.REACT_APP_BACKEND_URL }}
+      REACT_APP_BACKEND_URL: "https://multiminer.herokuapp.com/"
+  
+    runs-on: ubuntu-latest
       
     steps:
       - name: Checkout 🛎️
