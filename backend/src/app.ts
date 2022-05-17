@@ -37,6 +37,10 @@ io.on('connection', function (socket: any) {
 	console.log('a user connected');
 	world.addPlayer(socket.id);
 
+	socket.on('canvasSize', (data: { width: number; height: number }) => {
+		world.players[socket.id].setCanvasSize(data);
+	});
+
 	// PLAYER MOVEMONT
 
 	socket.on('move', (data: string) => {
@@ -70,7 +74,9 @@ io.on('connection', function (socket: any) {
 
 setInterval(() => {
 	world.update();
-	io.sockets.emit('update', world.toDto());
+	for (let socketId in world.players) {
+		io.to(socketId).emit('update', world.toDto(socketId));
+	}
 }, 1000 / 45);
 
 app.get('/', function (req: any, res: Response) {

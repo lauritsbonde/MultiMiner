@@ -1,6 +1,7 @@
 import PlayerDto from './PlayerDto';
 import Mineral from './Mineral';
 import Bulding from './Building';
+import PosClass from './PosClass';
 
 interface surroundingMinerals {
 	topMineral: Mineral;
@@ -9,10 +10,9 @@ interface surroundingMinerals {
 	rightMineral: Mineral;
 }
 
-export default class Player {
+export default class Player extends PosClass {
 	id: string;
-	pos: { x: number; y: number };
-	size: { width: number; height: number };
+	canvasSize: { width: number; height: number };
 
 	moving: { [key: string]: boolean };
 	speed: { x: number; y: number };
@@ -39,9 +39,10 @@ export default class Player {
 	basket: { maxItems: number; items: { [type: string]: number }; amount: number };
 
 	constructor(id: string, pos: { x: number; y: number }, worldSize: { width: number; height: number }, worldGroundLevel: number, worldBuildings: Array<Bulding>) {
+		super({ width: 28, height: 28 }, pos);
 		this.id = id;
-		this.pos = pos;
-		this.size = { width: 28, height: 28 };
+
+		this.canvasSize = { width: 1000, height: 1000 };
 
 		this.worldSize = worldSize;
 		this.worldGroundLevel = worldGroundLevel;
@@ -74,6 +75,10 @@ export default class Player {
 			items: this.basket.items,
 			amount: this.basket.amount,
 		});
+	}
+
+	setCanvasSize(canvasSize: { width: number; height: number }) {
+		this.canvasSize = canvasSize;
 	}
 
 	move(surroundingMinerals: surroundingMinerals) {

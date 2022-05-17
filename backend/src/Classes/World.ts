@@ -1,4 +1,5 @@
 import { mineralSpawn } from '../Lookups/minerals';
+import kdTree from './kdTree';
 import Mineral from './Mineral';
 import Player from './Player';
 import PlayerDto from './PlayerDto';
@@ -10,9 +11,11 @@ export default class World {
 
 	players: { [id: string]: Player };
 	playersDto: { [id: string]: PlayerDto };
+	playersKdTree: kdTree;
 
 	minerals = Array<Mineral>();
 	mineralSize: number;
+	mineralKdTree: kdTree;
 
 	shopManager: ShopManager;
 
@@ -22,22 +25,36 @@ export default class World {
 
 		this.players = {};
 		this.playersDto = {};
+		this.playersKdTree = new kdTree(Object.values(this.playersDto), 10);
 
 		this.minerals = [];
 		this.mineralSize = 50;
 		this.setupMinerals();
+		this.mineralKdTree = new kdTree(this.minerals, 50);
 
 		this.shopManager = new ShopManager();
 		this.shopManager.setupBuildings(this.mineralSize, this.size, this.groundStart, (index: number) => this.makeMineralConcrete(index));
 	}
 
-	toDto() {
+	toDto(socketId: string) {
+		const player = this.players[socketId];
+		const padding = { x: player.canvasSize.width, y: player.canvasSize.height };
+		const boundingBox = {
+			minx: player.pos.x - padding.x,
+			maxx: player.pos.x + padding.x,
+			miny: player.pos.y - padding.y,
+			maxy: player.pos.y + padding.y,
+		};
+		const minerals = this.mineralKdTree.rangeSearch(boundingBox);
+		const players = this.playersKdTree.rangeSearch(boundingBox);
+
 		return {
 			size: this.size,
 			groundStart: this.groundStart,
-			players: this.playersDto,
-			minerals: this.minerals,
+			players: players,
+			minerals: minerals,
 			buildings: this.shopManager.buildings,
+			selfPlayer: this.playersDto[socketId],
 		};
 	}
 
@@ -82,6 +99,12 @@ export default class World {
 
 	update() {
 		this.updatePlayers();
+		this.buildKdTrees();
+	}
+
+	buildKdTrees() {
+		this.playersKdTree = new kdTree(Object.values(this.playersDto), 10);
+		this.mineralKdTree = new kdTree(this.minerals, 50);
 	}
 
 	updatePlayers() {

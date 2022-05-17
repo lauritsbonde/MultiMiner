@@ -4,8 +4,8 @@ import { io, Socket } from 'socket.io-client';
 import { mineralStyle } from '../CanvasStyles/mineralStyle';
 import { buildingStyle } from '../CanvasStyles/BuildingStyle';
 import UpdateGameData from '../Types/GameTypes';
-import kdTree from '../kdTree';
 import BuildingContainer from '../Components/BuildingMenus/BuildingContainer';
+import useCanvas from '../Hooks/useCanvas';
 
 function MainPage() {
 	const [myId, setMyId] = useState<string>('');
@@ -20,7 +20,10 @@ function MainPage() {
 		drawBuildings(ctx);
 		drawMinerals(ctx);
 		drawPlayers(ctx);
+		drawSelf(ctx);
 	};
+
+	const canvasRef = useCanvas(draw);
 
 	const drawUpperBackground = (ctx: any) => {
 		ctx.fillStyle = '#87CEEB';
@@ -54,15 +57,7 @@ function MainPage() {
 
 	const drawMinerals = (ctx: any) => {
 		if (gameData.minerals) {
-			const kdtree = new kdTree(gameData.minerals);
-			const padding = 100; // to secure searchbox is larger than canvas
-			const range = {
-				minx: 0 + canvasOffSet.x - padding,
-				maxx: window.innerWidth + canvasOffSet.x + padding,
-				miny: 0 + canvasOffSet.y - padding,
-				maxy: window.innerHeight + canvasOffSet.y + padding,
-			};
-			const elementsToDraw = kdtree.rangeSearch(range); //todo: use player pos
+			const elementsToDraw = gameData.minerals;
 			for (let mineral in elementsToDraw) {
 				const styling = mineralStyle[elementsToDraw[mineral].type];
 				ctx.fillStyle = styling.outerColor;
@@ -83,7 +78,7 @@ function MainPage() {
 				} else {
 					ctx.fillStyle = '#fff';
 					ctx.font = '10px Arial';
-					ctx.fillText(elementsToDraw[mineral].type, elementsToDraw[mineral].pos.x - canvasOffSet.x + 20, elementsToDraw[mineral].pos.y - canvasOffSet.y + 25);
+					ctx.fillText(elementsToDraw[mineral].id, elementsToDraw[mineral].pos.x - canvasOffSet.x + 20, elementsToDraw[mineral].pos.y - canvasOffSet.y + 25);
 				}
 			}
 		}
@@ -103,12 +98,26 @@ function MainPage() {
 		}
 	};
 
+	const drawSelf = (ctx: any) => {
+		if (gameData.selfPlayer) {
+			const currentPlayer = gameData.selfPlayer;
+			ctx.fillStyle = '#000';
+			ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
+			ctx.fillStyle = '#fff';
+			ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
+		}
+	};
+
 	const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
 
 	useEffect(() => {
 		const socket = io(BACKEND_URL);
 
 		socket.on('connect', () => {
+			socket.emit('canvasSize', {
+				width: canvasRef.current.clientWidth,
+				height: canvasRef.current.clientHeight,
+			});
 			setMyId(socket.id);
 			setSocket(socket);
 		});
@@ -121,12 +130,13 @@ function MainPage() {
 		});
 
 		const calculateCanvasOffSet = (data: UpdateGameData) => {
-			if (data.players[socket.id].pos.x > (window.innerWidth * 0.95) / 2 && data.players[socket.id].pos.x < data.size.width - (window.innerWidth * 0.95) / 2) {
-				newOffSet.x = data.players[socket.id].pos.x - (window.innerWidth * 0.95) / 2;
+			const player = data.selfPlayer;
+			if (player.pos.x > (window.innerWidth * 0.95) / 2 && player.pos.x < data.size.width - (window.innerWidth * 0.95) / 2) {
+				newOffSet.x = player.pos.x - (window.innerWidth * 0.95) / 2;
 			}
 
-			if (data.players[socket.id].pos.y > (window.innerHeight * 0.85) / 2 && data.players[socket.id].pos.y < data.size.height - (window.innerHeight * 0.85) / 2) {
-				newOffSet.y = data.players[socket.id].pos.y - (window.innerHeight * 0.85) / 2;
+			if (player.pos.y > (window.innerHeight * 0.85) / 2 && player.pos.y < data.size.height - (window.innerHeight * 0.85) / 2) {
+				newOffSet.y = player.pos.y - (window.innerHeight * 0.85) / 2;
 			}
 
 			setCanvasOffSet(newOffSet);
@@ -168,31 +178,31 @@ function MainPage() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const fuelRatio = gameData.players !== undefined && myId !== '' ? (gameData.players[myId].fuel.current / gameData.players[myId].fuel.max) * 100 : 0;
+	const fuelRatio = gameData.players !== undefined && myId !== '' ? (gameData.selfPlayer.fuel.current / gameData.selfPlayer.fuel.max) * 100 : 0;
 
 	return (
 		<div>
-			{gameData.players !== undefined && gameData.players[myId].isDead && <h3>You died!</h3>}
+			{gameData.players !== undefined && gameData.selfPlayer.isDead && <h3>You died!</h3>}
 			{gameData.players && (
 				<div style={{ display: 'flex', justifyContent: 'space-around' }}>
 					<h3 style={{ display: 'flex' }}>
 						Fuel:
 						<div style={{ width: '12vw', minWidth: '40px', height: '3vh', minHeight: '18px', backgroundColor: 'grey', margin: '4px', position: 'relative' }}>
 							<h4 style={{ position: 'absolute', zIndex: 1, top: '0', left: '20%', margin: 0, padding: 0 }}>
-								{gameData.players[myId].fuel.current.toFixed(2)} / {gameData.players[myId].fuel.max} L
+								{gameData.selfPlayer.fuel.current.toFixed(2)} / {gameData.selfPlayer.fuel.max} L
 							</h4>
 							<div style={{ width: fuelRatio + '%', height: '100%', backgroundColor: fuelRatio < 15 ? 'red' : fuelRatio < 30 ? 'orange' : 'green' }}></div>
 						</div>
 					</h3>
-					<h3>Money: {gameData.players[myId].money.toFixed(2)}</h3>
+					<h3>Money: {gameData.selfPlayer.money.toFixed(2)}</h3>
 				</div>
 			)}
-			<Canvas draw={draw} />
-			{gameData.players !== undefined && gameData.players[myId].onBuilding !== '' && gameData.players[myId].onBuilding !== 'graveyard' && (
+			<Canvas draw={draw} canvasRef={canvasRef} />
+			{gameData.players !== undefined && gameData.selfPlayer.onBuilding !== '' && gameData.selfPlayer.onBuilding !== 'graveyard' && (
 				<BuildingContainer
 					socket={socket}
-					building={gameData.players[myId].onBuilding}
-					bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
+					building={gameData.selfPlayer.onBuilding}
+					bgColor={gameData.selfPlayer.onBuilding !== '' ? buildingStyle[gameData.selfPlayer.onBuilding].innerColor : '#00ff00'}
 				/>
 			)}
 		</div>

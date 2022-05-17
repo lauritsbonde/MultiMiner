@@ -28,4 +28,5 @@ export default interface UpdateGameData {
 	players: { [id: string]: PlayerData };
 	minerals: Array<MineralData>;
 	buildings: Array<BuildingData>;
+	selfPlayer: PlayerData;
 }

@@ -1,4 +1,6 @@
-export default class Mineral {
+import PosClass from './PosClass';
+
+export default class Mineral extends PosClass {
 	id: number;
 
 	size: { width: number; height: number };
@@ -9,10 +11,8 @@ export default class Mineral {
 	drillFriction: number; //lower is more friction
 
 	constructor(id: number, size: number, x: number, y: number, type: string) {
+		super({ width: size, height: size }, { x: x, y: y });
 		this.id = id;
-
-		this.size = { width: size, height: size };
-		this.pos = { x: x, y: y };
 
 		this.type = type;
 
