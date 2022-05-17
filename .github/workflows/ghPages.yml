@@ -4,14 +4,13 @@ on:
     branches:
       - master
       
+env: 
+  BACKEND_URL: '${{ secrets.BACKEND_URL }}'
+  run: 'echo "BACKEND_URL" > url'
+      
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    
-    env: 
-      BACKEND_URL: '${{ secrets.BACKEND_URL }}'
-      run: 'echo "BACKEND_URL" > url'
-    
     steps:
       - name: Checkout 🛎️
         uses: actions/checkout@v2.3.1
