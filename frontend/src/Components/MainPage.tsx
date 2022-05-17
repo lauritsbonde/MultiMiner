@@ -78,7 +78,7 @@ function MainPage() {
 				} else {
 					ctx.fillStyle = '#fff';
 					ctx.font = '10px Arial';
-					ctx.fillText(elementsToDraw[mineral].id, elementsToDraw[mineral].pos.x - canvasOffSet.x + 20, elementsToDraw[mineral].pos.y - canvasOffSet.y + 25);
+					ctx.fillText(elementsToDraw[mineral].type, elementsToDraw[mineral].pos.x - canvasOffSet.x + 20, elementsToDraw[mineral].pos.y - canvasOffSet.y + 25);
 				}
 			}
 		}
