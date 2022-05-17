@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     
     env: 
-      BACKEND_URL: ${{ secrets.BACKEND_URL }}
+      BACKEND_URL: 'https://multiminer.herokuapp.com/'
       
     steps:
       - name: ENV
