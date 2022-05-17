@@ -66,6 +66,10 @@ io.on('connection', function (socket: any) {
 		callback(world.shopManager.getBasketPrices(world.players[socket.id]));
 	});
 
+	socket.on('sellMineral', (data: { mineral: string; amount: number }) => {
+		world.shopManager.sellMineral(world.players[socket.id], data.mineral, data.amount);
+	});
+
 	socket.on('disconnect', () => {
 		world.removePlayer(socket.id);
 		console.log('user disconnected');

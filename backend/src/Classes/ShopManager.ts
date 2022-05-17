@@ -64,5 +64,27 @@ export default class ShopManager {
 		return selling;
 	}
 
-	sellMinerals() {}
+	sellMineral(player: Player, type: string, amount: number) {
+		let moneyEarned = 0;
+		if (type === 'all') {
+			for (const mineralType in player.basket.items) {
+				if (player.basket.items.hasOwnProperty(mineralType)) {
+					const price = mineralPrices[mineralType];
+					const amount = player.basket.items[mineralType];
+					moneyEarned += price * amount;
+				}
+			}
+			player.basket.items = {};
+			player.basket.amount = 0;
+		} else {
+			const price = mineralPrices[type];
+			moneyEarned = price * amount;
+			player.basket.items[type] -= amount;
+			if (player.basket.items[type] <= 0) {
+				delete player.basket.items[type];
+			}
+			player.basket.amount -= amount;
+		}
+		player.money += moneyEarned;
+	}
 }
