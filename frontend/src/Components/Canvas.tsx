@@ -1,5 +1,4 @@
 import React from 'react';
-import useCanvas from '../Hooks/useCanvas';
 
 interface Props {
 	draw: (ctx: any) => void;
