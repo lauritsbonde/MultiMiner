@@ -78,6 +78,8 @@ app.get('/', function (req: any, res: Response) {
 	res.send('Hello World!');
 });
 
-http.listen(3333, function () {
-	console.log('listening on *:3333');
+const port = process.env.PORT || 3333;
+
+http.listen(port, function () {
+	console.log(`listening on *:${port}`);
 });
