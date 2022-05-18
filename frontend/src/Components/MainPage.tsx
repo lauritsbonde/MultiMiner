@@ -41,11 +41,7 @@ function MainPage() {
 
 	const drawUpperBackground = (ctx: any) => {
 		ctx.fillStyle = '#87CEEB';
-		if (constantData.groundStart === undefined) {
-			ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
-		} else {
-			ctx.fillRect(0, 0, ctx.canvas.clientWidth, constantData.groundStart);
-		}
+		ctx.fillRect(0, 0, ctx.canvas.clientWidth, constantData.groundStart === undefined ? ctx.canvas.clientHeight : constantData.groundStart);
 		ctx.fillStyle = '#FFFF00';
 		ctx.beginPath();
 		ctx.arc(40 - canvasOffSet.x, 40 - canvasOffSet.y, 150, 0, 2 * Math.PI);
@@ -183,12 +179,12 @@ function MainPage() {
 
 		const calculateCanvasOffSet = (data: DynamicData) => {
 			const player = data.players[myId];
-			if (player.pos.x > (window.innerWidth * 0.95) / 2 && player.pos.x < constantData.size.width - (window.innerWidth * 0.95) / 2) {
-				newOffSet.x = player.pos.x - (window.innerWidth * 0.95) / 2;
+			if (player.pos.x > (canvasRef.current.width * 0.95) / 2 && player.pos.x < constantData.size.width - canvasRef.current.width / 2) {
+				newOffSet.x = Math.max(0, player.pos.x - canvasRef.current.width / 2);
 			}
 
-			if (player.pos.y > (window.innerHeight * 0.85) / 2 && player.pos.y < constantData.size.height - (window.innerHeight * 0.85) / 2) {
-				newOffSet.y = player.pos.y - (window.innerHeight * 0.85) / 2;
+			if (player.pos.y > (canvasRef.current.height * 0.85) / 2 && player.pos.y < constantData.size.height - canvasRef.current.height / 2) {
+				newOffSet.y = Math.max(0, player.pos.y - canvasRef.current.height / 2);
 			}
 
 			setCanvasOffSet(newOffSet);
@@ -233,22 +229,24 @@ function MainPage() {
 	const fuelRatio = gameData.players !== undefined && myId !== '' ? (gameData.selfPlayer.fuel.current / gameData.selfPlayer.fuel.max) * 100 : 0;
 
 	return (
-		<div>
-			{gameData.players !== undefined && gameData.selfPlayer.isDead && <h3>You died!</h3>}
-			{gameData.players && (
-				<div style={{ display: 'flex', justifyContent: 'space-around' }}>
-					<h3 style={{ display: 'flex' }}>
-						Fuel:
-						<div style={{ width: '12vw', minWidth: '40px', height: '3vh', minHeight: '18px', backgroundColor: 'grey', margin: '4px', position: 'relative' }}>
-							<h4 style={{ position: 'absolute', zIndex: 1, top: '0', left: '20%', margin: 0, padding: 0 }}>
-								{gameData.selfPlayer.fuel.current.toFixed(2)} / {gameData.selfPlayer.fuel.max} L
-							</h4>
-							<div style={{ width: fuelRatio + '%', height: '100%', backgroundColor: fuelRatio < 15 ? 'red' : fuelRatio < 30 ? 'orange' : 'green' }}></div>
-						</div>
-					</h3>
-					<h3>Money: {gameData.selfPlayer.money.toFixed(2)}</h3>
-				</div>
-			)}
+		<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+			<div>
+				{gameData.players !== undefined && gameData.selfPlayer.isDead && <h3>You died!</h3>}
+				{gameData.players && (
+					<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+						<h3 style={{ display: 'flex' }}>
+							Fuel:
+							<div style={{ width: '12vw', minWidth: '40px', height: '3vh', minHeight: '18px', backgroundColor: 'grey', margin: '4px', position: 'relative' }}>
+								<h4 style={{ position: 'absolute', zIndex: 1, top: '0', left: '20%', margin: 0, padding: 0 }}>
+									{gameData.selfPlayer.fuel.current.toFixed(2)} / {gameData.selfPlayer.fuel.max} L
+								</h4>
+								<div style={{ width: fuelRatio + '%', height: '100%', backgroundColor: fuelRatio < 15 ? 'red' : fuelRatio < 30 ? 'orange' : 'green' }}></div>
+							</div>
+						</h3>
+						<h3>Money: {gameData.selfPlayer.money.toFixed(2)}</h3>
+					</div>
+				)}
+			</div>
 			<Canvas draw={draw} canvasRef={canvasRef} />
 			{gameData.players !== undefined && gameData.selfPlayer.onBuilding !== '' && gameData.selfPlayer.onBuilding !== 'graveyard' && (
 				<BuildingContainer

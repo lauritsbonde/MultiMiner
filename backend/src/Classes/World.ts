@@ -103,7 +103,6 @@ export default class World {
 		const row = Math.floor((mineral.pos.y + mineral.size.height / 2 - this.groundStart) / this.mineralSize);
 		const index = row * Math.floor(this.size.width / this.mineralSize) + column;
 		this.changedMineralsSinceLastUpdate.push({ index: index, toType: 'Empty' });
-		console.log(this.changedMineralsSinceLastUpdate);
 	}
 
 	updatePlayers() {
