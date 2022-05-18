@@ -99,7 +99,8 @@ export default class World {
 	}
 
 	turnDrilledMineralToIndexAndType(mineral: Mineral) {
-		const boundingBox = { maxx: mineral.pos.x + this.mineralSize, maxy: mineral.pos.y + this.mineralSize, minx: mineral.pos.x, miny: mineral.pos.y };
+		const padding = 50;
+		const boundingBox = { maxx: mineral.pos.x + this.mineralSize + padding, maxy: mineral.pos.y + this.mineralSize + padding, minx: mineral.pos.x - padding, miny: mineral.pos.y - padding };
 		this.changedMineralsSinceLastUpdate.push({ id: mineral.id, toType: 'Empty', boundingBox });
 	}
 
