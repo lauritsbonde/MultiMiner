@@ -141,6 +141,7 @@ function MainPage() {
 
 		let minerals = Array<MineralData>();
 		let constantData = {} as ConstantData;
+		let myId = '';
 
 		socket.on('connect', () => {
 			socket.emit(
@@ -159,6 +160,7 @@ function MainPage() {
 					constantData = { size: data.size, groundStart: data.groundStart, buildings: data.buildings };
 				}
 			);
+			myId = socket.id;
 			setMyId(socket.id);
 			setSocket(socket);
 		});
@@ -180,7 +182,7 @@ function MainPage() {
 		});
 
 		const calculateCanvasOffSet = (data: DynamicData) => {
-			const player = data.selfPlayer;
+			const player = data.players[myId];
 			if (player.pos.x > (window.innerWidth * 0.95) / 2 && player.pos.x < constantData.size.width - (window.innerWidth * 0.95) / 2) {
 				newOffSet.x = player.pos.x - (window.innerWidth * 0.95) / 2;
 			}
