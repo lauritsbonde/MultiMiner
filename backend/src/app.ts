@@ -38,13 +38,10 @@ import World from './Classes/World';
 const world = new World();
 
 io.on('connection', function (socket: any) {
-	console.log('a user connected');
-	world.addPlayer(socket.id);
-
 	socket.on(
 		'join',
 		(
-			data: { canvasSize: { width: number; height: number } },
+			data: { canvasSize: { width: number; height: number }; name: string },
 			callback: (response: {
 				size: { width: number; height: number };
 				groundStart: number;
@@ -54,7 +51,10 @@ io.on('connection', function (socket: any) {
 				selfPlayer: PlayerDto;
 			}) => void
 		) => {
+			world.addPlayer(socket.id, data.name);
 			world.players[socket.id].setCanvasSize(data.canvasSize);
+			console.log('a user connected');
+
 			callback({
 				size: world.size,
 				groundStart: world.groundStart,

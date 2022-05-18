@@ -12,6 +12,7 @@ interface surroundingMinerals {
 
 export default class Player extends PosClass {
 	id: string;
+	name: string;
 	canvasSize: { width: number; height: number };
 
 	moving: { [key: string]: boolean };
@@ -38,9 +39,10 @@ export default class Player extends PosClass {
 
 	basket: { maxItems: number; items: { [type: string]: number }; amount: number };
 
-	constructor(id: string, pos: { x: number; y: number }, worldSize: { width: number; height: number }, worldGroundLevel: number, worldBuildings: Array<Bulding>) {
+	constructor(id: string, pos: { x: number; y: number }, worldSize: { width: number; height: number }, worldGroundLevel: number, worldBuildings: Array<Bulding>, name: string) {
 		super({ width: 28, height: 28 }, pos);
 		this.id = id;
+		this.name = name;
 
 		this.canvasSize = { width: 1000, height: 1000 };
 
@@ -71,7 +73,7 @@ export default class Player extends PosClass {
 	}
 
 	toDto() {
-		return new PlayerDto(this.id, this.pos, this.size, this.onBuilding, { current: this.fuel.current, max: this.fuel.max }, this.money, this.isDead, {
+		return new PlayerDto(this.id, this.name, this.pos, this.size, this.onBuilding, { current: this.fuel.current, max: this.fuel.max }, this.money, this.isDead, {
 			items: this.basket.items,
 			amount: this.basket.amount,
 		});

@@ -1,5 +1,5 @@
 export interface MineralData {
-	id: string;
+	id: number;
 	size: { width: number; height: number };
 	pos: { x: number; y: number };
 	type: string;
@@ -7,6 +7,7 @@ export interface MineralData {
 
 interface PlayerData {
 	id: string;
+	name: string;
 	pos: { x: number; y: number };
 	size: { width: number; height: number };
 	onBuilding: string;

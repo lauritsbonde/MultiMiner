@@ -19,6 +19,16 @@ export default class kdTree {
 		this.root.rangeSearch(bb, result);
 		return result;
 	}
+
+	changeMineralType(mineral: MineralData, newType: string, boundingBox: boundingBoxType) {
+		const elements = this.rangeSearch(boundingBox);
+		elements.forEach((element) => {
+			if (element.id === mineral.id) {
+				element.type = newType;
+				return;
+			}
+		});
+	}
 }
 
 class KDAbstract {
@@ -101,7 +111,11 @@ class KDLeaf extends KDAbstract {
 
 	constructor(elements: Array<MineralData>) {
 		super();
-		this.elements = elements;
+		// sort elements by id
+		const sorted = elements.sort((a, b) => {
+			return a.id - b.id;
+		});
+		this.elements = sorted;
 		this.boundingBox = this.createBoundingBoxFromElements();
 	}
 

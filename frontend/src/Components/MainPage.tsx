@@ -1,25 +1,27 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, FC } from 'react';
 import Canvas from './Canvas';
-import { io, Socket } from 'socket.io-client';
+import { Socket } from 'socket.io-client';
 import { mineralStyle } from '../CanvasStyles/mineralStyle';
 import { buildingStyle } from '../CanvasStyles/BuildingStyle';
 import BuildingContainer from '../Components/BuildingMenus/BuildingContainer';
 import useCanvas from '../Hooks/useCanvas';
-import { MineralData, StartData } from '../Types/GameTypes';
-import { ConstantData } from '../Types/GameTypes';
-import { DynamicData } from '../Types/GameTypes';
-import { UpdateGameData } from '../Types/GameTypes';
+import { MineralData, ConstantData, DynamicData, UpdateGameData } from '../Types/GameTypes';
 import kdTree from '../kdTree';
 
-function MainPage() {
-	const [myId, setMyId] = useState<string>('');
-	const [constantData, setConstantData] = useState<ConstantData>({} as ConstantData);
-	const [minerals, setMinerals] = useState<MineralData[]>([]);
-	const [mineralsKdTree, setMineralsKdTree] = useState<kdTree>({} as kdTree);
-	const [gameData, setGameData] = useState<DynamicData>({} as DynamicData);
+interface Props {
+	socket: Socket;
+	myId: string;
+	constantData: ConstantData;
+	startGameData: DynamicData;
+	startMinerals: MineralData[];
+}
+
+const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startMinerals }) => {
+	const [minerals, setMinerals] = useState(startMinerals);
+	const [mineralsKdTree, setMineralsKdTree] = useState<kdTree>(new kdTree([...startMinerals]));
+	const [gameData, setGameData] = useState<DynamicData>(startGameData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
 	// const [skies, setSkies] = useState();
-	const [socket, setSocket] = useState({} as Socket);
 
 	const newMinerals = (minerals: MineralData[]) => {
 		const copyElements = [...minerals];
@@ -100,7 +102,7 @@ function MainPage() {
 				} else {
 					ctx.fillStyle = '#fff';
 					ctx.font = '10px Arial';
-					ctx.fillText(mineralsInRange[mineral].type, mineralsInRange[mineral].pos.x - canvasOffSet.x + 20, mineralsInRange[mineral].pos.y - canvasOffSet.y + 25);
+					ctx.fillText(mineralsInRange[mineral].id, mineralsInRange[mineral].pos.x - canvasOffSet.x + 20, mineralsInRange[mineral].pos.y - canvasOffSet.y + 25);
 				}
 			}
 		}
@@ -115,6 +117,9 @@ function MainPage() {
 					ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
 					ctx.fillStyle = '#fff';
 					ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
+					ctx.fillStyle = '#fff';
+					ctx.font = '10px Arial';
+					ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
 				}
 			}
 		}
@@ -130,37 +135,7 @@ function MainPage() {
 		}
 	};
 
-	const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
-
 	useEffect(() => {
-		const socket = io(BACKEND_URL);
-
-		let minerals = Array<MineralData>();
-		let constantData = {} as ConstantData;
-		let myId = '';
-
-		socket.on('connect', () => {
-			socket.emit(
-				'join',
-				{
-					canvasSize: {
-						width: canvasRef.current.clientWidth,
-						height: canvasRef.current.clientHeight,
-					},
-				},
-				(data: StartData) => {
-					setConstantData({ size: data.size, groundStart: data.groundStart, buildings: data.buildings });
-					setGameData({ players: data.players, selfPlayer: data.selfPlayer });
-					newMinerals(data.minerals);
-					minerals = data.minerals;
-					constantData = { size: data.size, groundStart: data.groundStart, buildings: data.buildings };
-				}
-			);
-			myId = socket.id;
-			setMyId(socket.id);
-			setSocket(socket);
-		});
-
 		const newOffSet = { ...canvasOffSet };
 
 		socket.on('update', (data: UpdateGameData) => {
@@ -178,7 +153,7 @@ function MainPage() {
 		});
 
 		const calculateCanvasOffSet = (data: DynamicData) => {
-			const player = data.players[myId];
+			const player = data.selfPlayer;
 			if (player.pos.x > (canvasRef.current.width * 0.95) / 2 && player.pos.x < constantData.size.width - canvasRef.current.width / 2) {
 				newOffSet.x = Math.max(0, player.pos.x - canvasRef.current.width / 2);
 			}
@@ -219,10 +194,6 @@ function MainPage() {
 			}
 		});
 
-		return () => {
-			socket.disconnect();
-		};
-
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
@@ -257,6 +228,6 @@ function MainPage() {
 			)}
 		</div>
 	);
-}
+};
 
 export default MainPage;

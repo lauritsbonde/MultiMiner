@@ -16,7 +16,7 @@ const useCanvas = (draw: (ctx: any) => void) => {
 
 		const interval = setInterval(() => {
 			render();
-		}, 1000 / 45);
+		}, 1000 / 30);
 
 		render();
 

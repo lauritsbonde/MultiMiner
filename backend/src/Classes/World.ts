@@ -21,7 +21,7 @@ export default class World {
 	shopManager: ShopManager;
 
 	constructor() {
-		this.size = { width: 4000, height: 3000 }; //there is a concrete level after the height
+		this.size = { width: 4000, height: 4000 }; //there is a concrete level after the height
 		this.groundStart = 500;
 
 		this.players = {};
@@ -75,10 +75,10 @@ export default class World {
 		this.minerals[index].isDrillable = false;
 	}
 
-	addPlayer(id: string) {
+	addPlayer(id: string, name: string) {
 		const randx = Math.floor((Math.random() * this.size.width) / 10);
 		const randy = Math.floor(Math.random() * (this.groundStart - 50 - 300 + 1) + 300);
-		const newPlayer = new Player(id, { x: randx, y: randy }, { width: this.size.width, height: this.size.height }, this.groundStart, this.shopManager.buildings);
+		const newPlayer = new Player(id, { x: randx, y: randy }, { width: this.size.width, height: this.size.height }, this.groundStart, this.shopManager.buildings, name);
 		this.players[id] = newPlayer;
 		this.playersDto[id] = newPlayer.toDto();
 	}
@@ -108,8 +108,12 @@ export default class World {
 	updatePlayers() {
 		for (let id in this.players) {
 			const surroundingMinerals = this.getSurroundingMinerals(this.players[id]);
-			this.players[id].move(surroundingMinerals, (mineral) => this.turnDrilledMineralToIndexAndType(mineral));
-			this.playersDto[id] = this.players[id].toDto();
+			if (this.players[id].isDead) {
+				// this.removePlayer(id);
+			} else {
+				this.players[id].move(surroundingMinerals, (mineral) => this.turnDrilledMineralToIndexAndType(mineral));
+				this.playersDto[id] = this.players[id].toDto();
+			}
 		}
 	}
 
