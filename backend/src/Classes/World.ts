@@ -11,11 +11,11 @@ export default class World {
 
 	players: { [id: string]: Player };
 	playersDto: { [id: string]: PlayerDto };
-	playersKdTree: kdTree;
+	// playersKdTree: kdTree;
 
 	minerals = Array<Mineral>();
 	mineralSize: number;
-	mineralKdTree: kdTree;
+	// mineralKdTree: kdTree;
 	changedMineralsSinceLastUpdate: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }> = [];
 
 	shopManager: ShopManager;

@@ -138,7 +138,7 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 		});
 
 		const calculateCanvasOffSet = (data: DynamicData) => {
-			const player = data.selfPlayer;
+			const player = data.players[myId];
 			if (player.pos.x > (canvasRef.current.width * 0.95) / 2 && player.pos.x < constantData.size.width - canvasRef.current.width / 2) {
 				newOffSet.x = Math.max(0, player.pos.x - canvasRef.current.width / 2);
 			}

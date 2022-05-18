@@ -24,7 +24,9 @@ const Join: FC<JoinProps> = ({ joinGame }) => {
 						setInput(e.target.value);
 					}}
 				/>
-				<button onClick={() => joinGame(input || `I AM BORING_${(Math.random() + 1).toString(36).substring(2)}`)}>Join</button>
+				<button type="submit" onClick={() => joinGame(input || `I AM BORING_${(Math.random() + 1).toString(36).substring(2)}`)}>
+					Join
+				</button>
 			</form>
 		</div>
 	);
