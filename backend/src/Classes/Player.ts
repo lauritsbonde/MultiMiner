@@ -81,10 +81,10 @@ export default class Player extends PosClass {
 		this.canvasSize = canvasSize;
 	}
 
-	move(surroundingMinerals: surroundingMinerals) {
+	move(surroundingMinerals: surroundingMinerals, addDrillMineralToChanged: (mineral: Mineral) => void) {
 		this.useFuel();
 		if (this.isDrilling) {
-			this.drill(undefined);
+			this.drill(undefined, undefined, addDrillMineralToChanged);
 			return;
 		}
 
@@ -266,7 +266,7 @@ export default class Player extends PosClass {
 		}
 	}
 
-	drill(mineral?: Mineral, startDirection?: string) {
+	drill(mineral?: Mineral, startDirection?: string, addDrillMineralToChanged?: (mineral: Mineral) => void) {
 		if (!this.isDrilling && mineral !== undefined && startDirection !== undefined) {
 			this.isDrilling = true;
 			this.drillingMineral = mineral;
@@ -291,6 +291,8 @@ export default class Player extends PosClass {
 				this.isDrilling = false;
 
 				this.addMineralToBasket(this.drillingMineral);
+
+				addDrillMineralToChanged(this.drillingMineral);
 
 				this.drillingMineral.destroy();
 				this.drillingMineral = undefined;

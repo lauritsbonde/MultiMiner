@@ -1,4 +1,8 @@
 import express, { Request, Response } from 'express';
+import Mineral from './Classes/Mineral';
+import PlayerDto from './Classes/PlayerDto';
+import Building from './Classes/Building';
+
 const app = express();
 const http = require('http').Server(app);
 const { auth } = require('express-openid-connect');
@@ -37,9 +41,30 @@ io.on('connection', function (socket: any) {
 	console.log('a user connected');
 	world.addPlayer(socket.id);
 
-	socket.on('canvasSize', (data: { width: number; height: number }) => {
-		world.players[socket.id].setCanvasSize(data);
-	});
+	socket.on(
+		'join',
+		(
+			data: { canvasSize: { width: number; height: number } },
+			callback: (response: {
+				size: { width: number; height: number };
+				groundStart: number;
+				players: { [id: string]: PlayerDto };
+				minerals: Mineral[];
+				buildings: Building[];
+				selfPlayer: PlayerDto;
+			}) => void
+		) => {
+			world.players[socket.id].setCanvasSize(data.canvasSize);
+			callback({
+				size: world.size,
+				groundStart: world.groundStart,
+				players: world.playersDto,
+				minerals: world.minerals,
+				buildings: world.shopManager.buildings,
+				selfPlayer: world.playersDto[socket.id],
+			});
+		}
+	);
 
 	// PLAYER MOVEMONT
 
@@ -78,10 +103,8 @@ io.on('connection', function (socket: any) {
 
 setInterval(() => {
 	world.update();
-	for (let socketId in world.players) {
-		io.to(socketId).emit('update', world.toDto(socketId));
-	}
-}, 1000 / 45);
+	io.emit('update', world.toDto());
+}, 1000 / 30);
 
 app.get('/', function (req: any, res: Response) {
 	// res.send(req.oidc.isAuthenticated() ? 'Logged in -> ' + req.oidc.user : 'Not logged in');

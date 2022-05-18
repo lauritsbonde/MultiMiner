@@ -16,6 +16,7 @@ export default class World {
 	minerals = Array<Mineral>();
 	mineralSize: number;
 	mineralKdTree: kdTree;
+	changedMineralsSinceLastUpdate: Array<{ index: number; toType: string }> = [];
 
 	shopManager: ShopManager;
 
@@ -31,30 +32,20 @@ export default class World {
 		this.mineralSize = 50;
 		this.setupMinerals();
 		this.mineralKdTree = new kdTree(this.minerals, 50);
+		this.changedMineralsSinceLastUpdate = [];
 
 		this.shopManager = new ShopManager();
 		this.shopManager.setupBuildings(this.mineralSize, this.size, this.groundStart, (index: number) => this.makeMineralConcrete(index));
 	}
 
-	toDto(socketId: string) {
-		const player = this.players[socketId];
-		const padding = { x: player.canvasSize.width, y: player.canvasSize.height };
-		const boundingBox = {
-			minx: player.pos.x - padding.x,
-			maxx: player.pos.x + padding.x,
-			miny: player.pos.y - padding.y,
-			maxy: player.pos.y + padding.y,
-		};
-		const minerals = this.mineralKdTree.rangeSearch(boundingBox);
-		const players = this.playersKdTree.rangeSearch(boundingBox);
+	toDto() {
+		const mineralChanges = this.changedMineralsSinceLastUpdate;
+		this.changedMineralsSinceLastUpdate = [];
 
 		return {
-			size: this.size,
-			groundStart: this.groundStart,
-			players: players,
-			minerals: minerals,
-			buildings: this.shopManager.buildings,
-			selfPlayer: this.playersDto[socketId],
+			players: this.playersDto,
+			changedMinerals: mineralChanges,
+			selfPlayer: this.playersDto[Object.keys(this.playersDto)[0]],
 		};
 	}
 
@@ -107,10 +98,18 @@ export default class World {
 		this.mineralKdTree = new kdTree(this.minerals, 50);
 	}
 
+	turnDrilledMineralToIndexAndType(mineral: Mineral) {
+		let column = Math.floor((mineral.pos.x + mineral.size.width / 2) / this.mineralSize);
+		const row = Math.floor((mineral.pos.y + mineral.size.height / 2 - this.groundStart) / this.mineralSize);
+		const index = row * Math.floor(this.size.width / this.mineralSize) + column;
+		this.changedMineralsSinceLastUpdate.push({ index: index, toType: 'Empty' });
+		console.log(this.changedMineralsSinceLastUpdate);
+	}
+
 	updatePlayers() {
 		for (let id in this.players) {
 			const surroundingMinerals = this.getSurroundingMinerals(this.players[id]);
-			this.players[id].move(surroundingMinerals);
+			this.players[id].move(surroundingMinerals, (mineral) => this.turnDrilledMineralToIndexAndType(mineral));
 			this.playersDto[id] = this.players[id].toDto();
 		}
 	}

@@ -1,4 +1,4 @@
-import MineralData from './Types/GameTypes';
+import { MineralData } from './Types/GameTypes';
 
 interface boundingBoxType {
 	minx: number;
@@ -126,7 +126,7 @@ class KDLeaf extends KDAbstract {
 	}
 }
 
-const MAX_ELEMENTS_FOR_LEAF = 5;
+const MAX_ELEMENTS_FOR_LEAF = 30;
 function createNode(elements: Array<MineralData>, splitDimension: boolean = true): KDAbstract {
 	if (elements.length <= MAX_ELEMENTS_FOR_LEAF) {
 		return new KDLeaf(elements);

@@ -3,16 +3,30 @@ import Canvas from './Canvas';
 import { io, Socket } from 'socket.io-client';
 import { mineralStyle } from '../CanvasStyles/mineralStyle';
 import { buildingStyle } from '../CanvasStyles/BuildingStyle';
-import UpdateGameData from '../Types/GameTypes';
 import BuildingContainer from '../Components/BuildingMenus/BuildingContainer';
 import useCanvas from '../Hooks/useCanvas';
+import { MineralData, StartData } from '../Types/GameTypes';
+import { ConstantData } from '../Types/GameTypes';
+import { DynamicData } from '../Types/GameTypes';
+import { UpdateGameData } from '../Types/GameTypes';
+import kdTree from '../kdTree';
 
 function MainPage() {
 	const [myId, setMyId] = useState<string>('');
-	const [gameData, setGameData] = useState<UpdateGameData>({} as UpdateGameData);
+	const [constantData, setConstantData] = useState<ConstantData>({} as ConstantData);
+	const [minerals, setMinerals] = useState<MineralData[]>([]);
+	const [mineralsKdTree, setMineralsKdTree] = useState<kdTree>({} as kdTree);
+	const [gameData, setGameData] = useState<DynamicData>({} as DynamicData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
 	// const [skies, setSkies] = useState();
 	const [socket, setSocket] = useState({} as Socket);
+
+	const newMinerals = (minerals: MineralData[]) => {
+		const copyElements = [...minerals];
+		const mineralsKdTree = new kdTree(copyElements);
+		setMinerals(copyElements);
+		setMineralsKdTree(mineralsKdTree);
+	};
 
 	const draw = (ctx: any) => {
 		ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
@@ -27,10 +41,10 @@ function MainPage() {
 
 	const drawUpperBackground = (ctx: any) => {
 		ctx.fillStyle = '#87CEEB';
-		if (gameData.groundStart === undefined) {
+		if (constantData.groundStart === undefined) {
 			ctx.fillRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
 		} else {
-			ctx.fillRect(0, 0, ctx.canvas.clientWidth, gameData.groundStart);
+			ctx.fillRect(0, 0, ctx.canvas.clientWidth, constantData.groundStart);
 		}
 		ctx.fillStyle = '#FFFF00';
 		ctx.beginPath();
@@ -40,8 +54,8 @@ function MainPage() {
 	};
 
 	const drawBuildings = (ctx: any) => {
-		if (gameData.buildings) {
-			gameData.buildings.forEach((building: any) => {
+		if (constantData.buildings) {
+			constantData.buildings.forEach((building: any) => {
 				const styling = buildingStyle[building.title];
 				ctx.fillStyle = styling.outerColor;
 				ctx.fillRect(building.pos.x - canvasOffSet.x, building.pos.y - canvasOffSet.y, building.size.width, building.size.height);
@@ -56,29 +70,41 @@ function MainPage() {
 	};
 
 	const drawMinerals = (ctx: any) => {
-		if (gameData.minerals) {
-			const elementsToDraw = gameData.minerals;
-			for (let mineral in elementsToDraw) {
-				const styling = mineralStyle[elementsToDraw[mineral].type];
+		if (minerals.length > 0) {
+			const padding = Math.max(ctx.canvas.clientWidth, ctx.canvas.clientHeight) / 10;
+			const boundingBox = {
+				minx: 0 + canvasOffSet.x - padding,
+				miny: 0 + canvasOffSet.y - padding,
+				maxx: ctx.canvas.clientWidth + canvasOffSet.x + padding,
+				maxy: ctx.canvas.clientHeight + canvasOffSet.y + padding,
+			};
+			const mineralsInRange = mineralsKdTree.rangeSearch(boundingBox);
+			for (let mineral in mineralsInRange) {
+				const styling = mineralStyle[mineralsInRange[mineral].type];
 				ctx.fillStyle = styling.outerColor;
-				ctx.fillRect(elementsToDraw[mineral].pos.x - canvasOffSet.x, elementsToDraw[mineral].pos.y - canvasOffSet.y, elementsToDraw[mineral].size.width, elementsToDraw[mineral].size.height);
+				ctx.fillRect(
+					mineralsInRange[mineral].pos.x - canvasOffSet.x,
+					mineralsInRange[mineral].pos.y - canvasOffSet.y,
+					mineralsInRange[mineral].size.width,
+					mineralsInRange[mineral].size.height
+				);
 				const border = 2;
 				ctx.fillStyle = styling.innerColor;
 				ctx.fillRect(
-					elementsToDraw[mineral].pos.x - canvasOffSet.x + border,
-					elementsToDraw[mineral].pos.y - canvasOffSet.y + border,
-					elementsToDraw[mineral].size.width - border * 2,
-					elementsToDraw[mineral].size.height - border * 2
+					mineralsInRange[mineral].pos.x - canvasOffSet.x + border,
+					mineralsInRange[mineral].pos.y - canvasOffSet.y + border,
+					mineralsInRange[mineral].size.width - border * 2,
+					mineralsInRange[mineral].size.height - border * 2
 				);
 
-				if (elementsToDraw[mineral].type === 'Concrete' && elementsToDraw[mineral].pos.y !== gameData.groundStart) {
+				if (mineralsInRange[mineral].type === 'Concrete' && mineralsInRange[mineral].pos.y !== constantData.groundStart) {
 					ctx.fillStyle = '#fff';
 					ctx.font = '10px Arial';
-					ctx.fillText('BOTTOM', elementsToDraw[mineral].pos.x - canvasOffSet.x + 2, elementsToDraw[mineral].pos.y - canvasOffSet.y + 25);
+					ctx.fillText('BOTTOM', mineralsInRange[mineral].pos.x - canvasOffSet.x + 2, mineralsInRange[mineral].pos.y - canvasOffSet.y + 25);
 				} else {
 					ctx.fillStyle = '#fff';
 					ctx.font = '10px Arial';
-					ctx.fillText(elementsToDraw[mineral].type, elementsToDraw[mineral].pos.x - canvasOffSet.x + 20, elementsToDraw[mineral].pos.y - canvasOffSet.y + 25);
+					ctx.fillText(mineralsInRange[mineral].type, mineralsInRange[mineral].pos.x - canvasOffSet.x + 20, mineralsInRange[mineral].pos.y - canvasOffSet.y + 25);
 				}
 			}
 		}
@@ -113,11 +139,26 @@ function MainPage() {
 	useEffect(() => {
 		const socket = io(BACKEND_URL);
 
+		let minerals = Array<MineralData>();
+		let constantData = {} as ConstantData;
+
 		socket.on('connect', () => {
-			socket.emit('canvasSize', {
-				width: canvasRef.current.clientWidth,
-				height: canvasRef.current.clientHeight,
-			});
+			socket.emit(
+				'join',
+				{
+					canvasSize: {
+						width: canvasRef.current.clientWidth,
+						height: canvasRef.current.clientHeight,
+					},
+				},
+				(data: StartData) => {
+					setConstantData({ size: data.size, groundStart: data.groundStart, buildings: data.buildings });
+					setGameData({ players: data.players, selfPlayer: data.selfPlayer });
+					newMinerals(data.minerals);
+					minerals = data.minerals;
+					constantData = { size: data.size, groundStart: data.groundStart, buildings: data.buildings };
+				}
+			);
 			setMyId(socket.id);
 			setSocket(socket);
 		});
@@ -125,17 +166,26 @@ function MainPage() {
 		const newOffSet = { ...canvasOffSet };
 
 		socket.on('update', (data: UpdateGameData) => {
-			setGameData(data);
+			if (minerals.length > 0) {
+				const oldMinerals = [...minerals];
+
+				for (let i = 0; i < data.changedMinerals.length; i++) {
+					const change = data.changedMinerals[i];
+					oldMinerals[change.index].type = change.toType;
+				}
+				newMinerals(oldMinerals);
+			}
+			setGameData({ players: data.players, selfPlayer: data.selfPlayer });
 			calculateCanvasOffSet(data);
 		});
 
-		const calculateCanvasOffSet = (data: UpdateGameData) => {
+		const calculateCanvasOffSet = (data: DynamicData) => {
 			const player = data.selfPlayer;
-			if (player.pos.x > (window.innerWidth * 0.95) / 2 && player.pos.x < data.size.width - (window.innerWidth * 0.95) / 2) {
+			if (player.pos.x > (window.innerWidth * 0.95) / 2 && player.pos.x < constantData.size.width - (window.innerWidth * 0.95) / 2) {
 				newOffSet.x = player.pos.x - (window.innerWidth * 0.95) / 2;
 			}
 
-			if (player.pos.y > (window.innerHeight * 0.85) / 2 && player.pos.y < data.size.height - (window.innerHeight * 0.85) / 2) {
+			if (player.pos.y > (window.innerHeight * 0.85) / 2 && player.pos.y < constantData.size.height - (window.innerHeight * 0.85) / 2) {
 				newOffSet.y = player.pos.y - (window.innerHeight * 0.85) / 2;
 			}
 

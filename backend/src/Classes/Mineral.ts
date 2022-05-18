@@ -3,9 +3,6 @@ import PosClass from './PosClass';
 export default class Mineral extends PosClass {
 	id: number;
 
-	size: { width: number; height: number };
-	pos: { x: number; y: number };
-
 	type: string;
 	isDrillable: boolean;
 	drillFriction: number; //lower is more friction
