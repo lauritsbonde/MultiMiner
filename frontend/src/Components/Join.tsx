@@ -10,15 +10,22 @@ const Join: FC<JoinProps> = ({ joinGame }) => {
 		<div style={{ position: 'absolute' }}>
 			<h1>Join</h1>
 			<h3>Enter your username</h3>
-			<input
-				type="text"
-				placeholder="Username"
-				value={input}
-				onChange={(e) => {
-					setInput(e.target.value);
+			<form
+				onSubmit={(e) => {
+					e.preventDefault();
+					joinGame(input);
 				}}
-			/>
-			<button onClick={() => joinGame(input || `I AM BORING_${(Math.random() + 1).toString(36).substring(2)}`)}>Join</button>
+			>
+				<input
+					type="text"
+					placeholder="Username"
+					value={input}
+					onChange={(e) => {
+						setInput(e.target.value);
+					}}
+				/>
+				<button onClick={() => joinGame(input || `I AM BORING_${(Math.random() + 1).toString(36).substring(2)}`)}>Join</button>
+			</form>
 		</div>
 	);
 };
