@@ -182,33 +182,33 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	const fuelRatio = gameData.players !== undefined && myId !== '' ? (gameData.selfPlayer.fuel.current / gameData.selfPlayer.fuel.max) * 100 : 0;
+	const fuelRatio = gameData.players !== undefined && myId !== '' ? (gameData.players[myId].fuel.current / gameData.players[myId].fuel.max) * 100 : 0;
 
 	return (
 		<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
 			<div>
-				{gameData.players !== undefined && gameData.selfPlayer.isDead && <h3>You died!</h3>}
+				{gameData.players !== undefined && gameData.players[myId].isDead && <h3>You died!</h3>}
 				{gameData.players && (
 					<div style={{ display: 'flex', justifyContent: 'space-around' }}>
 						<h3 style={{ display: 'flex' }}>
 							Fuel:
 							<div style={{ width: '12vw', minWidth: '40px', height: '3vh', minHeight: '18px', backgroundColor: 'grey', margin: '4px', position: 'relative' }}>
 								<h4 style={{ position: 'absolute', zIndex: 1, top: '0', left: '20%', margin: 0, padding: 0 }}>
-									{gameData.selfPlayer.fuel.current.toFixed(2)} / {gameData.selfPlayer.fuel.max} L
+									{gameData.players[myId].fuel.current.toFixed(2)} / {gameData.players[myId].fuel.max} L
 								</h4>
 								<div style={{ width: fuelRatio + '%', height: '100%', backgroundColor: fuelRatio < 15 ? 'red' : fuelRatio < 30 ? 'orange' : 'green' }}></div>
 							</div>
 						</h3>
-						<h3>Money: {gameData.selfPlayer.money.toFixed(2)}</h3>
+						<h3>Money: {gameData.players[myId].money.toFixed(2)}</h3>
 					</div>
 				)}
 			</div>
 			<Canvas draw={draw} canvasRef={canvasRef} />
-			{gameData.players !== undefined && gameData.selfPlayer.onBuilding !== '' && gameData.selfPlayer.onBuilding !== 'graveyard' && (
+			{gameData.players !== undefined && gameData.players[myId].onBuilding !== '' && gameData.players[myId].onBuilding !== 'graveyard' && (
 				<BuildingContainer
 					socket={socket}
-					building={gameData.selfPlayer.onBuilding}
-					bgColor={gameData.selfPlayer.onBuilding !== '' ? buildingStyle[gameData.selfPlayer.onBuilding].innerColor : '#00ff00'}
+					building={gameData.players[myId].onBuilding}
+					bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
 				/>
 			)}
 		</div>

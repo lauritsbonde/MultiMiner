@@ -94,8 +94,8 @@ export default class World {
 	}
 
 	buildKdTrees() {
-		this.playersKdTree = new kdTree(Object.values(this.playersDto), 10);
-		this.mineralKdTree = new kdTree(this.minerals, 50);
+		// this.playersKdTree = new kdTree(Object.values(this.playersDto), 10);
+		// this.mineralKdTree = new kdTree(this.minerals, 50);
 	}
 
 	turnDrilledMineralToIndexAndType(mineral: Mineral) {
