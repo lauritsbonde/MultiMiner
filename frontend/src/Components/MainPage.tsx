@@ -17,17 +17,17 @@ interface Props {
 }
 
 const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startMinerals }) => {
-	const [minerals, setMinerals] = useState(startMinerals);
 	const [mineralsKdTree, setMineralsKdTree] = useState<kdTree>(new kdTree([...startMinerals]));
 	const [gameData, setGameData] = useState<DynamicData>(startGameData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
 	// const [skies, setSkies] = useState();
 
-	const newMinerals = (minerals: MineralData[]) => {
-		const copyElements = [...minerals];
-		const mineralsKdTree = new kdTree(copyElements);
-		setMinerals(copyElements);
-		setMineralsKdTree(mineralsKdTree);
+	const newMinerals = (changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>) => {
+		const oldKdTree = mineralsKdTree;
+		for (let i = 0; i < changedMinerals.length; i++) {
+			oldKdTree.changeMineralType(changedMinerals[i].id, changedMinerals[i].toType, changedMinerals[i].boundingBox);
+		}
+		setMineralsKdTree(oldKdTree);
 	};
 
 	const draw = (ctx: any) => {
@@ -68,42 +68,35 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 	};
 
 	const drawMinerals = (ctx: any) => {
-		if (minerals.length > 0) {
-			const padding = Math.max(ctx.canvas.clientWidth, ctx.canvas.clientHeight) / 10;
-			const boundingBox = {
-				minx: 0 + canvasOffSet.x - padding,
-				miny: 0 + canvasOffSet.y - padding,
-				maxx: ctx.canvas.clientWidth + canvasOffSet.x + padding,
-				maxy: ctx.canvas.clientHeight + canvasOffSet.y + padding,
-			};
-			const mineralsInRange = mineralsKdTree.rangeSearch(boundingBox);
-			for (let mineral in mineralsInRange) {
-				const styling = mineralStyle[mineralsInRange[mineral].type];
-				ctx.fillStyle = styling.outerColor;
-				ctx.fillRect(
-					mineralsInRange[mineral].pos.x - canvasOffSet.x,
-					mineralsInRange[mineral].pos.y - canvasOffSet.y,
-					mineralsInRange[mineral].size.width,
-					mineralsInRange[mineral].size.height
-				);
-				const border = 2;
-				ctx.fillStyle = styling.innerColor;
-				ctx.fillRect(
-					mineralsInRange[mineral].pos.x - canvasOffSet.x + border,
-					mineralsInRange[mineral].pos.y - canvasOffSet.y + border,
-					mineralsInRange[mineral].size.width - border * 2,
-					mineralsInRange[mineral].size.height - border * 2
-				);
+		const padding = Math.max(ctx.canvas.clientWidth, ctx.canvas.clientHeight) / 10;
+		const boundingBox = {
+			minx: 0 + canvasOffSet.x - padding,
+			miny: 0 + canvasOffSet.y - padding,
+			maxx: ctx.canvas.clientWidth + canvasOffSet.x + padding,
+			maxy: ctx.canvas.clientHeight + canvasOffSet.y + padding,
+		};
+		const mineralsInRange = mineralsKdTree.rangeSearch(boundingBox);
+		for (let mineral in mineralsInRange) {
+			const styling = mineralStyle[mineralsInRange[mineral].type];
+			ctx.fillStyle = styling.outerColor;
+			ctx.fillRect(mineralsInRange[mineral].pos.x - canvasOffSet.x, mineralsInRange[mineral].pos.y - canvasOffSet.y, mineralsInRange[mineral].size.width, mineralsInRange[mineral].size.height);
+			const border = 2;
+			ctx.fillStyle = styling.innerColor;
+			ctx.fillRect(
+				mineralsInRange[mineral].pos.x - canvasOffSet.x + border,
+				mineralsInRange[mineral].pos.y - canvasOffSet.y + border,
+				mineralsInRange[mineral].size.width - border * 2,
+				mineralsInRange[mineral].size.height - border * 2
+			);
 
-				if (mineralsInRange[mineral].type === 'Concrete' && mineralsInRange[mineral].pos.y !== constantData.groundStart) {
-					ctx.fillStyle = '#fff';
-					ctx.font = '10px Arial';
-					ctx.fillText('BOTTOM', mineralsInRange[mineral].pos.x - canvasOffSet.x + 2, mineralsInRange[mineral].pos.y - canvasOffSet.y + 25);
-				} else {
-					ctx.fillStyle = '#fff';
-					ctx.font = '10px Arial';
-					ctx.fillText(mineralsInRange[mineral].id, mineralsInRange[mineral].pos.x - canvasOffSet.x + 20, mineralsInRange[mineral].pos.y - canvasOffSet.y + 25);
-				}
+			if (mineralsInRange[mineral].type === 'Concrete' && mineralsInRange[mineral].pos.y !== constantData.groundStart) {
+				ctx.fillStyle = '#fff';
+				ctx.font = '10px Arial';
+				ctx.fillText('BOTTOM', mineralsInRange[mineral].pos.x - canvasOffSet.x + 2, mineralsInRange[mineral].pos.y - canvasOffSet.y + 25);
+			} else {
+				ctx.fillStyle = '#fff';
+				ctx.font = '10px Arial';
+				ctx.fillText(mineralsInRange[mineral].id, mineralsInRange[mineral].pos.x - canvasOffSet.x + 20, mineralsInRange[mineral].pos.y - canvasOffSet.y + 25);
 			}
 		}
 	};
@@ -139,15 +132,7 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 		const newOffSet = { ...canvasOffSet };
 
 		socket.on('update', (data: UpdateGameData) => {
-			if (minerals.length > 0) {
-				const oldMinerals = [...minerals];
-
-				for (let i = 0; i < data.changedMinerals.length; i++) {
-					const change = data.changedMinerals[i];
-					oldMinerals[change.index].type = change.toType;
-				}
-				newMinerals(oldMinerals);
-			}
+			newMinerals(data.changedMinerals);
 			setGameData({ players: data.players, selfPlayer: data.selfPlayer });
 			calculateCanvasOffSet(data);
 		});

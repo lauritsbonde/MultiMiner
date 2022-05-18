@@ -24,7 +24,7 @@ interface BuildingData {
 }
 
 export interface UpdateGameData {
-	changedMinerals: Array<{ index: number; toType: string }>;
+	changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>;
 	players: { [id: string]: PlayerData };
 	selfPlayer: PlayerData;
 }

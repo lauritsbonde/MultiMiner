@@ -16,7 +16,7 @@ export default class World {
 	minerals = Array<Mineral>();
 	mineralSize: number;
 	mineralKdTree: kdTree;
-	changedMineralsSinceLastUpdate: Array<{ index: number; toType: string }> = [];
+	changedMineralsSinceLastUpdate: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }> = [];
 
 	shopManager: ShopManager;
 
@@ -99,10 +99,8 @@ export default class World {
 	}
 
 	turnDrilledMineralToIndexAndType(mineral: Mineral) {
-		let column = Math.floor((mineral.pos.x + mineral.size.width / 2) / this.mineralSize);
-		const row = Math.floor((mineral.pos.y + mineral.size.height / 2 - this.groundStart) / this.mineralSize);
-		const index = row * Math.floor(this.size.width / this.mineralSize) + column;
-		this.changedMineralsSinceLastUpdate.push({ index: index, toType: 'Empty' });
+		const boundingBox = { maxx: mineral.pos.x + this.mineralSize, maxy: mineral.pos.y + this.mineralSize, minx: mineral.pos.x, miny: mineral.pos.y };
+		this.changedMineralsSinceLastUpdate.push({ id: mineral.id, toType: 'Empty', boundingBox });
 	}
 
 	updatePlayers() {
