@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/MultiMiner/static/css/main.a25811df.css",
-    "main.js": "/MultiMiner/static/js/main.9acbbe72.js",
+    "main.js": "/MultiMiner/static/js/main.5a90f378.js",
     "static/js/787.cda612ba.chunk.js": "/MultiMiner/static/js/787.cda612ba.chunk.js",
     "index.html": "/MultiMiner/index.html",
     "main.a25811df.css.map": "/MultiMiner/static/css/main.a25811df.css.map",
-    "main.9acbbe72.js.map": "/MultiMiner/static/js/main.9acbbe72.js.map",
+    "main.5a90f378.js.map": "/MultiMiner/static/js/main.5a90f378.js.map",
     "787.cda612ba.chunk.js.map": "/MultiMiner/static/js/787.cda612ba.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a25811df.css",
-    "static/js/main.9acbbe72.js"
+    "static/js/main.5a90f378.js"
   ]
 }
