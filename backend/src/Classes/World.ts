@@ -15,7 +15,7 @@ export default class World {
 
 	minerals = Array<Mineral>();
 	mineralSize: number;
-	// mineralKdTree: kdTree;
+	// mineralKdTree: kdTree
 	changedMineralsSinceLastUpdate: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }> = [];
 
 	shopManager: ShopManager;
