@@ -26,12 +26,12 @@ export default class World {
 
 		this.players = {};
 		this.playersDto = {};
-		this.playersKdTree = new kdTree(Object.values(this.playersDto), 10);
+		// this.playersKdTree = new kdTree(Object.values(this.playersDto), 10);
 
 		this.minerals = [];
 		this.mineralSize = 50;
 		this.setupMinerals();
-		this.mineralKdTree = new kdTree(this.minerals, 50);
+		// this.mineralKdTree = new kdTree(this.minerals, 50);
 		this.changedMineralsSinceLastUpdate = [];
 
 		this.shopManager = new ShopManager();
@@ -90,7 +90,7 @@ export default class World {
 
 	update() {
 		this.updatePlayers();
-		this.buildKdTrees();
+		//this.buildKdTrees();
 	}
 
 	buildKdTrees() {
