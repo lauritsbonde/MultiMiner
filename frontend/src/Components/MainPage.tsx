@@ -119,8 +119,8 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 	};
 
 	const drawSelf = (ctx: any) => {
-		if (gameData.selfPlayer) {
-			const currentPlayer = gameData.selfPlayer;
+		if (gameData.players[myId]) {
+			const currentPlayer = gameData.players[myId];
 			ctx.fillStyle = '#000';
 			ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
 			ctx.fillStyle = '#fff';
