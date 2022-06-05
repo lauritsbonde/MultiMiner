@@ -157,18 +157,6 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 					bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
 				/>
 			)}
-			{allImagesLoaded && (
-				<div style={{ display: 'flex', width: '100vw', flexWrap: 'wrap' }}>
-					{Object.keys(images).map((image: any) => {
-						return (
-							<div key={image} style={{ margin: '2px', border: '1px solid black' }}>
-								<p>{image}</p>
-								<img src={images[image].src} alt="loading" />
-							</div>
-						);
-					})}
-				</div>
-			)}
 		</div>
 	);
 };
