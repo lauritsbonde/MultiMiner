@@ -51,49 +51,49 @@ export const allsources = {
 	empty: emptybasic.default,
 	concrete: concrete.default,
 
-	mud_top: mudTop.default,
-	mud_basic0: mudBasic0.default,
-	mud_basic1: mudBasic1.default,
+	mudtop: mudTop.default,
+	mudbasic0: mudBasic0.default,
+	mudbasic1: mudBasic1.default,
 
-	coal_basic0: coalBasic0.default,
-	coal_basic1: coalBasic1.default,
+	coalbasic0: coalBasic0.default,
+	coalbasic1: coalBasic1.default,
 
-	iron_basic0: ironBasic0.default,
-	iron_basic1: ironBasic1.default,
+	ironbasic0: ironBasic0.default,
+	ironbasic1: ironBasic1.default,
 
-	gold_basic0: goldBasic0.default,
-	gold_basic1: goldBasic1.default,
+	goldbasic0: goldBasic0.default,
+	goldbasic1: goldBasic1.default,
 
-	diamond_basic0: diamondBasic0.default,
-	diamond_basic1: diamondBasic1.default,
+	diamondbasic0: diamondBasic0.default,
+	diamondbasic1: diamondBasic1.default,
 
-	emerald_basic0: emeraldBasic0.default,
-	emerald_basic1: emeraldBasic1.default,
+	emeraldbasic0: emeraldBasic0.default,
+	emeraldbasic1: emeraldBasic1.default,
 
-	ruby_basic0: rubyBasic0.default,
-	ruby_basic1: rubyBasic1.default,
+	rubybasic0: rubyBasic0.default,
+	rubybasic1: rubyBasic1.default,
 
-	sapphire_basic0: sapphireBasic0.default,
-	sapphire_basic1: sapphireBasic1.default,
+	sapphirebasic0: sapphireBasic0.default,
+	sapphirebasic1: sapphireBasic1.default,
 
-	topaz_basic0: topazBasic0.default,
-	topaz_basic1: topazBasic1.default,
+	topazbasic0: topazBasic0.default,
+	topazbasic1: topazBasic1.default,
 
-	amethyst_basic0: amethystBasic0.default,
-	amethyst_basic1: amethystBasic1.default,
+	amethystbasic0: amethystBasic0.default,
+	amethystbasic1: amethystBasic1.default,
 
-	quartz_basic0: quartzBasic0.default,
-	quartz_basic1: quartzBasic1.default,
+	quartzbasic0: quartzBasic0.default,
+	quartzbasic1: quartzBasic1.default,
 
-	amber_basic0: amberBasic0.default,
-	amber_basic1: amberBasic1.default,
+	amberbasic0: amberBasic0.default,
+	amberbasic1: amberBasic1.default,
 
-	jade_basic0: jadeBasic0.default,
-	jade_basic1: jadeBasic1.default,
+	jadebasic0: jadeBasic0.default,
+	jadebasic1: jadeBasic1.default,
 
-	pearl_basic0: pearlBasic0.default,
-	pearl_basic1: pearlBasic1.default,
+	pearlbasic0: pearlBasic0.default,
+	pearlbasic1: pearlBasic1.default,
 
-	opal_basic0: opalBasic0.default,
-	opal_basic1: opalBasic1.default,
+	opalbasic0: opalBasic0.default,
+	opalbasic1: opalBasic1.default,
 };

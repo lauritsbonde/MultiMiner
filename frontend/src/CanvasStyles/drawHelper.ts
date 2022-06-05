@@ -50,43 +50,43 @@ export const drawMinerals = (ctx: any, constantData: ConstantData, canvasOffSet:
 		const type = mineralsInRange[mineral].type;
 		const style = mineralsInRange[mineral].style;
 		let imgsrc =
-			type === 'Mud' && mineralsInRange[mineral].id <= constantData.size.width / 50
-				? 'mud_top'
+			type === 'Mud' && mineralsInRange[mineral].id < constantData.size.width / 50
+				? 'mudtop'
 				: type === 'Mud'
-				? 'mud_basic'
+				? 'mudbasic'
 				: type === 'Concrete'
 				? 'concrete'
 				: type === 'Coal'
-				? 'coal_basic'
+				? 'coalbasic'
 				: type === 'Iron'
-				? 'iron_basic'
+				? 'ironbasic'
 				: type === 'Gold'
-				? 'gold_basic'
+				? 'goldbasic'
 				: type === 'Diamond'
-				? 'diamond_basic'
+				? 'diamondbasic'
 				: type === 'Emerald'
-				? 'emerald_basic'
+				? 'emeraldbasic'
 				: type === 'Ruby'
-				? 'ruby_basic'
+				? 'rubybasic'
 				: type === 'Sapphire'
-				? 'sapphire_basic'
+				? 'sapphirebasic'
 				: type === 'Topaz'
-				? 'topaz_basic'
+				? 'topazbasic'
 				: type === 'Amethyst'
-				? 'amethyst_basic'
+				? 'amethystbasic'
 				: type === 'Quartz'
-				? 'quartz_basic'
+				? 'quartzbasic'
 				: type === 'Amber'
-				? 'amber_basic'
+				? 'amberbasic'
 				: type === 'Jade'
-				? 'jade_basic'
+				? 'jadebasic'
 				: type === 'Pearl'
-				? 'pearl_basic'
+				? 'pearlbasic'
 				: type === 'Opal'
-				? 'opal_basic'
+				? 'opalbasic'
 				: 'empty';
 
-		if (imgsrc !== 'empty' && imgsrc !== 'mud_top' && imgsrc !== 'concrete') {
+		if (imgsrc !== 'empty' && imgsrc !== 'mudtop' && imgsrc !== 'concrete') {
 			imgsrc += style;
 		}
 		if (images[imgsrc]) {
