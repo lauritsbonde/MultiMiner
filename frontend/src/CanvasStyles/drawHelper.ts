@@ -47,7 +47,7 @@ export const drawMinerals = (ctx: any, constantData: ConstantData, canvasOffSet:
 			height: mineralsInRange[mineral].size.height,
 		};
 
-		if (false) {
+		if (allImagesLoaded) {
 			const type = mineralsInRange[mineral].type;
 			const style = mineralsInRange[mineral].style;
 			let imgsrc =

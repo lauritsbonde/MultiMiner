@@ -42,15 +42,9 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 				};
 			});
 		});
-		await Promise.all(promises)
-			.then(() => {
-				console.log('allLoaded');
-				setImages(loadedImages);
-				setAllImagesLoaded(true);
-			})
-			.catch((err) => {
-				console.log(err);
-			});
+		await Promise.all(promises);
+		setImages(loadedImages);
+		setAllImagesLoaded(true);
 	};
 
 	useEffect(() => {
