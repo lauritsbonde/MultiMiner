@@ -22,6 +22,7 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 	const [gameData, setGameData] = useState<DynamicData>(startGameData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
 	const [images, setImages] = useState({} as { [key: string]: any });
+	const [allImagesLoaded, setAllImagesLoaded] = useState(false);
 	// const [skies, setSkies] = useState();
 
 	const cacheImages = async (sources: { [key: string]: string }) => {
@@ -41,8 +42,14 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 				};
 			});
 		});
-		await Promise.all(promises);
-		setImages(loadedImages);
+		Promise.all(promises)
+			.then(() => {
+				setImages(loadedImages);
+				setAllImagesLoaded(true);
+			})
+			.catch((err) => {
+				console.log(err);
+			});
 	};
 
 	useEffect(() => {
@@ -61,7 +68,7 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 		ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
 		drawUpperBackground(ctx, constantData, canvasOffSet);
 		drawBuildings(ctx, constantData, canvasOffSet);
-		drawMinerals(ctx, constantData, canvasOffSet, mineralsKdTree, images, allsources);
+		drawMinerals(ctx, constantData, canvasOffSet, mineralsKdTree, images, allImagesLoaded);
 		drawPlayers(ctx, gameData, canvasOffSet);
 		drawSelf(ctx, gameData, myId, canvasOffSet);
 	};

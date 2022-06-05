@@ -29,14 +29,7 @@ export const drawBuildings = (ctx: any, constantData: ConstantData, canvasOffSet
 	}
 };
 
-export const drawMinerals = (
-	ctx: any,
-	constantData: ConstantData,
-	canvasOffSet: { x: number; y: number },
-	mineralsKdTree: kdTree,
-	images: { [key: string]: any },
-	allsources: { [key: string]: any }
-) => {
+export const drawMinerals = (ctx: any, constantData: ConstantData, canvasOffSet: { x: number; y: number }, mineralsKdTree: kdTree, images: { [key: string]: any }, allImagesLoaded: boolean) => {
 	const padding = Math.max(ctx.canvas.clientWidth, ctx.canvas.clientHeight) / 10;
 	const boundingBox = {
 		minx: 0 + canvasOffSet.x - padding,
@@ -54,7 +47,7 @@ export const drawMinerals = (
 			height: mineralsInRange[mineral].size.height,
 		};
 
-		if (Object.keys(images).length === Object.keys(allsources).length) {
+		if (allImagesLoaded) {
 			const type = mineralsInRange[mineral].type;
 			const style = mineralsInRange[mineral].style;
 			let imgsrc =
