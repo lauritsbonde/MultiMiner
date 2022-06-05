@@ -19,7 +19,9 @@ export const mineralPrices = {
 export const mineralSpawn = (depth: number, groundStart: number) => {
 	let type = 'Mud';
 	const rand = Math.random();
-	if (depth < groundStart + 250) {
+	if (depth === groundStart) {
+		type = rand < 0.2 ? 'Empty' : 'Mud';
+	} else if (depth < groundStart + 250) {
 		type = rand < 0.2 ? 'Empty' : rand < 0.8 ? 'Mud' : 'Coal';
 	} else if (depth < groundStart + 600) {
 		type = rand < 0.1 ? 'Empty' : rand < 0.6 ? 'Mud' : rand < 0.8 ? 'Coal' : 'Iron';

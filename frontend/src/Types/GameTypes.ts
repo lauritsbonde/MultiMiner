@@ -3,6 +3,7 @@ export interface MineralData {
 	size: { width: number; height: number };
 	pos: { x: number; y: number };
 	type: string;
+	style: number;
 }
 
 interface PlayerData {

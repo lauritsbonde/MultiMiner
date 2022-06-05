@@ -7,6 +7,8 @@ export default class Mineral extends PosClass {
 	isDrillable: boolean;
 	drillFriction: number; //lower is more friction
 
+	style: number; // this is the number for the style to draw
+
 	constructor(id: number, size: number, x: number, y: number, type: string) {
 		super({ width: size, height: size }, { x: x, y: y });
 		this.id = id;
@@ -16,6 +18,9 @@ export default class Mineral extends PosClass {
 		this.isDrillable = nonDrillableMineralTypes[type] === undefined;
 
 		this.drillFriction = 0.15;
+
+		const types = 2;
+		this.style = Math.floor(Math.random() * types);
 	}
 
 	destroy() {

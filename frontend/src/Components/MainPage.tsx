@@ -1,4 +1,4 @@
-import React, { useEffect, useState, FC } from 'react';
+import { useEffect, useState, FC } from 'react';
 import Canvas from './Canvas';
 import { Socket } from 'socket.io-client';
 import { mineralStyle } from '../CanvasStyles/mineralStyle';
@@ -7,6 +7,8 @@ import BuildingContainer from '../Components/BuildingMenus/BuildingContainer';
 import useCanvas from '../Hooks/useCanvas';
 import { MineralData, ConstantData, DynamicData, UpdateGameData } from '../Types/GameTypes';
 import kdTree from '../kdTree';
+import { allsources } from '../CanvasStyles/Sprites';
+import { drawUpperBackground, drawBuildings, drawMinerals, drawPlayers, drawSelf } from '../CanvasStyles/drawHelper';
 
 interface Props {
 	socket: Socket;
@@ -20,7 +22,33 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 	const [mineralsKdTree, setMineralsKdTree] = useState<kdTree>(new kdTree([...startMinerals]));
 	const [gameData, setGameData] = useState<DynamicData>(startGameData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
+	const [images, setImages] = useState({} as { [key: string]: any });
 	// const [skies, setSkies] = useState();
+
+	const cacheImages = async (sources: { [key: string]: string }) => {
+		const loadedImages = {} as { [key: string]: any };
+		const promises = await Object.keys(sources).map((src) => {
+			return new Promise((resolve, reject) => {
+				const img = new Image();
+
+				img.src = sources[src];
+
+				img.onload = () => {
+					loadedImages[src] = img;
+					resolve('loaded');
+				};
+				img.onerror = () => {
+					reject();
+				};
+			});
+		});
+		await Promise.all(promises);
+		setImages(loadedImages);
+	};
+
+	useEffect(() => {
+		cacheImages(allsources);
+	}, []);
 
 	const newMinerals = (changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>) => {
 		const oldKdTree = mineralsKdTree;
@@ -32,101 +60,14 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 
 	const draw = (ctx: any) => {
 		ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
-		drawUpperBackground(ctx);
-		drawBuildings(ctx);
-		drawMinerals(ctx);
-		drawPlayers(ctx);
-		drawSelf(ctx);
+		drawUpperBackground(ctx, constantData, canvasOffSet);
+		drawBuildings(ctx, constantData, canvasOffSet);
+		drawMinerals(ctx, constantData, canvasOffSet, mineralsKdTree, images, allsources);
+		drawPlayers(ctx, gameData, canvasOffSet);
+		drawSelf(ctx, gameData, myId, canvasOffSet);
 	};
 
 	const canvasRef = useCanvas(draw);
-
-	const drawUpperBackground = (ctx: any) => {
-		ctx.fillStyle = '#87CEEB';
-		ctx.fillRect(0, 0, ctx.canvas.clientWidth, constantData.groundStart === undefined ? ctx.canvas.clientHeight : constantData.groundStart);
-		ctx.fillStyle = '#FFFF00';
-		ctx.beginPath();
-		ctx.arc(40 - canvasOffSet.x, 40 - canvasOffSet.y, 150, 0, 2 * Math.PI);
-		ctx.fill();
-		ctx.stroke();
-	};
-
-	const drawBuildings = (ctx: any) => {
-		if (constantData.buildings) {
-			constantData.buildings.forEach((building: any) => {
-				const styling = buildingStyle[building.title];
-				ctx.fillStyle = styling.outerColor;
-				ctx.fillRect(building.pos.x - canvasOffSet.x, building.pos.y - canvasOffSet.y, building.size.width, building.size.height);
-				const border = 5;
-				ctx.fillStyle = styling.innerColor;
-				ctx.fillRect(building.pos.x - canvasOffSet.x + border, building.pos.y - canvasOffSet.y + border, building.size.width - border * 2, building.size.height - border * 2);
-				ctx.fillStyle = '#fff';
-				ctx.font = '10px Arial';
-				ctx.fillText(building.title, building.pos.x - canvasOffSet.x + 20, building.pos.y - canvasOffSet.y + 45);
-			});
-		}
-	};
-
-	const drawMinerals = (ctx: any) => {
-		const padding = Math.max(ctx.canvas.clientWidth, ctx.canvas.clientHeight) / 10;
-		const boundingBox = {
-			minx: 0 + canvasOffSet.x - padding,
-			miny: 0 + canvasOffSet.y - padding,
-			maxx: ctx.canvas.clientWidth + canvasOffSet.x + padding,
-			maxy: ctx.canvas.clientHeight + canvasOffSet.y + padding,
-		};
-		const mineralsInRange = mineralsKdTree.rangeSearch(boundingBox);
-		for (let mineral in mineralsInRange) {
-			const styling = mineralStyle[mineralsInRange[mineral].type];
-			ctx.fillStyle = styling.outerColor;
-			ctx.fillRect(mineralsInRange[mineral].pos.x - canvasOffSet.x, mineralsInRange[mineral].pos.y - canvasOffSet.y, mineralsInRange[mineral].size.width, mineralsInRange[mineral].size.height);
-			const border = 2;
-			ctx.fillStyle = styling.innerColor;
-			ctx.fillRect(
-				mineralsInRange[mineral].pos.x - canvasOffSet.x + border,
-				mineralsInRange[mineral].pos.y - canvasOffSet.y + border,
-				mineralsInRange[mineral].size.width - border * 2,
-				mineralsInRange[mineral].size.height - border * 2
-			);
-
-			if (mineralsInRange[mineral].type === 'Concrete' && mineralsInRange[mineral].pos.y !== constantData.groundStart) {
-				ctx.fillStyle = '#fff';
-				ctx.font = '10px Arial';
-				ctx.fillText('BOTTOM', mineralsInRange[mineral].pos.x - canvasOffSet.x + 2, mineralsInRange[mineral].pos.y - canvasOffSet.y + 25);
-			} else {
-				ctx.fillStyle = '#fff';
-				ctx.font = '10px Arial';
-				ctx.fillText(mineralsInRange[mineral].id, mineralsInRange[mineral].pos.x - canvasOffSet.x + 20, mineralsInRange[mineral].pos.y - canvasOffSet.y + 25);
-			}
-		}
-	};
-
-	const drawPlayers = (ctx: any) => {
-		if (gameData.players) {
-			for (let player in gameData.players) {
-				if (!gameData.players[player].isDead) {
-					const currentPlayer = gameData.players[player];
-					ctx.fillStyle = '#000';
-					ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
-					ctx.fillStyle = '#fff';
-					ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
-					ctx.fillStyle = '#fff';
-					ctx.font = '10px Arial';
-					ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
-				}
-			}
-		}
-	};
-
-	const drawSelf = (ctx: any) => {
-		if (gameData.players[myId]) {
-			const currentPlayer = gameData.players[myId];
-			ctx.fillStyle = '#000';
-			ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
-			ctx.fillStyle = '#fff';
-			ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
-		}
-	};
 
 	useEffect(() => {
 		const newOffSet = { ...canvasOffSet };
