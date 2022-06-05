@@ -161,9 +161,9 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 				<div style={{ display: 'flex', width: '100vw', flexWrap: 'wrap' }}>
 					{Object.keys(images).map((image: any) => {
 						return (
-							<div style={{ margin: '2px', border: '1px solid black' }}>
+							<div key={image} style={{ margin: '2px', border: '1px solid black' }}>
 								<p>{image}</p>
-								<img key={image} src={images[image].src} alt="loading" />
+								<img src={images[image].src} alt="loading" />
 							</div>
 						);
 					})}

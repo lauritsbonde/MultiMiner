@@ -47,52 +47,50 @@ export const drawMinerals = (ctx: any, constantData: ConstantData, canvasOffSet:
 			height: mineralsInRange[mineral].size.height,
 		};
 
-		if (allImagesLoaded) {
-			const type = mineralsInRange[mineral].type;
-			const style = mineralsInRange[mineral].style;
-			let imgsrc =
-				type === 'Mud' && mineralsInRange[mineral].id <= constantData.size.width / 50
-					? 'mud_top'
-					: type === 'Mud'
-					? 'mud_basic'
-					: type === 'Concrete'
-					? 'concrete'
-					: type === 'Coal'
-					? 'coal_basic'
-					: type === 'Iron'
-					? 'iron_basic'
-					: type === 'Gold'
-					? 'gold_basic'
-					: type === 'Diamond'
-					? 'diamond_basic'
-					: type === 'Emerald'
-					? 'emerald_basic'
-					: type === 'Ruby'
-					? 'ruby_basic'
-					: type === 'Sapphire'
-					? 'sapphire_basic'
-					: type === 'Topaz'
-					? 'topaz_basic'
-					: type === 'Amethyst'
-					? 'amethyst_basic'
-					: type === 'Quartz'
-					? 'quartz_basic'
-					: type === 'Amber'
-					? 'amber_basic'
-					: type === 'Jade'
-					? 'jade_basic'
-					: type === 'Pearl'
-					? 'pearl_basic'
-					: type === 'Opal'
-					? 'opal_basic'
-					: 'empty';
+		const type = mineralsInRange[mineral].type;
+		const style = mineralsInRange[mineral].style;
+		let imgsrc =
+			type === 'Mud' && mineralsInRange[mineral].id <= constantData.size.width / 50
+				? 'mud_top'
+				: type === 'Mud'
+				? 'mud_basic'
+				: type === 'Concrete'
+				? 'concrete'
+				: type === 'Coal'
+				? 'coal_basic'
+				: type === 'Iron'
+				? 'iron_basic'
+				: type === 'Gold'
+				? 'gold_basic'
+				: type === 'Diamond'
+				? 'diamond_basic'
+				: type === 'Emerald'
+				? 'emerald_basic'
+				: type === 'Ruby'
+				? 'ruby_basic'
+				: type === 'Sapphire'
+				? 'sapphire_basic'
+				: type === 'Topaz'
+				? 'topaz_basic'
+				: type === 'Amethyst'
+				? 'amethyst_basic'
+				: type === 'Quartz'
+				? 'quartz_basic'
+				: type === 'Amber'
+				? 'amber_basic'
+				: type === 'Jade'
+				? 'jade_basic'
+				: type === 'Pearl'
+				? 'pearl_basic'
+				: type === 'Opal'
+				? 'opal_basic'
+				: 'empty';
 
-			if (imgsrc !== 'empty' && imgsrc !== 'mud_top' && imgsrc !== 'concrete') {
-				imgsrc += style;
-			}
-			if (images[imgsrc]) {
-				ctx.drawImage(images[imgsrc], pos.startx, pos.starty, pos.width, pos.height);
-			}
+		if (imgsrc !== 'empty' && imgsrc !== 'mud_top' && imgsrc !== 'concrete') {
+			imgsrc += style;
+		}
+		if (images[imgsrc]) {
+			ctx.drawImage(images[imgsrc], pos.startx, pos.starty, pos.width, pos.height);
 		} else {
 			const styling = mineralStyle[mineralsInRange[mineral].type];
 			ctx.fillStyle = styling.outerColor;
@@ -101,7 +99,6 @@ export const drawMinerals = (ctx: any, constantData: ConstantData, canvasOffSet:
 			ctx.fillStyle = styling.innerColor;
 			ctx.fillRect(pos.startx + border, pos.starty + border, pos.width - border * 2, pos.height - border * 2);
 		}
-
 		// if (mineralsInRange[mineral].type === 'Concrete' && mineralsInRange[mineral].pos.y !== constantData.groundStart) {
 		// 	ctx.fillStyle = '#fff';
 		// 	ctx.font = '10px Arial';
