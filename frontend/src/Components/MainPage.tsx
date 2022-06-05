@@ -8,6 +8,8 @@ import { MineralData, ConstantData, DynamicData, UpdateGameData } from '../Types
 import kdTree from '../kdTree';
 import { allsources } from '../CanvasStyles/Sprites';
 import { drawUpperBackground, drawBuildings, drawMinerals, drawPlayers, drawSelf } from '../CanvasStyles/drawHelper';
+import Chat from './Chat/Chat';
+import { styling } from './MainPageStyling';
 
 interface Props {
 	socket: Socket;
@@ -94,31 +96,50 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 
 		document.addEventListener('keydown', ({ code, repeat }) => {
 			if (!repeat) {
-				if (code === 'KeyW' || code === 'ArrowUp') {
+				if (code === 'ArrowUp') {
 					socket.emit('move', 'up');
 				}
-				if (code === 'KeyS' || code === 'ArrowDown') {
+				if (code === 'ArrowDown') {
 					socket.emit('move', 'down');
 				}
-				if (code === 'KeyA' || code === 'ArrowLeft') {
+				if (code === 'ArrowLeft') {
 					socket.emit('move', 'left');
 				}
-				if (code === 'KeyD' || code === 'ArrowRight') {
+				if (code === 'ArrowRight') {
 					socket.emit('move', 'right');
 				}
+				// else if (code === 'KeyW') {
+				// 	socket.emit('stop', 'up');
+				// } else if (code === 'KeyS') {
+				// 	socket.emit('stop', 'down');
+				// } else if (code === 'KeyA') {
+				// 	socket.emit('stop', 'left');
+				// } else if (code === 'KeyD') {
+				// 	socket.emit('stop', 'right');
+				// }
 			}
 		});
 
 		document.addEventListener('keyup', ({ code }) => {
-			if (code === 'KeyW' || code === 'ArrowUp') {
+			if (code === 'ArrowUp') {
+				console.log(code);
 				socket.emit('stop', 'up');
-			} else if (code === 'KeyS' || code === 'ArrowDown') {
+			} else if (code === 'ArrowDown') {
 				socket.emit('stop', 'down');
-			} else if (code === 'KeyA' || code === 'ArrowLeft') {
+			} else if (code === 'ArrowLeft') {
 				socket.emit('stop', 'left');
-			} else if (code === 'KeyD' || code === 'ArrowRight') {
+			} else if (code === 'ArrowRight') {
 				socket.emit('stop', 'right');
 			}
+			// else if (code === 'KeyW') {
+			// 	socket.emit('stop', 'up');
+			// } else if (code === 'KeyS') {
+			// 	socket.emit('stop', 'down');
+			// } else if (code === 'KeyA') {
+			// 	socket.emit('stop', 'left');
+			// } else if (code === 'KeyD') {
+			// 	socket.emit('stop', 'right');
+			// }
 		});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
@@ -127,14 +148,14 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 	const fuelRatio = gameData.players !== undefined && myId !== '' ? (gameData.players[myId].fuel.current / gameData.players[myId].fuel.max) * 100 : 0;
 
 	return (
-		<div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+		<div style={styling.container}>
 			<div>
 				{gameData.players !== undefined && gameData.players[myId].isDead && <h3>You died!</h3>}
 				{gameData.players && (
-					<div style={{ display: 'flex', justifyContent: 'space-around' }}>
+					<div style={styling.infoContainer}>
 						<h3 style={{ display: 'flex' }}>
 							Fuel:
-							<div style={{ width: '12vw', minWidth: '40px', height: '3vh', minHeight: '18px', backgroundColor: 'grey', margin: '4px', position: 'relative' }}>
+							<div style={styling.fuelDisplayContainer}>
 								<h4 style={{ position: 'absolute', zIndex: 1, top: '0', left: '20%', margin: 0, padding: 0 }}>
 									{gameData.players[myId].fuel.current.toFixed(2)} / {gameData.players[myId].fuel.max} L
 								</h4>
@@ -145,14 +166,17 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 					</div>
 				)}
 			</div>
-			<Canvas draw={draw} canvasRef={canvasRef} />
-			{gameData.players !== undefined && gameData.players[myId].onBuilding !== '' && gameData.players[myId].onBuilding !== 'graveyard' && (
-				<BuildingContainer
-					socket={socket}
-					building={gameData.players[myId].onBuilding}
-					bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
-				/>
-			)}
+			<div style={styling.canvasAndChat}>
+				<Canvas draw={draw} canvasRef={canvasRef} />
+				{gameData.players !== undefined && gameData.players[myId].onBuilding !== '' && gameData.players[myId].onBuilding !== 'graveyard' && (
+					<BuildingContainer
+						socket={socket}
+						building={gameData.players[myId].onBuilding}
+						bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
+					/>
+				)}
+				<Chat socket={socket} style={styling.chat} />
+			</div>
 		</div>
 	);
 };

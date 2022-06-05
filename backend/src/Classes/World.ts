@@ -1,5 +1,4 @@
 import { mineralSpawn } from '../Lookups/minerals';
-import kdTree from './kdTree';
 import Mineral from './Mineral';
 import Player from './Player';
 import PlayerDto from './PlayerDto';
@@ -20,6 +19,8 @@ export default class World {
 
 	shopManager: ShopManager;
 
+	chatMessages: Array<{ id: string; message: string }> = [];
+
 	constructor() {
 		this.size = { width: 4000, height: 4000 }; //there is a concrete level after the height
 		this.groundStart = 500;
@@ -36,6 +37,8 @@ export default class World {
 
 		this.shopManager = new ShopManager();
 		this.shopManager.setupBuildings(this.mineralSize, this.size, this.groundStart, (index: number) => this.makeMineralConcrete(index));
+
+		this.chatMessages = [];
 	}
 
 	toDto() {
@@ -161,5 +164,9 @@ export default class World {
 			leftMineral: this.minerals[surroundingMinerals.left],
 			rightMineral: this.minerals[surroundingMinerals.right],
 		};
+	}
+
+	addChat(message: string, id: string) {
+		this.chatMessages.push({ message, id });
 	}
 }

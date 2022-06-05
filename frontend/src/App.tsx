@@ -45,7 +45,7 @@ function App() {
 	}, [BACKEND_URL]);
 
 	return (
-		<div>
+		<div style={{ height: '100vh' }}>
 			{!joined && <Join joinGame={joinGame} />}
 			{minerals.length > 0 && <MainPage socket={socket} myId={myId} constantData={constantData} startGameData={gameData} startMinerals={minerals} />}
 		</div>

@@ -6,7 +6,7 @@ interface Props {
 }
 
 const Canvas: React.FC<Props> = ({ draw, canvasRef }) => {
-	return <canvas ref={canvasRef} style={{ border: '2px solid black', boxSizing: 'border-box', margin: 'auto' }}></canvas>;
+	return <canvas ref={canvasRef} style={{ border: '2px solid black', boxSizing: 'border-box' }}></canvas>;
 };
 
 export default Canvas;

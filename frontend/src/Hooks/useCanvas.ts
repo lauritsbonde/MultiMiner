@@ -7,7 +7,7 @@ const useCanvas = (draw: (ctx: any) => void) => {
 		const canvas = canvasRef.current;
 		const ctx = canvas.getContext('2d');
 
-		canvas.width = Math.min(window.innerWidth * 0.95, 1000);
+		canvas.width = Math.min(window.innerWidth * 0.7, 1000);
 		canvas.height = Math.min(window.innerHeight * 0.85, 1000);
 
 		const render = () => {

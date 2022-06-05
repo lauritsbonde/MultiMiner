@@ -95,6 +95,14 @@ io.on('connection', function (socket: any) {
 		world.shopManager.sellMineral(world.players[socket.id], data.mineral, data.amount);
 	});
 
+	// CHAT
+	socket.on('chat', (data: { message: string }) => {
+		world.addChat(data.message, socket.id);
+		console.log(data.message);
+		// TODO: check the message for bad words
+		io.emit('newchat', { message: data.message, senderName: world.players[socket.id].name, senderId: socket.id });
+	});
+
 	socket.on('disconnect', () => {
 		world.removePlayer(socket.id);
 		console.log('user disconnected');
