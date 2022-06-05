@@ -122,7 +122,6 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 
 		document.addEventListener('keyup', ({ code }) => {
 			if (code === 'ArrowUp') {
-				console.log(code);
 				socket.emit('stop', 'up');
 			} else if (code === 'ArrowDown') {
 				socket.emit('stop', 'down');
