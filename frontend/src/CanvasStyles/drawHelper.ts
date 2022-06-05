@@ -90,7 +90,16 @@ export const drawMinerals = (ctx: any, constantData: ConstantData, canvasOffSet:
 			if (imgsrc !== 'empty' && imgsrc !== 'mud_top' && imgsrc !== 'concrete') {
 				imgsrc += style;
 			}
-			ctx.drawImage(images[imgsrc], pos.startx, pos.starty, pos.width, pos.height);
+			if (images[imgsrc].complete) {
+				ctx.drawImage(images[imgsrc], pos.startx, pos.starty, pos.width, pos.height);
+			} else {
+				ctx.fillStyle = '#000';
+				ctx.fillRect(pos.startx, pos.starty, pos.width, pos.height);
+				//write black loading text
+				ctx.fillStyle = '#fff';
+				ctx.font = '10px Arial';
+				ctx.fillText('Loading...', pos.startx + pos.width / 2 - 10, pos.starty + pos.height / 2 + 10);
+			}
 		} else {
 			const styling = mineralStyle[mineralsInRange[mineral].type];
 			ctx.fillStyle = styling.outerColor;
