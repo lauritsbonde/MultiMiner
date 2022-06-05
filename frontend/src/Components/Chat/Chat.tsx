@@ -39,7 +39,7 @@ const Chat: FC<Props> = ({ socket, style }) => {
 			backgroundColor: '#e0e0e0',
 			borderRadius: '5px',
 			display: 'flex',
-			flexDirection: 'row',
+			flexDirection: 'row-reverse',
 			alignItems: 'center',
 			justifyContent: 'space-between',
 		},
