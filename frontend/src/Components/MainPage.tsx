@@ -42,8 +42,9 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 				};
 			});
 		});
-		Promise.all(promises)
+		await Promise.all(promises)
 			.then(() => {
+				console.log('allLoaded');
 				setImages(loadedImages);
 				setAllImagesLoaded(true);
 			})
@@ -157,6 +158,18 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 					building={gameData.players[myId].onBuilding}
 					bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
 				/>
+			)}
+			{allImagesLoaded && (
+				<div style={{ display: 'flex', width: '100vw', flexWrap: 'wrap' }}>
+					{Object.keys(images).map((image: any) => {
+						return (
+							<div style={{ margin: '2px', border: '1px solid black' }}>
+								<p>{image}</p>
+								<img key={image} src={images[image].src} alt="loading" />
+							</div>
+						);
+					})}
+				</div>
 			)}
 		</div>
 	);
