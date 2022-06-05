@@ -1,7 +1,6 @@
 import { useEffect, useState, FC } from 'react';
 import Canvas from './Canvas';
 import { Socket } from 'socket.io-client';
-import { mineralStyle } from '../CanvasStyles/mineralStyle';
 import { buildingStyle } from '../CanvasStyles/BuildingStyle';
 import BuildingContainer from '../Components/BuildingMenus/BuildingContainer';
 import useCanvas from '../Hooks/useCanvas';
