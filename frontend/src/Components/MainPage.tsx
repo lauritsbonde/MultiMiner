@@ -51,6 +51,10 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 		cacheImages(allsources);
 	}, []);
 
+	if (Object.keys(images).length > 0) {
+		console.log(images);
+	}
+
 	const newMinerals = (changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>) => {
 		const oldKdTree = mineralsKdTree;
 		for (let i = 0; i < changedMinerals.length; i++) {
