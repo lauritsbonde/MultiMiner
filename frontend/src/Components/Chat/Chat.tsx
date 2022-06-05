@@ -63,7 +63,7 @@ const Chat: FC<Props> = ({ socket, style }) => {
 				{chats.map((chat, i) => (
 					<div key={i} style={chat.senderId === socket.id ? styling.myChat : styling.otherChat}>
 						<div style={styling.avatarAndName}>
-							<img style={styling.chatAvatar} src={`https://avatars.dicebear.com/api/personas/${chat.senderName}.svg`} />
+							<img style={styling.chatAvatar} src={`https://avatars.dicebear.com/api/personas/${chat.senderName}.svg`} alt="Avatar" />
 							<span>{chat.senderName}: </span>
 						</div>
 						<span>{chat.message}</span>
