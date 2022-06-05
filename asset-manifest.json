@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/MultiMiner/static/css/main.a25811df.css",
-    "main.js": "/MultiMiner/static/js/main.b2054b27.js",
+    "main.js": "/MultiMiner/static/js/main.ed14bfb5.js",
     "static/js/787.cda612ba.chunk.js": "/MultiMiner/static/js/787.cda612ba.chunk.js",
     "static/media/mud_top.svg": "/MultiMiner/static/media/mud_top.6dc4b10f4d97a6025f555ac07edbcbb3.svg",
     "static/media/emerald_basic0.svg": "/MultiMiner/static/media/emerald_basic0.63f7a4524e36cb79f79138acc26bfbd9.svg",
@@ -38,11 +38,11 @@
     "static/media/concrete.svg": "/MultiMiner/static/media/concrete.42cc3ad7773520173679b20b6db94a56.svg",
     "static/media/empty.svg": "/MultiMiner/static/media/empty.ee5232ea885c8c4b54d5ed7d7a62b2c0.svg",
     "main.a25811df.css.map": "/MultiMiner/static/css/main.a25811df.css.map",
-    "main.b2054b27.js.map": "/MultiMiner/static/js/main.b2054b27.js.map",
+    "main.ed14bfb5.js.map": "/MultiMiner/static/js/main.ed14bfb5.js.map",
     "787.cda612ba.chunk.js.map": "/MultiMiner/static/js/787.cda612ba.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a25811df.css",
-    "static/js/main.b2054b27.js"
+    "static/js/main.ed14bfb5.js"
   ]
 }
