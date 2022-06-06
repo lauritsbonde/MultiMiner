@@ -25,6 +25,7 @@ export const styling = {
 		minWidth: '300px',
 		maxWidth: '600px',
 		height: '100%',
+		maxHeight: '75vh',
 		border: '1px solid black',
 		borderRadius: '5px',
 		padding: '2px',
