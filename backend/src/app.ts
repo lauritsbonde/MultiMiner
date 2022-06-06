@@ -41,7 +41,7 @@ io.on('connection', function (socket: any) {
 	socket.on(
 		'join',
 		(
-			data: { canvasSize: { width: number; height: number }; name: string },
+			data: { canvasSize: { width: number; height: number }; name: string; imageIndex: number },
 			callback: (response: {
 				size: { width: number; height: number };
 				groundStart: number;
@@ -51,7 +51,7 @@ io.on('connection', function (socket: any) {
 				selfPlayer: PlayerDto;
 			}) => void
 		) => {
-			world.addPlayer(socket.id, data.name);
+			world.addPlayer(socket.id, data.name, data.imageIndex);
 			world.players[socket.id].setCanvasSize(data.canvasSize);
 			console.log('a user connected');
 

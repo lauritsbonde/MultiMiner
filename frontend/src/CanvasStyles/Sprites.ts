@@ -1,3 +1,4 @@
+//minerals
 import * as emptybasic from '../mineralTextures/empty.svg';
 import * as mudTop from '../mineralTextures/mud/mud_top.svg';
 import * as concrete from '../mineralTextures/concrete.svg';
@@ -47,53 +48,64 @@ import * as pearlBasic1 from '../mineralTextures/pearl/pearl_basic1.svg';
 import * as opalBasic0 from '../mineralTextures/opal/opal_basic0.svg';
 import * as opalBasic1 from '../mineralTextures/opal/opal_basic1.svg';
 
+// player sprites
+import * as blue from '../drillTextures/blue.svg';
+
+import * as car from '../drillTextures/car.svg';
+
 export const allsources = {
-	empty: emptybasic.default,
-	concrete: concrete.default,
+	minerals: {
+		empty: emptybasic.default,
+		concrete: concrete.default,
 
-	mudtop: mudTop.default,
-	mudbasic0: mudBasic0.default,
-	mudbasic1: mudBasic1.default,
+		mudtop: mudTop.default,
+		mudbasic0: mudBasic0.default,
+		mudbasic1: mudBasic1.default,
 
-	coalbasic0: coalBasic0.default,
-	coalbasic1: coalBasic1.default,
+		coalbasic0: coalBasic0.default,
+		coalbasic1: coalBasic1.default,
 
-	ironbasic0: ironBasic0.default,
-	ironbasic1: ironBasic1.default,
+		ironbasic0: ironBasic0.default,
+		ironbasic1: ironBasic1.default,
 
-	goldbasic0: goldBasic0.default,
-	goldbasic1: goldBasic1.default,
+		goldbasic0: goldBasic0.default,
+		goldbasic1: goldBasic1.default,
 
-	diamondbasic0: diamondBasic0.default,
-	diamondbasic1: diamondBasic1.default,
+		diamondbasic0: diamondBasic0.default,
+		diamondbasic1: diamondBasic1.default,
 
-	emeraldbasic0: emeraldBasic0.default,
-	emeraldbasic1: emeraldBasic1.default,
+		emeraldbasic0: emeraldBasic0.default,
+		emeraldbasic1: emeraldBasic1.default,
 
-	rubybasic0: rubyBasic0.default,
-	rubybasic1: rubyBasic1.default,
+		rubybasic0: rubyBasic0.default,
+		rubybasic1: rubyBasic1.default,
 
-	sapphirebasic0: sapphireBasic0.default,
-	sapphirebasic1: sapphireBasic1.default,
+		sapphirebasic0: sapphireBasic0.default,
+		sapphirebasic1: sapphireBasic1.default,
 
-	topazbasic0: topazBasic0.default,
-	topazbasic1: topazBasic1.default,
+		topazbasic0: topazBasic0.default,
+		topazbasic1: topazBasic1.default,
 
-	amethystbasic0: amethystBasic0.default,
-	amethystbasic1: amethystBasic1.default,
+		amethystbasic0: amethystBasic0.default,
+		amethystbasic1: amethystBasic1.default,
 
-	quartzbasic0: quartzBasic0.default,
-	quartzbasic1: quartzBasic1.default,
+		quartzbasic0: quartzBasic0.default,
+		quartzbasic1: quartzBasic1.default,
 
-	amberbasic0: amberBasic0.default,
-	amberbasic1: amberBasic1.default,
+		amberbasic0: amberBasic0.default,
+		amberbasic1: amberBasic1.default,
 
-	jadebasic0: jadeBasic0.default,
-	jadebasic1: jadeBasic1.default,
+		jadebasic0: jadeBasic0.default,
+		jadebasic1: jadeBasic1.default,
 
-	pearlbasic0: pearlBasic0.default,
-	pearlbasic1: pearlBasic1.default,
+		pearlbasic0: pearlBasic0.default,
+		pearlbasic1: pearlBasic1.default,
 
-	opalbasic0: opalBasic0.default,
-	opalbasic1: opalBasic1.default,
+		opalbasic0: opalBasic0.default,
+		opalbasic1: opalBasic1.default,
+	},
+	players: {
+		blue: blue.default,
+		car: car.default,
+	},
 };

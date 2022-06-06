@@ -111,29 +111,36 @@ export const drawMinerals = (ctx: any, constantData: ConstantData, canvasOffSet:
 	}
 };
 
-export const drawPlayers = (ctx: any, gameData: DynamicData, canvasOffSet: { x: number; y: number }) => {
+export const drawPlayers = (ctx: any, gameData: DynamicData, canvasOffSet: { x: number; y: number }, myId: string, playerImages: { [key: string]: any }) => {
 	if (gameData.players) {
 		for (let player in gameData.players) {
 			if (!gameData.players[player].isDead) {
 				const currentPlayer = gameData.players[player];
-				ctx.fillStyle = '#000';
-				ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
-				ctx.fillStyle = '#fff';
-				ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
-				ctx.fillStyle = '#fff';
-				ctx.font = '10px Arial';
-				ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
+				if (currentPlayer.id === myId) {
+					continue;
+				}
+				const style = Object.keys(playerImages)[currentPlayer.imageIndex];
+				ctx.drawImage(playerImages[style], currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
+				// ctx.fillStyle = '#000';
+				// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
+				// ctx.fillStyle = '#fff';
+				// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
+				// ctx.fillStyle = '#fff';
+				// ctx.font = '10px Arial';
+				// ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
 			}
 		}
 	}
 };
 
-export const drawSelf = (ctx: any, gameData: DynamicData, myId: string, canvasOffSet: { x: number; y: number }) => {
+export const drawSelf = (ctx: any, gameData: DynamicData, myId: string, canvasOffSet: { x: number; y: number }, playerImages: { [key: string]: any }) => {
 	if (gameData.players[myId]) {
 		const currentPlayer = gameData.players[myId];
-		ctx.fillStyle = '#000';
-		ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
-		ctx.fillStyle = '#fff';
-		ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
+		const style = Object.keys(playerImages)[currentPlayer.imageIndex];
+		ctx.drawImage(playerImages[style], currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
+		// ctx.fillStyle = '#000';
+		// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
+		// ctx.fillStyle = '#fff';
+		// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
 	}
 };

@@ -16,6 +16,7 @@ interface PlayerData {
 	money: number;
 	isDead: boolean;
 	basket: { items: { [type: string]: number }; amount: number };
+	imageIndex: number;
 }
 
 interface BuildingData {

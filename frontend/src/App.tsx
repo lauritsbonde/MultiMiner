@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import MainPage from './Components/MainPage';
 import Join from './Components/Join';
 import { ConstantData, DynamicData, StartData, MineralData } from './Types/GameTypes';
 import { io, Socket } from 'socket.io-client';
+import { allsources } from './CanvasStyles/Sprites';
 
 function App() {
 	const [joined, setJoined] = useState(false);
@@ -11,12 +12,47 @@ function App() {
 	const [constantData, setConstantData] = useState<ConstantData>({} as ConstantData);
 	const [gameData, setGameData] = useState<DynamicData>({} as DynamicData);
 	const [minerals, setMinerals] = useState<MineralData[]>([]);
+	const [mineralImages, setMineralImages] = useState({} as { [key: string]: any });
+	const [allImagesLoaded, setAllImagesLoaded] = useState(false);
+	const [playerImages, setPlayerImages] = useState({} as { [key: string]: any });
 
-	const joinGame = (name: string) => {
+	const cacheImages = async (sources: { [key: string]: string }, callback: (loadedImages: { [key: string]: any }) => void) => {
+		const loadedImages = {} as { [key: string]: any };
+		const promises = await Object.keys(sources).map((src) => {
+			return new Promise((resolve, reject) => {
+				const img = new Image();
+
+				img.src = sources[src];
+
+				img.onload = () => {
+					loadedImages[src] = img;
+					resolve('loaded');
+				};
+				img.onerror = () => {
+					reject();
+				};
+			});
+		});
+		await Promise.all(promises);
+		callback(loadedImages);
+	};
+
+	useEffect(() => {
+		cacheImages(allsources.minerals, (loadedImages) => {
+			setMineralImages(loadedImages);
+		});
+		cacheImages(allsources.players, (loadedImages) => {
+			setPlayerImages(loadedImages);
+			setAllImagesLoaded(true);
+		});
+	}, []);
+
+	const joinGame = (name: string, imageIndex: number) => {
 		socket.emit(
 			'join',
 			{
 				name,
+				imageIndex,
 			},
 			(data: StartData) => {
 				setConstantData({ size: data.size, groundStart: data.groundStart, buildings: data.buildings });
@@ -46,8 +82,18 @@ function App() {
 
 	return (
 		<div style={{ height: '100vh' }}>
-			{!joined && <Join joinGame={joinGame} />}
-			{minerals.length > 0 && <MainPage socket={socket} myId={myId} constantData={constantData} startGameData={gameData} startMinerals={minerals} />}
+			{!joined && <Join joinGame={joinGame} playerImages={playerImages} />}
+			{minerals.length > 0 && (
+				<MainPage
+					socket={socket}
+					myId={myId}
+					constantData={constantData}
+					startGameData={gameData}
+					startMinerals={minerals}
+					images={{ mineralImages, playerImages }}
+					allImagesLoaded={allImagesLoaded}
+				/>
+			)}
 		</div>
 	);
 }

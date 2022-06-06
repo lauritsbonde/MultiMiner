@@ -6,7 +6,6 @@ import BuildingContainer from '../Components/BuildingMenus/BuildingContainer';
 import useCanvas from '../Hooks/useCanvas';
 import { MineralData, ConstantData, DynamicData, UpdateGameData } from '../Types/GameTypes';
 import kdTree from '../kdTree';
-import { allsources } from '../CanvasStyles/Sprites';
 import { drawUpperBackground, drawBuildings, drawMinerals, drawPlayers, drawSelf } from '../CanvasStyles/drawHelper';
 import Chat from './Chat/Chat';
 import { styling } from './MainPageStyling';
@@ -17,41 +16,15 @@ interface Props {
 	constantData: ConstantData;
 	startGameData: DynamicData;
 	startMinerals: MineralData[];
+	images: { [key: string]: { [key: string]: any } };
+	allImagesLoaded: boolean;
 }
 
-const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startMinerals }) => {
+const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startMinerals, images, allImagesLoaded }) => {
 	const [mineralsKdTree, setMineralsKdTree] = useState<kdTree>(new kdTree([...startMinerals]));
 	const [gameData, setGameData] = useState<DynamicData>(startGameData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
-	const [images, setImages] = useState({} as { [key: string]: any });
-	const [allImagesLoaded, setAllImagesLoaded] = useState(false);
 	// const [skies, setSkies] = useState();
-
-	const cacheImages = async (sources: { [key: string]: string }) => {
-		const loadedImages = {} as { [key: string]: any };
-		const promises = await Object.keys(sources).map((src) => {
-			return new Promise((resolve, reject) => {
-				const img = new Image();
-
-				img.src = sources[src];
-
-				img.onload = () => {
-					loadedImages[src] = img;
-					resolve('loaded');
-				};
-				img.onerror = () => {
-					reject();
-				};
-			});
-		});
-		await Promise.all(promises);
-		setImages(loadedImages);
-		setAllImagesLoaded(true);
-	};
-
-	useEffect(() => {
-		cacheImages(allsources);
-	}, []);
 
 	const newMinerals = (changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>) => {
 		const oldKdTree = mineralsKdTree;
@@ -65,9 +38,9 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 		ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
 		drawUpperBackground(ctx, constantData, canvasOffSet);
 		drawBuildings(ctx, constantData, canvasOffSet);
-		drawMinerals(ctx, constantData, canvasOffSet, mineralsKdTree, images, allImagesLoaded);
-		drawPlayers(ctx, gameData, canvasOffSet);
-		drawSelf(ctx, gameData, myId, canvasOffSet);
+		drawMinerals(ctx, constantData, canvasOffSet, mineralsKdTree, images.mineralImages, allImagesLoaded);
+		drawPlayers(ctx, gameData, canvasOffSet, myId, images.playerImages);
+		drawSelf(ctx, gameData, myId, canvasOffSet, images.playerImages);
 	};
 
 	const canvasRef = useCanvas(draw);

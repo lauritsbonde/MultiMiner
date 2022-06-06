@@ -1,12 +1,15 @@
 import React, { FC, startTransition, useState } from 'react';
+import DrillCustomizer from './Customizer/DrillCustomizer';
 
 interface JoinProps {
-	joinGame: (name: string) => void;
+	joinGame: (name: string, imageIndex: number) => void;
+	playerImages: { [key: string]: any };
 }
 
-const Join: FC<JoinProps> = ({ joinGame }) => {
+const Join: FC<JoinProps> = ({ joinGame, playerImages }) => {
 	const [input, setInput] = useState('');
 	const [avatar, setAvatar] = useState(`https://avatars.dicebear.com/api/personas/${''}.svg`);
+	const [imageIndex, setImageIndex] = useState(Math.round(Math.random() * Object.keys(playerImages).length));
 
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setInput(e.target.value);
@@ -23,7 +26,7 @@ const Join: FC<JoinProps> = ({ joinGame }) => {
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
-					joinGame(input);
+					joinGame(input, imageIndex);
 				}}
 			>
 				<input
@@ -34,7 +37,7 @@ const Join: FC<JoinProps> = ({ joinGame }) => {
 						handleInput(e);
 					}}
 				/>
-				<button type="submit" onClick={() => joinGame(input || `I AM BORING_${(Math.random() + 1).toString(36).substring(2)}`)}>
+				<button type="submit" onClick={() => joinGame(input || `I AM BORING_${(Math.random() + 1).toString(36).substring(2)}`, imageIndex)}>
 					Join
 				</button>
 			</form>
@@ -42,6 +45,7 @@ const Join: FC<JoinProps> = ({ joinGame }) => {
 				<h3>Your random avatar</h3>
 				<img src={avatar} alt="random avatar" />
 			</div>
+			<DrillCustomizer imageIndex={imageIndex} playerImages={playerImages} setImageIndex={setImageIndex} />
 		</div>
 	);
 };
