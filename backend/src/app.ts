@@ -41,7 +41,7 @@ io.on('connection', function (socket: any) {
 	socket.on(
 		'join',
 		(
-			data: { canvasSize: { width: number; height: number }; name: string; imageIndex: number },
+			data: { canvasSize: { width: number; height: number }; name: string; imageIndex: { head: string; body: string; bottom: string; wheels: string } },
 			callback: (response: {
 				size: { width: number; height: number };
 				groundStart: number;

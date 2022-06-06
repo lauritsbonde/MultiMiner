@@ -4,7 +4,7 @@ import PosClass from './PosClass';
 export default class PlayerDto extends PosClass {
 	id: string;
 	name: string;
-	imageIndex: number;
+	imageIndex: { head: string; body: string; bottom: string; wheels: string };
 
 	onBuilding: string;
 	fuel: { max: number; current: number };
@@ -15,7 +15,7 @@ export default class PlayerDto extends PosClass {
 	constructor(
 		id: string,
 		name: string,
-		imageIndex: number,
+		imageIndex: { head: string; body: string; bottom: string; wheels: string },
 
 		pos: { x: number; y: number },
 		size: { width: number; height: number },

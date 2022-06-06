@@ -3,7 +3,7 @@ import MainPage from './Components/MainPage';
 import Join from './Components/Join';
 import { ConstantData, DynamicData, StartData, MineralData } from './Types/GameTypes';
 import { io, Socket } from 'socket.io-client';
-import { allsources } from './CanvasStyles/Sprites';
+import { mineralSprite, playerSprite } from './CanvasStyles/Sprites';
 
 function App() {
 	const [joined, setJoined] = useState(false);
@@ -14,7 +14,7 @@ function App() {
 	const [minerals, setMinerals] = useState<MineralData[]>([]);
 	const [mineralImages, setMineralImages] = useState({} as { [key: string]: any });
 	const [allImagesLoaded, setAllImagesLoaded] = useState(false);
-	const [playerImages, setPlayerImages] = useState({} as { [key: string]: any });
+	const [playerImages, setPlayerImages] = useState({} as { [key: string]: { [key: string]: any } });
 
 	const cacheImages = async (sources: { [key: string]: string }, callback: (loadedImages: { [key: string]: any }) => void) => {
 		const loadedImages = {} as { [key: string]: any };
@@ -38,16 +38,20 @@ function App() {
 	};
 
 	useEffect(() => {
-		cacheImages(allsources.minerals, (loadedImages) => {
+		cacheImages(mineralSprite, (loadedImages) => {
 			setMineralImages(loadedImages);
 		});
-		cacheImages(allsources.players, (loadedImages) => {
-			setPlayerImages(loadedImages);
-			setAllImagesLoaded(true);
+		const loadingPLayerImages = {} as { [key: string]: any };
+		Object.keys(playerSprite).forEach((key) => {
+			cacheImages(playerSprite[key], (loadedImages) => {
+				loadingPLayerImages[key] = loadedImages;
+			});
 		});
+		setPlayerImages(loadingPLayerImages);
+		setAllImagesLoaded(true);
 	}, []);
 
-	const joinGame = (name: string, imageIndex: number) => {
+	const joinGame = (name: string, imageIndex: { head: string; body: string; bottom: string; wheels: string }) => {
 		socket.emit(
 			'join',
 			{

@@ -14,7 +14,7 @@ export default class Player extends PosClass {
 	id: string;
 	name: string;
 	canvasSize: { width: number; height: number };
-	imageSpriteIndex: number;
+	imageSpriteIndex: { head: string; body: string; bottom: string; wheels: string };
 
 	moving: { [key: string]: boolean };
 	speed: { x: number; y: number };
@@ -40,8 +40,16 @@ export default class Player extends PosClass {
 
 	basket: { maxItems: number; items: { [type: string]: number }; amount: number };
 
-	constructor(id: string, pos: { x: number; y: number }, worldSize: { width: number; height: number }, worldGroundLevel: number, worldBuildings: Array<Bulding>, name: string, imageIndex: number) {
-		super({ width: 28, height: 28 }, pos);
+	constructor(
+		id: string,
+		pos: { x: number; y: number },
+		worldSize: { width: number; height: number },
+		worldGroundLevel: number,
+		worldBuildings: Array<Bulding>,
+		name: string,
+		imageIndex: { head: string; body: string; bottom: string; wheels: string }
+	) {
+		super({ width: 32, height: 32 }, pos);
 		this.id = id;
 		this.name = name;
 		this.imageSpriteIndex = imageIndex;

@@ -2,20 +2,30 @@ import React, { FC, startTransition, useState } from 'react';
 import DrillCustomizer from './Customizer/DrillCustomizer';
 
 interface JoinProps {
-	joinGame: (name: string, imageIndex: number) => void;
+	joinGame: (name: string, imageIndex: { head: string; body: string; bottom: string; wheels: string }) => void;
 	playerImages: { [key: string]: any };
 }
 
 const Join: FC<JoinProps> = ({ joinGame, playerImages }) => {
 	const [input, setInput] = useState('');
 	const [avatar, setAvatar] = useState(`https://avatars.dicebear.com/api/personas/${''}.svg`);
-	const [imageIndex, setImageIndex] = useState(Math.round(Math.random() * Object.keys(playerImages).length));
+	const [imageIndex, setImageIndex] = useState({ head: '0', body: '0', bottom: '0', wheels: '0' });
 
 	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setInput(e.target.value);
 		startTransition(() => {
 			// TODO: do some checks to see if the avatar is valid and if someone else is using it
 			setAvatar(`https://avatars.dicebear.com/api/personas/${e.target.value}.svg`);
+		});
+	};
+
+	const updatePart = (part: 'head' | 'body' | 'bottom' | 'wheels', index: number) => {
+		startTransition(() => {
+			if (index === -1 && imageIndex[part] === '0') {
+				setImageIndex({ ...imageIndex, [part]: '' + (Object.keys(playerImages[part]).length - 1) });
+			} else {
+				setImageIndex({ ...imageIndex, [part]: '' + ((+imageIndex[part] + index) % Object.keys(playerImages[part]).length) });
+			}
 		});
 	};
 
@@ -45,7 +55,7 @@ const Join: FC<JoinProps> = ({ joinGame, playerImages }) => {
 				<h3>Your random avatar</h3>
 				<img src={avatar} alt="random avatar" />
 			</div>
-			<DrillCustomizer imageIndex={imageIndex} playerImages={playerImages} setImageIndex={setImageIndex} />
+			{playerImages ? <DrillCustomizer imageIndex={imageIndex} playerImages={playerImages} updatePart={updatePart} /> : <div>test...</div>}
 		</div>
 	);
 };

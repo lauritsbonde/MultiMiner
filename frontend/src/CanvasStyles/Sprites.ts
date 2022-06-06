@@ -49,63 +49,88 @@ import * as opalBasic0 from '../mineralTextures/opal/opal_basic0.svg';
 import * as opalBasic1 from '../mineralTextures/opal/opal_basic1.svg';
 
 // player sprites
-import * as blue from '../drillTextures/blue.svg';
+// heads
+import * as head from '../drillTextures/head/head.svg';
+import * as head1 from '../drillTextures/head/head1.svg';
 
-import * as car from '../drillTextures/car.svg';
+// bodys
+import * as body from '../drillTextures/body/body.svg';
+import * as body1 from '../drillTextures/body/body1.svg';
 
-export const allsources = {
-	minerals: {
-		empty: emptybasic.default,
-		concrete: concrete.default,
+// bottoms
+import * as bottom from '../drillTextures/bottom/bottom.svg';
+import * as bottom1 from '../drillTextures/bottom/bottom1.svg';
 
-		mudtop: mudTop.default,
-		mudbasic0: mudBasic0.default,
-		mudbasic1: mudBasic1.default,
+// wheels
+import * as wheel from '../drillTextures/wheel/wheel.svg';
+import * as wheel1 from '../drillTextures/wheel/wheel1.svg';
 
-		coalbasic0: coalBasic0.default,
-		coalbasic1: coalBasic1.default,
+export const mineralSprite = {
+	empty: emptybasic.default,
+	concrete: concrete.default,
 
-		ironbasic0: ironBasic0.default,
-		ironbasic1: ironBasic1.default,
+	mudtop: mudTop.default,
+	mudbasic0: mudBasic0.default,
+	mudbasic1: mudBasic1.default,
 
-		goldbasic0: goldBasic0.default,
-		goldbasic1: goldBasic1.default,
+	coalbasic0: coalBasic0.default,
+	coalbasic1: coalBasic1.default,
 
-		diamondbasic0: diamondBasic0.default,
-		diamondbasic1: diamondBasic1.default,
+	ironbasic0: ironBasic0.default,
+	ironbasic1: ironBasic1.default,
 
-		emeraldbasic0: emeraldBasic0.default,
-		emeraldbasic1: emeraldBasic1.default,
+	goldbasic0: goldBasic0.default,
+	goldbasic1: goldBasic1.default,
 
-		rubybasic0: rubyBasic0.default,
-		rubybasic1: rubyBasic1.default,
+	diamondbasic0: diamondBasic0.default,
+	diamondbasic1: diamondBasic1.default,
 
-		sapphirebasic0: sapphireBasic0.default,
-		sapphirebasic1: sapphireBasic1.default,
+	emeraldbasic0: emeraldBasic0.default,
+	emeraldbasic1: emeraldBasic1.default,
 
-		topazbasic0: topazBasic0.default,
-		topazbasic1: topazBasic1.default,
+	rubybasic0: rubyBasic0.default,
+	rubybasic1: rubyBasic1.default,
 
-		amethystbasic0: amethystBasic0.default,
-		amethystbasic1: amethystBasic1.default,
+	sapphirebasic0: sapphireBasic0.default,
+	sapphirebasic1: sapphireBasic1.default,
 
-		quartzbasic0: quartzBasic0.default,
-		quartzbasic1: quartzBasic1.default,
+	topazbasic0: topazBasic0.default,
+	topazbasic1: topazBasic1.default,
 
-		amberbasic0: amberBasic0.default,
-		amberbasic1: amberBasic1.default,
+	amethystbasic0: amethystBasic0.default,
+	amethystbasic1: amethystBasic1.default,
 
-		jadebasic0: jadeBasic0.default,
-		jadebasic1: jadeBasic1.default,
+	quartzbasic0: quartzBasic0.default,
+	quartzbasic1: quartzBasic1.default,
 
-		pearlbasic0: pearlBasic0.default,
-		pearlbasic1: pearlBasic1.default,
+	amberbasic0: amberBasic0.default,
+	amberbasic1: amberBasic1.default,
 
-		opalbasic0: opalBasic0.default,
-		opalbasic1: opalBasic1.default,
-	},
-	players: {
-		blue: blue.default,
-		car: car.default,
-	},
+	jadebasic0: jadeBasic0.default,
+	jadebasic1: jadeBasic1.default,
+
+	pearlbasic0: pearlBasic0.default,
+	pearlbasic1: pearlBasic1.default,
+
+	opalbasic0: opalBasic0.default,
+	opalbasic1: opalBasic1.default,
 };
+
+export const playerSprite = {
+	head: {
+		'0': head.default,
+		'1': head1.default,
+	},
+	body: {
+		'0': body.default,
+		'1': body1.default,
+	},
+	bottom: {
+		'0': bottom.default,
+		'1': bottom1.default,
+	},
+	wheels: {
+		'0': wheel.default,
+		'1': wheel1.default,
+	},
+} as { [key: string]: any };

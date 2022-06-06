@@ -1,22 +1,29 @@
 import React, { FC } from 'react';
+import PartChanger from './PartChanger';
 
 interface Props {
 	playerImages: { [key: string]: any };
-	setImageIndex: (index: number) => void;
-	imageIndex: number;
+	updatePart: (part: 'head' | 'body' | 'bottom' | 'wheels', value: number) => void;
+	imageIndex: { head: string; body: string; bottom: string; wheels: string };
 }
 
-const DrillCustomizer: FC<Props> = ({ playerImages, setImageIndex, imageIndex }) => {
+const DrillCustomizer: FC<Props> = ({ playerImages, updatePart, imageIndex }) => {
+	const parts = ['head', 'body', 'bottom', 'wheels'];
+
 	return (
 		<div>
 			<h3>What do you want to look like?</h3>
-			<div>
-				<img src={Object.keys(playerImages).length > 0 ? playerImages[Object.keys(playerImages)[imageIndex]].src : ''} alt="avatar" />
-				<div>
-					<button onClick={() => setImageIndex((imageIndex - 1) % Object.keys(playerImages).length)}>Prev</button>
-					<button onClick={() => setImageIndex((imageIndex + 1) % Object.keys(playerImages).length)}>Next</button>
-				</div>
-			</div>
+			{Object.keys(playerImages).length > 0 ? (
+				<>
+					{parts.map((part, index) => {
+						if (part === 'head' || part === 'body' || part === 'bottom' || part === 'wheels') {
+							return <PartChanger key={index} updatePart={updatePart} image={playerImages[part][imageIndex[part]].src} part={part} />;
+						}
+					})}
+				</>
+			) : (
+				<div>Loading...</div>
+			)}
 		</div>
 	);
 };

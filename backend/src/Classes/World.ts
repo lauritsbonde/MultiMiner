@@ -78,7 +78,7 @@ export default class World {
 		this.minerals[index].isDrillable = false;
 	}
 
-	addPlayer(id: string, name: string, imageIndex: number) {
+	addPlayer(id: string, name: string, imageIndex: { head: string; body: string; bottom: string; wheels: string }) {
 		const randx = Math.floor((Math.random() * this.size.width) / 10);
 		const randy = Math.floor(Math.random() * (this.groundStart - 50 - 300 + 1) + 300);
 		const newPlayer = new Player(id, { x: randx, y: randy }, { width: this.size.width, height: this.size.height }, this.groundStart, this.shopManager.buildings, name, imageIndex);

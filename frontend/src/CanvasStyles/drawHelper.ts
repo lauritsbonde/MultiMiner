@@ -119,13 +119,11 @@ export const drawPlayers = (ctx: any, gameData: DynamicData, canvasOffSet: { x: 
 				if (currentPlayer.id === myId) {
 					continue;
 				}
-				const style = Object.keys(playerImages)[currentPlayer.imageIndex];
-				ctx.drawImage(playerImages[style], currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
-				// ctx.fillStyle = '#000';
-				// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
-				// ctx.fillStyle = '#fff';
-				// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
-				// ctx.fillStyle = '#fff';
+				drawHead(ctx, currentPlayer.pos, canvasOffSet, playerImages.head, currentPlayer.imageIndex.head, currentPlayer.size);
+				drawBody(ctx, currentPlayer.pos, canvasOffSet, playerImages.body, currentPlayer.imageIndex.body, currentPlayer.size);
+				drawBottom(ctx, currentPlayer.pos, canvasOffSet, playerImages.bottom, currentPlayer.imageIndex.bottom, currentPlayer.size);
+				drawWheels(ctx, currentPlayer.pos, canvasOffSet, playerImages.wheels, currentPlayer.imageIndex.wheels, currentPlayer.size);
+
 				ctx.font = '10px Arial';
 				ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
 			}
@@ -137,14 +135,30 @@ export const drawSelf = (ctx: any, gameData: DynamicData, myId: string, canvasOf
 	if (gameData.players[myId]) {
 		const currentPlayer = gameData.players[myId];
 		if (!currentPlayer.isDead) {
-			const style = Object.keys(playerImages)[currentPlayer.imageIndex];
-			ctx.drawImage(playerImages[style], currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
 			// ctx.fillStyle = '#000';
 			// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
-			// ctx.fillStyle = '#fff';
-			// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
+			drawHead(ctx, currentPlayer.pos, canvasOffSet, playerImages.head, currentPlayer.imageIndex.head, currentPlayer.size);
+			drawBody(ctx, currentPlayer.pos, canvasOffSet, playerImages.body, currentPlayer.imageIndex.body, currentPlayer.size);
+			drawBottom(ctx, currentPlayer.pos, canvasOffSet, playerImages.bottom, currentPlayer.imageIndex.bottom, currentPlayer.size);
+			drawWheels(ctx, currentPlayer.pos, canvasOffSet, playerImages.wheels, currentPlayer.imageIndex.wheels, currentPlayer.size);
 			ctx.font = '10px Arial';
 			ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
 		}
 	}
+};
+
+const drawHead = (ctx: any, pos: { x: number; y: number }, canvasOffSet: { x: number; y: number }, images: { [key: string]: any }, index: string, size: { width: number; height: number }) => {
+	ctx.drawImage(images[index], pos.x - canvasOffSet.x, pos.y - canvasOffSet.y, size.width, size.height / 2);
+};
+
+const drawBody = (ctx: any, pos: { x: number; y: number }, canvasOffSet: { x: number; y: number }, images: { [key: string]: any }, index: string, size: { width: number; height: number }) => {
+	ctx.drawImage(images[index], pos.x - canvasOffSet.x, pos.y + size.height * 0.33 - canvasOffSet.y, size.width, size.height / 3);
+};
+
+const drawBottom = (ctx: any, pos: { x: number; y: number }, canvasOffSet: { x: number; y: number }, images: { [key: string]: any }, index: string, size: { width: number; height: number }) => {
+	ctx.drawImage(images[index], pos.x - canvasOffSet.x, pos.y + size.height * 0.6 - canvasOffSet.y, size.width, size.height / 4);
+};
+
+const drawWheels = (ctx: any, pos: { x: number; y: number }, canvasOffSet: { x: number; y: number }, images: { [key: string]: any }, index: string, size: { width: number; height: number }) => {
+	ctx.drawImage(images[index], pos.x - canvasOffSet.x, pos.y + size.height * 0.75 - canvasOffSet.y, size.width, size.height / 4);
 };
