@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/MultiMiner/static/css/main.a25811df.css",
-    "main.js": "/MultiMiner/static/js/main.1a54b898.js",
+    "main.js": "/MultiMiner/static/js/main.482dbb35.js",
     "static/js/787.cda612ba.chunk.js": "/MultiMiner/static/js/787.cda612ba.chunk.js",
     "static/media/mud_top.svg": "/MultiMiner/static/media/mud_top.6dc4b10f4d97a6025f555ac07edbcbb3.svg",
     "static/media/emerald_basic0.svg": "/MultiMiner/static/media/emerald_basic0.63f7a4524e36cb79f79138acc26bfbd9.svg",
@@ -34,15 +34,17 @@
     "static/media/iron_basic0.svg": "/MultiMiner/static/media/iron_basic0.5a837c9ed1eb36369e36387c9a105721.svg",
     "static/media/mud_basic1.svg": "/MultiMiner/static/media/mud_basic1.12487054fa2e7cab5b498ba89ffe4bba.svg",
     "static/media/mud_basic0.svg": "/MultiMiner/static/media/mud_basic0.47f8582cf6d950f7ec6d51b204bd358f.svg",
+    "static/media/car.svg": "/MultiMiner/static/media/car.3959fe04b462c6d41729508d180d13ab.svg",
     "index.html": "/MultiMiner/index.html",
+    "static/media/blue.svg": "/MultiMiner/static/media/blue.30c331f938df85ef5834efcb546f2996.svg",
     "static/media/concrete.svg": "/MultiMiner/static/media/concrete.42cc3ad7773520173679b20b6db94a56.svg",
     "static/media/empty.svg": "/MultiMiner/static/media/empty.ee5232ea885c8c4b54d5ed7d7a62b2c0.svg",
     "main.a25811df.css.map": "/MultiMiner/static/css/main.a25811df.css.map",
-    "main.1a54b898.js.map": "/MultiMiner/static/js/main.1a54b898.js.map",
+    "main.482dbb35.js.map": "/MultiMiner/static/js/main.482dbb35.js.map",
     "787.cda612ba.chunk.js.map": "/MultiMiner/static/js/787.cda612ba.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.a25811df.css",
-    "static/js/main.1a54b898.js"
+    "static/js/main.482dbb35.js"
   ]
 }
