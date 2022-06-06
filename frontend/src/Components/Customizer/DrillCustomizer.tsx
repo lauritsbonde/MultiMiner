@@ -18,6 +18,8 @@ const DrillCustomizer: FC<Props> = ({ playerImages, updatePart, imageIndex }) =>
 					{parts.map((part, index) => {
 						if (part === 'head' || part === 'body' || part === 'bottom' || part === 'wheels') {
 							return <PartChanger key={index} updatePart={updatePart} image={playerImages[part][imageIndex[part]].src} part={part} />;
+						} else {
+							return null;
 						}
 					})}
 				</>
