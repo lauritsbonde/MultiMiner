@@ -126,8 +126,8 @@ export const drawPlayers = (ctx: any, gameData: DynamicData, canvasOffSet: { x: 
 				// ctx.fillStyle = '#fff';
 				// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
 				// ctx.fillStyle = '#fff';
-				// ctx.font = '10px Arial';
-				// ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
+				ctx.font = '10px Arial';
+				ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
 			}
 		}
 	}
@@ -142,5 +142,7 @@ export const drawSelf = (ctx: any, gameData: DynamicData, myId: string, canvasOf
 		// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
 		// ctx.fillStyle = '#fff';
 		// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
+		ctx.font = '10px Arial';
+		ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
 	}
 };
