@@ -136,13 +136,15 @@ export const drawPlayers = (ctx: any, gameData: DynamicData, canvasOffSet: { x: 
 export const drawSelf = (ctx: any, gameData: DynamicData, myId: string, canvasOffSet: { x: number; y: number }, playerImages: { [key: string]: any }) => {
 	if (gameData.players[myId]) {
 		const currentPlayer = gameData.players[myId];
-		const style = Object.keys(playerImages)[currentPlayer.imageIndex];
-		ctx.drawImage(playerImages[style], currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
-		// ctx.fillStyle = '#000';
-		// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
-		// ctx.fillStyle = '#fff';
-		// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
-		ctx.font = '10px Arial';
-		ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
+		if (!currentPlayer.isDead) {
+			const style = Object.keys(playerImages)[currentPlayer.imageIndex];
+			ctx.drawImage(playerImages[style], currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
+			// ctx.fillStyle = '#000';
+			// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
+			// ctx.fillStyle = '#fff';
+			// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x + 3, currentPlayer.pos.y - canvasOffSet.y + 3, currentPlayer.size.width - 6, currentPlayer.size.height - 6);
+			ctx.font = '10px Arial';
+			ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
+		}
 	}
 };
