@@ -1,5 +1,7 @@
 import React, { FC } from 'react';
 import PartChanger from './PartChanger';
+import Box from '@mui/material/Box';
+import { Typography } from '@mui/material';
 
 interface Props {
 	playerImages: { [key: string]: any };
@@ -11,8 +13,8 @@ const DrillCustomizer: FC<Props> = ({ playerImages, updatePart, imageIndex }) =>
 	const parts = ['head', 'body', 'bottom', 'wheels'];
 
 	return (
-		<div>
-			<h3>What do you want to look like?</h3>
+		<Box>
+			<Typography variant="h6">Customize your drill!</Typography>
 			{Object.keys(playerImages).length > 0 ? (
 				<>
 					{parts.map((part, index) => {
@@ -24,9 +26,9 @@ const DrillCustomizer: FC<Props> = ({ playerImages, updatePart, imageIndex }) =>
 					})}
 				</>
 			) : (
-				<div>Loading...</div>
+				<Box>Loading...</Box>
 			)}
-		</div>
+		</Box>
 	);
 };
 
