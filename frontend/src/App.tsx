@@ -48,6 +48,7 @@ function App() {
 			});
 		});
 		setPlayerImages(loadingPLayerImages);
+		console.log(loadingPLayerImages);
 		setAllImagesLoaded(true);
 	}, []);
 

@@ -1,4 +1,7 @@
 import React, { FC } from 'react';
+import { Box, Button } from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 
 interface props {
 	updatePart: (part: 'head' | 'body' | 'bottom' | 'wheels', value: number) => void;
@@ -8,23 +11,25 @@ interface props {
 
 const PartChanger: FC<props> = ({ updatePart, image, part }) => {
 	return (
-		<div style={{ display: 'flex', flexDirection: 'row' }}>
-			<button
+		<Box sx={{ display: 'flex', flexDirection: 'row' }}>
+			<Button
+				variant="contained"
 				onClick={() => {
 					updatePart(part, -1);
 				}}
 			>
-				{'<-'}
-			</button>
+				<ArrowBackIcon />
+			</Button>
 			<img src={image} alt={part} />
-			<button
+			<Button
+				variant="contained"
 				onClick={() => {
 					updatePart(part, 1);
 				}}
 			>
-				{'->'}
-			</button>
-		</div>
+				<ArrowForwardIcon />
+			</Button>
+		</Box>
 	);
 };
 
