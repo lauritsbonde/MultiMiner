@@ -1,12 +1,14 @@
-export default interface MineralData {
-	id: string;
+export interface MineralData {
+	id: number;
 	size: { width: number; height: number };
 	pos: { x: number; y: number };
 	type: string;
+	style: number;
 }
 
 interface PlayerData {
 	id: string;
+	name: string;
 	pos: { x: number; y: number };
 	size: { width: number; height: number };
 	onBuilding: string;
@@ -14,6 +16,7 @@ interface PlayerData {
 	money: number;
 	isDead: boolean;
 	basket: { items: { [type: string]: number }; amount: number };
+	imageIndex: { head: string; body: string; bottom: string; wheels: string };
 }
 
 interface BuildingData {
@@ -22,11 +25,29 @@ interface BuildingData {
 	title: string;
 }
 
-export default interface UpdateGameData {
+export interface UpdateGameData {
+	changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>;
+	players: { [id: string]: PlayerData };
+	selfPlayer: PlayerData;
+}
+
+export interface StartData {
 	size: { width: number; height: number };
 	groundStart: number;
-	players: { [id: string]: PlayerData };
-	minerals: Array<MineralData>;
 	buildings: Array<BuildingData>;
+
+	minerals: Array<MineralData>;
+	players: { [id: string]: PlayerData };
 	selfPlayer: PlayerData;
+}
+
+export interface DynamicData {
+	players: { [id: string]: PlayerData };
+	selfPlayer: PlayerData;
+}
+
+export interface ConstantData {
+	size: { width: number; height: number };
+	groundStart: number;
+	buildings: Array<BuildingData>;
 }

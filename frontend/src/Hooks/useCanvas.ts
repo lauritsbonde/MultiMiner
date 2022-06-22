@@ -7,8 +7,8 @@ const useCanvas = (draw: (ctx: any) => void) => {
 		const canvas = canvasRef.current;
 		const ctx = canvas.getContext('2d');
 
-		canvas.width = window.innerWidth * 0.95;
-		canvas.height = window.innerHeight * 0.85;
+		canvas.width = Math.min(window.innerWidth * 0.7, 1000);
+		canvas.height = Math.min(window.innerHeight * 0.85, 1000);
 
 		const render = () => {
 			draw(ctx);
@@ -16,7 +16,7 @@ const useCanvas = (draw: (ctx: any) => void) => {
 
 		const interval = setInterval(() => {
 			render();
-		}, 1000 / 45);
+		}, 1000 / 30);
 
 		render();
 

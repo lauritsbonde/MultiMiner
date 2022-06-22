@@ -12,7 +12,9 @@ interface surroundingMinerals {
 
 export default class Player extends PosClass {
 	id: string;
+	name: string;
 	canvasSize: { width: number; height: number };
+	imageSpriteIndex: { head: string; body: string; bottom: string; wheels: string };
 
 	moving: { [key: string]: boolean };
 	speed: { x: number; y: number };
@@ -38,9 +40,19 @@ export default class Player extends PosClass {
 
 	basket: { maxItems: number; items: { [type: string]: number }; amount: number };
 
-	constructor(id: string, pos: { x: number; y: number }, worldSize: { width: number; height: number }, worldGroundLevel: number, worldBuildings: Array<Bulding>) {
-		super({ width: 28, height: 28 }, pos);
+	constructor(
+		id: string,
+		pos: { x: number; y: number },
+		worldSize: { width: number; height: number },
+		worldGroundLevel: number,
+		worldBuildings: Array<Bulding>,
+		name: string,
+		imageIndex: { head: string; body: string; bottom: string; wheels: string }
+	) {
+		super({ width: 32, height: 32 }, pos);
 		this.id = id;
+		this.name = name;
+		this.imageSpriteIndex = imageIndex;
 
 		this.canvasSize = { width: 1000, height: 1000 };
 
@@ -71,7 +83,7 @@ export default class Player extends PosClass {
 	}
 
 	toDto() {
-		return new PlayerDto(this.id, this.pos, this.size, this.onBuilding, { current: this.fuel.current, max: this.fuel.max }, this.money, this.isDead, {
+		return new PlayerDto(this.id, this.name, this.imageSpriteIndex, this.pos, this.size, this.onBuilding, { current: this.fuel.current, max: this.fuel.max }, this.money, this.isDead, {
 			items: this.basket.items,
 			amount: this.basket.amount,
 		});
@@ -81,10 +93,10 @@ export default class Player extends PosClass {
 		this.canvasSize = canvasSize;
 	}
 
-	move(surroundingMinerals: surroundingMinerals) {
+	move(surroundingMinerals: surroundingMinerals, addDrillMineralToChanged: (mineral: Mineral) => void) {
 		this.useFuel();
 		if (this.isDrilling) {
-			this.drill(undefined);
+			this.drill(undefined, undefined, addDrillMineralToChanged);
 			return;
 		}
 
@@ -266,7 +278,7 @@ export default class Player extends PosClass {
 		}
 	}
 
-	drill(mineral?: Mineral, startDirection?: string) {
+	drill(mineral?: Mineral, startDirection?: string, addDrillMineralToChanged?: (mineral: Mineral) => void) {
 		if (!this.isDrilling && mineral !== undefined && startDirection !== undefined) {
 			this.isDrilling = true;
 			this.drillingMineral = mineral;
@@ -291,6 +303,8 @@ export default class Player extends PosClass {
 				this.isDrilling = false;
 
 				this.addMineralToBasket(this.drillingMineral);
+
+				addDrillMineralToChanged(this.drillingMineral);
 
 				this.drillingMineral.destroy();
 				this.drillingMineral = undefined;

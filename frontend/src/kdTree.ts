@@ -1,4 +1,4 @@
-import MineralData from './Types/GameTypes';
+import { MineralData } from './Types/GameTypes';
 
 interface boundingBoxType {
 	minx: number;
@@ -18,6 +18,16 @@ export default class kdTree {
 		let result = [] as Array<MineralData>;
 		this.root.rangeSearch(bb, result);
 		return result;
+	}
+
+	changeMineralType(id: number, newType: string, boundingBox: boundingBoxType) {
+		const elements = this.rangeSearch(boundingBox);
+		elements.forEach((element) => {
+			if (element.id === id) {
+				element.type = newType;
+				return;
+			}
+		});
 	}
 }
 
@@ -126,7 +136,7 @@ class KDLeaf extends KDAbstract {
 	}
 }
 
-const MAX_ELEMENTS_FOR_LEAF = 5;
+const MAX_ELEMENTS_FOR_LEAF = 30;
 function createNode(elements: Array<MineralData>, splitDimension: boolean = true): KDAbstract {
 	if (elements.length <= MAX_ELEMENTS_FOR_LEAF) {
 		return new KDLeaf(elements);

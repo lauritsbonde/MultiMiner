@@ -1,4 +1,8 @@
 import express, { Request, Response } from 'express';
+import Mineral from './Classes/Mineral';
+import PlayerDto from './Classes/PlayerDto';
+import Building from './Classes/Building';
+
 const app = express();
 const http = require('http').Server(app);
 const { auth } = require('express-openid-connect');
@@ -34,12 +38,33 @@ import World from './Classes/World';
 const world = new World();
 
 io.on('connection', function (socket: any) {
-	console.log('a user connected');
-	world.addPlayer(socket.id);
+	socket.on(
+		'join',
+		(
+			data: { canvasSize: { width: number; height: number }; name: string; imageIndex: { head: string; body: string; bottom: string; wheels: string } },
+			callback: (response: {
+				size: { width: number; height: number };
+				groundStart: number;
+				players: { [id: string]: PlayerDto };
+				minerals: Mineral[];
+				buildings: Building[];
+				selfPlayer: PlayerDto;
+			}) => void
+		) => {
+			world.addPlayer(socket.id, data.name, data.imageIndex);
+			world.players[socket.id].setCanvasSize(data.canvasSize);
+			console.log('a user connected');
 
-	socket.on('canvasSize', (data: { width: number; height: number }) => {
-		world.players[socket.id].setCanvasSize(data);
-	});
+			callback({
+				size: world.size,
+				groundStart: world.groundStart,
+				players: world.playersDto,
+				minerals: world.minerals,
+				buildings: world.shopManager.buildings,
+				selfPlayer: world.playersDto[socket.id],
+			});
+		}
+	);
 
 	// PLAYER MOVEMONT
 
@@ -70,6 +95,13 @@ io.on('connection', function (socket: any) {
 		world.shopManager.sellMineral(world.players[socket.id], data.mineral, data.amount);
 	});
 
+	// CHAT
+	socket.on('chat', (data: { message: string }) => {
+		world.addChat(data.message, socket.id);
+		// TODO: check the message for bad words
+		io.emit('newchat', { message: data.message, senderName: world.players[socket.id].name, senderId: socket.id });
+	});
+
 	socket.on('disconnect', () => {
 		world.removePlayer(socket.id);
 		console.log('user disconnected');
@@ -78,10 +110,8 @@ io.on('connection', function (socket: any) {
 
 setInterval(() => {
 	world.update();
-	for (let socketId in world.players) {
-		io.to(socketId).emit('update', world.toDto(socketId));
-	}
-}, 1000 / 45);
+	io.emit('update', world.toDto());
+}, 1000 / 30);
 
 app.get('/', function (req: any, res: Response) {
 	// res.send(req.oidc.isAuthenticated() ? 'Logged in -> ' + req.oidc.user : 'Not logged in');

@@ -1,5 +1,4 @@
 import { mineralSpawn } from '../Lookups/minerals';
-import kdTree from './kdTree';
 import Mineral from './Mineral';
 import Player from './Player';
 import PlayerDto from './PlayerDto';
@@ -11,50 +10,45 @@ export default class World {
 
 	players: { [id: string]: Player };
 	playersDto: { [id: string]: PlayerDto };
-	playersKdTree: kdTree;
+	// playersKdTree: kdTree;
 
 	minerals = Array<Mineral>();
 	mineralSize: number;
-	mineralKdTree: kdTree;
+	// mineralKdTree: kdTree
+	changedMineralsSinceLastUpdate: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }> = [];
 
 	shopManager: ShopManager;
 
+	chatMessages: Array<{ id: string; message: string }> = [];
+
 	constructor() {
-		this.size = { width: 4000, height: 3000 }; //there is a concrete level after the height
+		this.size = { width: 4000, height: 4000 }; //there is a concrete level after the height
 		this.groundStart = 500;
 
 		this.players = {};
 		this.playersDto = {};
-		this.playersKdTree = new kdTree(Object.values(this.playersDto), 10);
+		// this.playersKdTree = new kdTree(Object.values(this.playersDto), 10);
 
 		this.minerals = [];
 		this.mineralSize = 50;
 		this.setupMinerals();
-		this.mineralKdTree = new kdTree(this.minerals, 50);
+		// this.mineralKdTree = new kdTree(this.minerals, 50);
+		this.changedMineralsSinceLastUpdate = [];
 
 		this.shopManager = new ShopManager();
 		this.shopManager.setupBuildings(this.mineralSize, this.size, this.groundStart, (index: number) => this.makeMineralConcrete(index));
+
+		this.chatMessages = [];
 	}
 
-	toDto(socketId: string) {
-		const player = this.players[socketId];
-		const padding = { x: player.canvasSize.width, y: player.canvasSize.height };
-		const boundingBox = {
-			minx: player.pos.x - padding.x,
-			maxx: player.pos.x + padding.x,
-			miny: player.pos.y - padding.y,
-			maxy: player.pos.y + padding.y,
-		};
-		const minerals = this.mineralKdTree.rangeSearch(boundingBox);
-		const players = this.playersKdTree.rangeSearch(boundingBox);
+	toDto() {
+		const mineralChanges = this.changedMineralsSinceLastUpdate;
+		this.changedMineralsSinceLastUpdate = [];
 
 		return {
-			size: this.size,
-			groundStart: this.groundStart,
-			players: players,
-			minerals: minerals,
-			buildings: this.shopManager.buildings,
-			selfPlayer: this.playersDto[socketId],
+			players: this.playersDto,
+			changedMinerals: mineralChanges,
+			selfPlayer: this.playersDto[Object.keys(this.playersDto)[0]],
 		};
 	}
 
@@ -84,10 +78,10 @@ export default class World {
 		this.minerals[index].isDrillable = false;
 	}
 
-	addPlayer(id: string) {
+	addPlayer(id: string, name: string, imageIndex: { head: string; body: string; bottom: string; wheels: string }) {
 		const randx = Math.floor((Math.random() * this.size.width) / 10);
 		const randy = Math.floor(Math.random() * (this.groundStart - 50 - 300 + 1) + 300);
-		const newPlayer = new Player(id, { x: randx, y: randy }, { width: this.size.width, height: this.size.height }, this.groundStart, this.shopManager.buildings);
+		const newPlayer = new Player(id, { x: randx, y: randy }, { width: this.size.width, height: this.size.height }, this.groundStart, this.shopManager.buildings, name, imageIndex);
 		this.players[id] = newPlayer;
 		this.playersDto[id] = newPlayer.toDto();
 	}
@@ -99,19 +93,29 @@ export default class World {
 
 	update() {
 		this.updatePlayers();
-		this.buildKdTrees();
+		//this.buildKdTrees();
 	}
 
 	buildKdTrees() {
-		this.playersKdTree = new kdTree(Object.values(this.playersDto), 10);
-		this.mineralKdTree = new kdTree(this.minerals, 50);
+		// this.playersKdTree = new kdTree(Object.values(this.playersDto), 10);
+		// this.mineralKdTree = new kdTree(this.minerals, 50);
+	}
+
+	turnDrilledMineralToIndexAndType(mineral: Mineral) {
+		const padding = 50;
+		const boundingBox = { maxx: mineral.pos.x + this.mineralSize + padding, maxy: mineral.pos.y + this.mineralSize + padding, minx: mineral.pos.x - padding, miny: mineral.pos.y - padding };
+		this.changedMineralsSinceLastUpdate.push({ id: mineral.id, toType: 'Empty', boundingBox });
 	}
 
 	updatePlayers() {
 		for (let id in this.players) {
 			const surroundingMinerals = this.getSurroundingMinerals(this.players[id]);
-			this.players[id].move(surroundingMinerals);
-			this.playersDto[id] = this.players[id].toDto();
+			if (this.players[id].isDead) {
+				// this.removePlayer(id);
+			} else {
+				this.players[id].move(surroundingMinerals, (mineral) => this.turnDrilledMineralToIndexAndType(mineral));
+				this.playersDto[id] = this.players[id].toDto();
+			}
 		}
 	}
 
@@ -160,5 +164,9 @@ export default class World {
 			leftMineral: this.minerals[surroundingMinerals.left],
 			rightMineral: this.minerals[surroundingMinerals.right],
 		};
+	}
+
+	addChat(message: string, id: string) {
+		this.chatMessages.push({ message, id });
 	}
 }

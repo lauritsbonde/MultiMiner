@@ -19,245 +19,58 @@ export const mineralPrices = {
 export const mineralSpawn = (depth: number, groundStart: number) => {
 	let type = 'Mud';
 	const rand = Math.random();
-	if (depth < groundStart + 250) {
-		type = rand < 0.2 ? 'Empty' : rand < 0.8 ? 'Mud' : 'Coal';
+	if (depth === groundStart) {
+		type = rand < 0.2 ? 'Empty' : 'Mud';
+	} else if (depth < groundStart + 250) {
+		type = rand < 0.2 ? 'Empty' : rand < 0.3 ? 'Coal' : 'Mud';
 	} else if (depth < groundStart + 600) {
-		type = rand < 0.1 ? 'Empty' : rand < 0.6 ? 'Mud' : rand < 0.8 ? 'Coal' : 'Iron';
+		type = rand < 0.1 ? 'Empty' : rand < 0.25 ? 'Coal' : rand < 0.35 ? 'Iron' : 'Mud';
 	} else if (depth < groundStart + 1000) {
-		type = rand < 0.05 ? 'Empty' : rand < 0.25 ? 'Mud' : rand < 0.45 ? 'Coal' : rand < 0.8 ? 'Iron' : 'Gold';
+		type = rand < 0.1 ? 'Empty' : rand < 0.2 ? 'Coal' : rand < 0.35 ? 'Iron' : 'Mud';
 	} else if (depth < groundStart + 1500) {
-		type = rand < 0.01 ? 'Empty' : rand < 0.15 ? 'Mud' : rand < 0.35 ? 'Coal' : rand < 0.55 ? 'Iron' : rand < 0.8 ? 'Gold' : 'Diamond';
+		type = rand < 0.05 ? 'Empty' : rand < 0.15 ? 'Iron' : rand < 0.3 ? 'Gold' : 'Mud';
 	} else if (depth < groundStart + 2000) {
-		type = rand < 0.01 ? 'Empty' : rand < 0.1 ? 'Mud' : rand < 0.3 ? 'Coal' : rand < 0.5 ? 'Iron' : rand < 0.75 ? 'Gold' : rand < 0.95 ? 'Diamond' : 'Emerald';
+		type = rand < 0.05 ? 'Empty' : rand < 0.07 ? 'Iron' : rand < 0.2 ? 'Gold' : rand < 0.35 ? 'Diamond' : 'Mud';
 	} else if (depth < groundStart + 2500) {
-		type = rand < 0.01 ? 'Empty' : rand < 0.1 ? 'Mud' : rand < 0.2 ? 'Coal' : rand < 0.35 ? 'Iron' : rand < 0.5 ? 'Gold' : rand < 0.75 ? 'Diamond' : rand < 0.95 ? 'Emerald' : 'Ruby';
+		type = rand < 0.05 ? 'Empty' : rand < 0.15 ? 'Gold' : rand < 0.25 ? 'Diamond' : rand < 0.4 ? 'Emerald' : 'Mud';
 	} else if (depth < groundStart + 3000) {
-		type =
-			rand < 0.01
-				? 'Empty'
-				: rand < 0.08
-				? 'Mud'
-				: rand < 0.15
-				? 'Coal'
-				: rand < 0.25
-				? 'Iron'
-				: rand < 0.4
-				? 'Gold'
-				: rand < 0.6
-				? 'Diamond'
-				: rand < 0.8
-				? 'Emerald'
-				: rand < 0.95
-				? 'Ruby'
-				: 'Sapphire';
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Gold' : rand < 0.2 ? 'Diamond' : rand < 0.4 ? 'Emerald' : 'Mud';
 	} else if (depth < groundStart + 3500) {
-		type =
-			rand < 0.01
-				? 'Empty'
-				: rand < 0.05
-				? 'Mud'
-				: rand < 0.1
-				? 'Coal'
-				: rand < 0.2
-				? 'Iron'
-				: rand < 0.3
-				? 'Gold'
-				: rand < 0.5
-				? 'Diamond'
-				: rand < 0.7
-				? 'Emerald'
-				: rand < 0.9
-				? 'Ruby'
-				: 'Sapphire';
+		type = rand < 0.05 ? 'Empty' : rand < 0.15 ? 'Diamond' : rand < 0.25 ? 'Emerald' : rand < 0.4 ? 'Ruby' : 'Mud';
 	} else if (depth < groundStart + 4000) {
-		type =
-			rand < 0.01
-				? 'Empty'
-				: rand < 0.04
-				? 'Mud'
-				: rand < 0.1
-				? 'Coal'
-				: rand < 0.15
-				? 'Iron'
-				: rand < 0.2
-				? 'Gold'
-				: rand < 0.3
-				? 'Diamond'
-				: rand < 0.4
-				? 'Emerald'
-				: rand < 0.6
-				? 'Ruby'
-				: rand < 0.8
-				? 'Sapphire'
-				: 'Topaz';
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Diamond' : rand < 0.2 ? 'Emerald' : rand < 0.4 ? 'Ruby' : 'Mud';
 	} else if (depth < groundStart + 4500) {
-		type =
-			rand < 0.01
-				? 'Empty'
-				: rand < 0.03
-				? 'Mud'
-				: rand < 0.07
-				? 'Coal'
-				: rand < 0.1
-				? 'Iron'
-				: rand < 0.2
-				? 'Gold'
-				: rand < 0.3
-				? 'Diamond'
-				: rand < 0.4
-				? 'Emerald'
-				: rand < 0.5
-				? 'Ruby'
-				: rand < 0.7
-				? 'Sapphire'
-				: rand < 0.9
-				? 'Topaz'
-				: 'Amethyst';
+		type = rand < 0.05 ? 'Empty' : rand < 0.15 ? 'Emerald' : rand < 0.25 ? 'Ruby' : rand < 0.4 ? 'Sapphire' : 'Mud';
 	} else if (depth < groundStart + 5000) {
-		type =
-			rand < 0.01
-				? 'Empty'
-				: rand < 0.02
-				? 'Mud'
-				: rand < 0.05
-				? 'Coal'
-				: rand < 0.1
-				? 'Iron'
-				: rand < 0.15
-				? 'Gold'
-				: rand < 0.2
-				? 'Diamond'
-				: rand < 0.3
-				? 'Emerald'
-				: rand < 0.4
-				? 'Ruby'
-				: rand < 0.5
-				? 'Sapphire'
-				: rand < 0.6
-				? 'Topaz'
-				: rand < 0.8
-				? 'Amethyst'
-				: 'Quartz';
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Emerald' : rand < 0.2 ? 'Ruby' : rand < 0.4 ? 'Sapphire' : 'Mud';
 	} else if (depth < groundStart + 5500) {
-		type =
-			rand < 0.01
-				? 'Empty'
-				: rand < 0.01
-				? 'Mud'
-				: rand < 0.04
-				? 'Coal'
-				: rand < 0.1
-				? 'Iron'
-				: rand < 0.15
-				? 'Gold'
-				: rand < 0.2
-				? 'Diamond'
-				: rand < 0.25
-				? 'Emerald'
-				: rand < 0.35
-				? 'Ruby'
-				: rand < 0.5
-				? 'Sapphire'
-				: rand < 0.6
-				? 'Topaz'
-				: rand < 0.7
-				? 'Amethyst'
-				: rand < 0.85
-				? 'Quartz'
-				: 'Amber';
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Ruby' : rand < 0.25 ? 'Sapphire' : rand < 0.4 ? 'Topaz' : 'Mud';
 	} else if (depth < groundStart + 6000) {
-		type =
-			rand < 0.01
-				? 'Empty'
-				: rand < 0.01
-				? 'Mud'
-				: rand < 0.02
-				? 'Coal'
-				: rand < 0.05
-				? 'Iron'
-				: rand < 0.1
-				? 'Gold'
-				: rand < 0.15
-				? 'Diamond'
-				: rand < 0.2
-				? 'Emerald'
-				: rand < 0.25
-				? 'Ruby'
-				: rand < 0.3
-				? 'Sapphire'
-				: rand < 0.4
-				? 'Topaz'
-				: rand < 0.5
-				? 'Amethyst'
-				: rand < 0.6
-				? 'Quartz'
-				: rand < 0.8
-				? 'Amber'
-				: 'Jade';
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Ruby' : rand < 0.2 ? 'Sapphire' : rand < 0.4 ? 'Topaz' : 'Mud';
 	} else if (depth < groundStart + 6500) {
-		type =
-			rand < 0.01
-				? 'Empty'
-				: rand < 0.01
-				? 'Mud'
-				: rand < 0.01
-				? 'Coal'
-				: rand < 0.04
-				? 'Iron'
-				: rand < 0.1
-				? 'Gold'
-				: rand < 0.15
-				? 'Diamond'
-				: rand < 0.2
-				? 'Emerald'
-				: rand < 0.25
-				? 'Ruby'
-				: rand < 0.3
-				? 'Sapphire'
-				: rand < 0.4
-				? 'Topaz'
-				: rand < 0.5
-				? 'Amethyst'
-				: rand < 0.6
-				? 'Quartz'
-				: rand < 0.7
-				? 'Amber'
-				: rand < 0.85
-				? 'Jade'
-				: 'Pearl';
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Sapphire' : rand < 0.25 ? 'Topaz' : rand < 0.4 ? 'Amethyst' : 'Mud';
+	} else if (depth < groundStart + 7000) {
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Sapphire' : rand < 0.2 ? 'Topaz' : rand < 0.4 ? 'Amethyst' : 'Mud';
+	} else if (depth < groundStart + 7500) {
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Topaz' : rand < 0.25 ? 'Amethyst' : rand < 0.4 ? 'Quartz' : 'Mud';
+	} else if (depth < groundStart + 8000) {
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Topaz' : rand < 0.2 ? 'Amethyst' : rand < 0.4 ? 'Quartz' : 'Mud';
+	} else if (depth < groundStart + 8500) {
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Amethyst' : rand < 0.25 ? 'Quartz' : rand < 0.4 ? 'Amber' : 'Mud';
+	} else if (depth < groundStart + 9000) {
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Amethyst' : rand < 0.2 ? 'Quartz' : rand < 0.4 ? 'Amber' : 'Mud';
+	} else if (depth < groundStart + 9500) {
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Quartz' : rand < 0.25 ? 'Amber' : rand < 0.4 ? 'Jade' : 'Mud';
+	} else if (depth < groundStart + 10000) {
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Quartz' : rand < 0.2 ? 'Amber' : rand < 0.4 ? 'Jade' : 'Mud';
+	} else if (depth < groundStart + 10500) {
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Amber' : rand < 0.25 ? 'Jade' : rand < 0.4 ? 'Pearl' : 'Mud';
+	} else if (depth < groundStart + 11000) {
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Amber' : rand < 0.2 ? 'Jade' : rand < 0.4 ? 'Pearl' : 'Mud';
+	} else if (depth < groundStart + 11500) {
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Jade' : rand < 0.25 ? 'Pearl' : rand < 0.4 ? 'Opal' : 'Mud';
 	} else {
-		type =
-			rand < 0.01
-				? 'Empty'
-				: rand < 0.01
-				? 'Mud'
-				: rand < 0.01
-				? 'Coal'
-				: rand < 0.02
-				? 'Iron'
-				: rand < 0.05
-				? 'Gold'
-				: rand < 0.1
-				? 'Diamond'
-				: rand < 0.15
-				? 'Emerald'
-				: rand < 0.2
-				? 'Ruby'
-				: rand < 0.3
-				? 'Sapphire'
-				: rand < 0.4
-				? 'Topaz'
-				: rand < 0.5
-				? 'Amethyst'
-				: rand < 0.6
-				? 'Quartz'
-				: rand < 0.7
-				? 'Amber'
-				: rand < 0.8
-				? 'Jade'
-				: rand < 0.9
-				? 'Pearl'
-				: 'Emerald';
+		type = rand < 0.05 ? 'Empty' : rand < 0.1 ? 'Jade' : rand < 0.2 ? 'Pearl' : rand < 0.4 ? 'Opal' : 'Mud';
 	}
 	return type;
 };
