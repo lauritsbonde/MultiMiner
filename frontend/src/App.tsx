@@ -115,6 +115,10 @@ function App() {
 		},
 	});
 
+	useEffect(() => {
+		document.title = joined ? 'MultiMiner' : 'MultiMiner - Join';
+	}, [joined]);
+
 	return (
 		<ThemeProvider theme={theme}>
 			<Box sx={{ height: '100vh' }}>
