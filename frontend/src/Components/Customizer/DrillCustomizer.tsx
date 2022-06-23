@@ -13,7 +13,7 @@ const DrillCustomizer: FC<Props> = ({ playerImages, updatePart, imageIndex }) =>
 	const parts = ['head', 'body', 'bottom', 'wheels'];
 
 	return (
-		<Box>
+		<Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', margin: '20px 0', width: '100%' }}>
 			<Typography variant="h6">Customize your drill!</Typography>
 			<>
 				{parts.map((part, index) => {

@@ -13,16 +13,18 @@ const styling = {
 	container: {
 		display: 'flex',
 		flexDirection: 'row',
-		justifyContent: 'space-between',
-		minWidth: '300px',
+		justifyContent: 'space-around',
+		width: '100%',
 		margin: '4px 0',
+		height: '50px',
 	},
 	button: {
 		minWidth: '50px',
-		minHeight: '50px',
+		height: '50px',
 		padding: '0px',
 		margin: '0px',
-		borderRadius: '0px',
+		color: '#fff',
+		borderRadius: '50%',
 	},
 };
 
@@ -30,23 +32,21 @@ const PartChanger: FC<props> = ({ updatePart, image, part }) => {
 	return (
 		<Box sx={styling.container}>
 			<Button
-				variant="contained"
 				onClick={() => {
 					updatePart(part, -1);
 				}}
 				sx={styling.button}
 			>
-				<ArrowBackIcon />
+				<ArrowBackIcon fontSize="large" />
 			</Button>
 			<img src={image} alt={part} />
 			<Button
-				variant="contained"
 				onClick={() => {
 					updatePart(part, 1);
 				}}
 				sx={styling.button}
 			>
-				<ArrowForwardIcon />
+				<ArrowForwardIcon fontSize="large" />
 			</Button>
 		</Box>
 	);
