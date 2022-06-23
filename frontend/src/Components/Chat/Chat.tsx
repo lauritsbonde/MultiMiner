@@ -69,7 +69,7 @@ const styling = {
 		display: 'flex',
 		flexDirection: 'row',
 		alignItems: 'center',
-		maxWidth: '35%',
+		width: '30%',
 	},
 	sender: {
 		fontSize: '0.8rem',
@@ -79,6 +79,9 @@ const styling = {
 		textOverflow: 'ellipsis',
 		margin: 0,
 		padding: 0,
+	},
+	message: {
+		width: '70%',
 	},
 	form: {
 		width: '100%',
@@ -142,7 +145,7 @@ const Chat: FC<Props> = ({ socket }) => {
 							<img style={styling.chatAvatar} src={`https://avatars.dicebear.com/api/personas/${chat.senderName}.svg`} alt="Avatar" />
 							<p style={styling.sender}>{chat.senderName}</p>
 						</Box>
-						<span>{chat.message}</span>
+						<Box sx={styling.message}>{chat.message}</Box>
 					</Box>
 				))}
 			</Box>
@@ -166,7 +169,6 @@ const Chat: FC<Props> = ({ socket }) => {
 					autoComplete="off"
 					variant="filled"
 				/>
-				<br />
 				<Fab type="submit" size="small" aria-label="Send" sx={styling.fab}>
 					<SendIcon />
 				</Fab>
