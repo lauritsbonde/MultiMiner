@@ -4,6 +4,21 @@ import Join from './Components/Join';
 import { ConstantData, DynamicData, StartData, MineralData } from './Types/GameTypes';
 import { io, Socket } from 'socket.io-client';
 import { mineralSprite, playerSprite } from './CanvasStyles/Sprites';
+import { Box, createTheme, ThemeProvider } from '@mui/material';
+
+declare module '@mui/material/styles' {
+	interface Theme {
+		status: {
+			danger: string;
+		};
+	}
+	// allow configuration using `createTheme`
+	interface ThemeOptions {
+		status?: {
+			danger?: string;
+		};
+	}
+}
 
 function App() {
 	const [joined, setJoined] = useState(false);
@@ -89,21 +104,34 @@ function App() {
 		};
 	}, [BACKEND_URL]);
 
+	const theme = createTheme({
+		status: {
+			danger: '#f44336',
+		},
+		typography: {
+			fontFamily: ['Roboto', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', '"Helvetica Neue"', 'Arial', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"'].join(
+				','
+			),
+		},
+	});
+
 	return (
-		<div style={{ height: '100vh' }}>
-			{!joined && <Join joinGame={joinGame} playerImages={playerImages} />}
-			{minerals.length > 0 && (
-				<MainPage
-					socket={socket}
-					myId={myId}
-					constantData={constantData}
-					startGameData={gameData}
-					startMinerals={minerals}
-					images={{ mineralImages, playerImages }}
-					allImagesLoaded={allImagesLoaded}
-				/>
-			)}
-		</div>
+		<ThemeProvider theme={theme}>
+			<Box sx={{ height: '100vh' }}>
+				{!joined && <Join joinGame={joinGame} playerImages={playerImages} />}
+				{minerals.length > 0 && (
+					<MainPage
+						socket={socket}
+						myId={myId}
+						constantData={constantData}
+						startGameData={gameData}
+						startMinerals={minerals}
+						images={{ mineralImages, playerImages }}
+						allImagesLoaded={allImagesLoaded}
+					/>
+				)}
+			</Box>
+		</ThemeProvider>
 	);
 }
 export default App;

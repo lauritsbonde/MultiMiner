@@ -148,7 +148,7 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 						bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
 					/>
 				)}
-				<Chat socket={socket} style={styling.chat} />
+				<Chat socket={socket} />
 			</Box>
 		</Box>
 	);

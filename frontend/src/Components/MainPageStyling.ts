@@ -17,18 +17,4 @@ export const styling = {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 	},
-	chat: {
-		display: 'flex',
-		flexDirection: 'column',
-		backgroundColor: '#ddd',
-		width: '20vw',
-		minWidth: '300px',
-		maxWidth: '600px',
-		height: '100%',
-		maxHeight: '75vh',
-		border: '1px solid black',
-		borderRadius: '5px',
-		padding: '2px',
-		boxSizing: 'border-box',
-	},
 } as { [key: string]: CSSProperties };

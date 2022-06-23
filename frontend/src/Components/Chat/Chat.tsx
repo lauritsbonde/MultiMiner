@@ -1,13 +1,13 @@
 import React, { FC, CSSProperties, useRef, useEffect } from 'react';
 import { Socket } from 'socket.io-client';
-import { Box, Button, TextField } from '@mui/material';
+import { Box, Fab, TextField } from '@mui/material';
+import SendIcon from '@mui/icons-material/Send';
 
 interface Props {
 	socket: Socket;
-	style?: React.CSSProperties;
 }
 
-const Chat: FC<Props> = ({ socket, style }) => {
+const Chat: FC<Props> = ({ socket }) => {
 	const [chats, setChats] = React.useState<Array<{ senderId: string; senderName: string; message: string }>>([]);
 	const [input, setInput] = React.useState('');
 
@@ -26,8 +26,22 @@ const Chat: FC<Props> = ({ socket, style }) => {
 	};
 
 	const styling = {
+		chat: {
+			display: 'flex',
+			flexDirection: 'column',
+			backgroundColor: '#ddd',
+			width: '20vw',
+			minWidth: '300px',
+			maxWidth: '600px',
+			height: '85vh',
+			border: '1px solid black',
+			borderRadius: '5px',
+			padding: '2px',
+			boxSizing: 'border-box',
+			overflow: 'hidden',
+		},
 		header: { height: '8%', margin: '4px' },
-		chats: { overflowY: 'scroll', height: '88%' },
+		chats: { overflowY: 'scroll', height: '80%', width: '100%', paddingRight: '5px' },
 		myChat: {
 			backgroundColor: '#f0f0f0',
 			borderRadius: '5px',
@@ -45,7 +59,7 @@ const Chat: FC<Props> = ({ socket, style }) => {
 			justifyContent: 'space-between',
 		},
 		chatAvatar: {
-			width: '30px',
+			width: '30%',
 			height: '30px',
 			borderRadius: '50%',
 			margin: '5px',
@@ -54,6 +68,28 @@ const Chat: FC<Props> = ({ socket, style }) => {
 			display: 'flex',
 			flexDirection: 'row',
 			alignItems: 'center',
+			maxWidth: '30%',
+		},
+		sender: {
+			fontSize: '.8 em',
+			whiteSpace: 'nowrap',
+			maxWidth: '70%',
+			overflow: 'hidden',
+			textOverflow: 'ellipsis',
+			margin: 0,
+			padding: 0,
+		},
+		form: {
+			width: '100%',
+			display: 'flex',
+			margin: '2px 0',
+			justifyContent: 'space-between',
+			alignItems: 'center',
+		},
+		input: {
+			width: '90%',
+			marginRight: '4px',
+			boxSizing: 'border-box',
 		},
 	} as { [key: string]: CSSProperties };
 
@@ -64,14 +100,14 @@ const Chat: FC<Props> = ({ socket, style }) => {
 	}, [chats]);
 
 	return (
-		<Box style={style}>
+		<Box style={styling.chat}>
 			<h3 style={styling.header}>Global Chat</h3>
 			<Box style={styling.chats} ref={chatRef}>
 				{chats.map((chat, i) => (
 					<Box key={i} style={chat.senderId === socket.id ? styling.myChat : styling.otherChat}>
 						<Box style={styling.avatarAndName}>
 							<img style={styling.chatAvatar} src={`https://avatars.dicebear.com/api/personas/${chat.senderName}.svg`} alt="Avatar" />
-							<span>{chat.senderName}: </span>
+							<p style={styling.sender}>{chat.senderName}</p>
 						</Box>
 						<span>{chat.message}</span>
 					</Box>
@@ -81,22 +117,22 @@ const Chat: FC<Props> = ({ socket, style }) => {
 				onSubmit={(e) => {
 					sendChat(e);
 				}}
-				style={{ height: '15%', width: '95%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}
+				style={styling.form}
 			>
 				<TextField
 					type="text"
 					name="message"
-					placeholder="Hello!"
+					label="Chat"
 					onChange={(e) => {
 						handleInput(e.target.value);
 					}}
 					value={input}
-					sx={{ resize: 'none', width: '100%', height: '40%' }}
+					sx={styling.input}
 				/>
 				<br />
-				<Button variant="contained" type="submit" sx={{ width: '100%' }}>
-					Send message!
-				</Button>
+				<Fab type="submit" size="small" aria-label="Send">
+					<SendIcon />
+				</Fab>
 			</form>
 		</Box>
 	);
