@@ -78,9 +78,7 @@ const Join: FC<JoinProps> = ({ joinGame, playerImages }) => {
 
 	return (
 		<Box sx={styling.container}>
-			<Typography variant="h1" sx={{ fontWeight: '600' }}>
-				Join MultiMiner
-			</Typography>
+			<Typography variant="h1">Join MultiMiner</Typography>
 			<Box sx={styling.playerContainer}>
 				<Typography variant="h5">Enter your username</Typography>
 				<form

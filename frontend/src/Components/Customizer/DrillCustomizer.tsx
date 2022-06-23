@@ -14,7 +14,7 @@ const DrillCustomizer: FC<Props> = ({ playerImages, updatePart, imageIndex }) =>
 
 	return (
 		<Box sx={{ display: 'flex', justifyContent: 'center', flexDirection: 'column', alignItems: 'center', margin: '20px 0', width: '100%' }}>
-			<Typography variant="h6">Customize your drill!</Typography>
+			<Typography variant="h5">Customize your drill!</Typography>
 			<>
 				{parts.map((part, index) => {
 					if (part === 'head' || part === 'body' || part === 'bottom' || part === 'wheels') {
