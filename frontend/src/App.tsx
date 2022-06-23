@@ -68,6 +68,7 @@ function App() {
 			};
 			const loadedPlayerImages = await load();
 			setPlayerImages(loadedPlayerImages);
+			setAllImagesLoaded(true);
 		})();
 	}, []);
 
