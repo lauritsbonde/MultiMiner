@@ -68,29 +68,25 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 			setCanvasOffSet(newOffSet);
 		};
 
-		document.addEventListener('keydown', ({ code, repeat }) => {
-			if (!repeat) {
+		document.addEventListener('keydown', ({ code, repeat, target }) => {
+			if (!repeat && target === document.body) {
 				if (code === 'ArrowUp') {
 					socket.emit('move', 'up');
-				}
-				if (code === 'ArrowDown') {
+				} else if (code === 'ArrowDown') {
 					socket.emit('move', 'down');
-				}
-				if (code === 'ArrowLeft') {
+				} else if (code === 'ArrowLeft') {
 					socket.emit('move', 'left');
-				}
-				if (code === 'ArrowRight') {
+				} else if (code === 'ArrowRight') {
+					socket.emit('move', 'right');
+				} else if (code === 'KeyW') {
+					socket.emit('move', 'up');
+				} else if (code === 'KeyS') {
+					socket.emit('move', 'down');
+				} else if (code === 'KeyA') {
+					socket.emit('move', 'left');
+				} else if (code === 'KeyD') {
 					socket.emit('move', 'right');
 				}
-				// else if (code === 'KeyW') {
-				// 	socket.emit('stop', 'up');
-				// } else if (code === 'KeyS') {
-				// 	socket.emit('stop', 'down');
-				// } else if (code === 'KeyA') {
-				// 	socket.emit('stop', 'left');
-				// } else if (code === 'KeyD') {
-				// 	socket.emit('stop', 'right');
-				// }
 			}
 		});
 
@@ -103,16 +99,15 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 				socket.emit('stop', 'left');
 			} else if (code === 'ArrowRight') {
 				socket.emit('stop', 'right');
+			} else if (code === 'KeyW') {
+				socket.emit('stop', 'up');
+			} else if (code === 'KeyS') {
+				socket.emit('stop', 'down');
+			} else if (code === 'KeyA') {
+				socket.emit('stop', 'left');
+			} else if (code === 'KeyD') {
+				socket.emit('stop', 'right');
 			}
-			// else if (code === 'KeyW') {
-			// 	socket.emit('stop', 'up');
-			// } else if (code === 'KeyS') {
-			// 	socket.emit('stop', 'down');
-			// } else if (code === 'KeyA') {
-			// 	socket.emit('stop', 'left');
-			// } else if (code === 'KeyD') {
-			// 	socket.emit('stop', 'right');
-			// }
 		});
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps

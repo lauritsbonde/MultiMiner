@@ -11,7 +11,7 @@ export const styling = {
 		display: 'flex',
 		justifyContent: 'space-around',
 	},
-	fuelDisplayContainer: { width: '12vw', minWidth: '40px', height: '3vh', minHeight: '18px', backgroundColor: 'grey', margin: '4px', position: 'relative' },
+	fuelDisplayContainer: { width: '12vw', minWidth: '40px', height: '3vh', minHeight: '18px', backgroundColor: '#505050', margin: '4px', position: 'relative', border: '2px solid black' },
 	canvasAndChat: {
 		display: 'flex',
 		flexDirection: 'row',
