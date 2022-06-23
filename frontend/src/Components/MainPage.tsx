@@ -9,6 +9,7 @@ import kdTree from '../kdTree';
 import { drawUpperBackground, drawBuildings, drawMinerals, drawPlayers, drawSelf } from '../CanvasStyles/drawHelper';
 import Chat from './Chat/Chat';
 import { styling } from './MainPageStyling';
+import { Box, Typography } from '@mui/material';
 
 interface Props {
 	socket: Socket;
@@ -120,25 +121,25 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 	const fuelRatio = gameData.players !== undefined && myId !== '' ? (gameData.players[myId].fuel.current / gameData.players[myId].fuel.max) * 100 : 0;
 
 	return (
-		<div style={styling.container}>
-			<div>
-				{gameData.players !== undefined && gameData.players[myId].isDead && <h3>You died!</h3>}
+		<Box sx={styling.container}>
+			<Box>
+				{gameData.players !== undefined && gameData.players[myId].isDead && <Typography variant="h3">You died!</Typography>}
 				{gameData.players && (
-					<div style={styling.infoContainer}>
-						<h3 style={{ display: 'flex' }}>
+					<Box sx={styling.infoContainer}>
+						<Typography variant="h6" sx={{ display: 'flex' }}>
 							Fuel:
-							<div style={styling.fuelDisplayContainer}>
-								<h4 style={{ position: 'absolute', zIndex: 1, top: '0', left: '20%', margin: 0, padding: 0 }}>
+							<Box sx={styling.fuelDisplayContainer}>
+								<Typography sx={{ position: 'absolute', zIndex: 1, top: '0', left: '20%', margin: 0, padding: 0 }}>
 									{gameData.players[myId].fuel.current.toFixed(2)} / {gameData.players[myId].fuel.max} L
-								</h4>
-								<div style={{ width: fuelRatio + '%', height: '100%', backgroundColor: fuelRatio < 15 ? 'red' : fuelRatio < 30 ? 'orange' : 'green' }}></div>
-							</div>
-						</h3>
-						<h3>Money: {gameData.players[myId].money.toFixed(2)}</h3>
-					</div>
+								</Typography>
+								<Box sx={{ width: fuelRatio + '%', height: '100%', backgroundColor: fuelRatio < 15 ? 'red' : fuelRatio < 30 ? 'orange' : 'green' }}></Box>
+							</Box>
+						</Typography>
+						<Typography variant="h6">Money: {gameData.players[myId].money.toFixed(2)}</Typography>
+					</Box>
 				)}
-			</div>
-			<div style={styling.canvasAndChat}>
+			</Box>
+			<Box sx={styling.canvasAndChat}>
 				<Canvas draw={draw} canvasRef={canvasRef} />
 				{gameData.players !== undefined && gameData.players[myId].onBuilding !== '' && gameData.players[myId].onBuilding !== 'graveyard' && (
 					<BuildingContainer
@@ -148,8 +149,8 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 					/>
 				)}
 				<Chat socket={socket} style={styling.chat} />
-			</div>
-		</div>
+			</Box>
+		</Box>
 	);
 };
 

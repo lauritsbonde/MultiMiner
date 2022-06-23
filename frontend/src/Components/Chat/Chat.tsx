@@ -1,5 +1,6 @@
-import React, { FC, CSSProperties } from 'react';
+import React, { FC, CSSProperties, useRef, useEffect } from 'react';
 import { Socket } from 'socket.io-client';
+import { Box, Button, TextField } from '@mui/material';
 
 interface Props {
 	socket: Socket;
@@ -20,8 +21,8 @@ const Chat: FC<Props> = ({ socket, style }) => {
 		setChats([...chats, data]);
 	});
 
-	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInput(e.target.value);
+	const handleInput = (e: string) => {
+		setInput(e);
 	};
 
 	const styling = {
@@ -56,42 +57,48 @@ const Chat: FC<Props> = ({ socket, style }) => {
 		},
 	} as { [key: string]: CSSProperties };
 
+	const chatRef = useRef({} as HTMLDivElement);
+
+	useEffect(() => {
+		chatRef.current.scrollTop = chatRef.current.scrollHeight;
+	}, [chats]);
+
 	return (
-		<div style={style}>
+		<Box style={style}>
 			<h3 style={styling.header}>Global Chat</h3>
-			<div style={styling.chats}>
+			<Box style={styling.chats} ref={chatRef}>
 				{chats.map((chat, i) => (
-					<div key={i} style={chat.senderId === socket.id ? styling.myChat : styling.otherChat}>
-						<div style={styling.avatarAndName}>
+					<Box key={i} style={chat.senderId === socket.id ? styling.myChat : styling.otherChat}>
+						<Box style={styling.avatarAndName}>
 							<img style={styling.chatAvatar} src={`https://avatars.dicebear.com/api/personas/${chat.senderName}.svg`} alt="Avatar" />
 							<span>{chat.senderName}: </span>
-						</div>
+						</Box>
 						<span>{chat.message}</span>
-					</div>
+					</Box>
 				))}
-			</div>
+			</Box>
 			<form
 				onSubmit={(e) => {
 					sendChat(e);
 				}}
-				style={{ height: '10%', width: '90%' }}
+				style={{ height: '15%', width: '95%', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'space-between' }}
 			>
-				<input
+				<TextField
 					type="text"
 					name="message"
 					placeholder="Hello!"
 					onChange={(e) => {
-						handleInput(e);
+						handleInput(e.target.value);
 					}}
 					value={input}
-					style={{ resize: 'none', width: '100%', height: '40%' }}
+					sx={{ resize: 'none', width: '100%', height: '40%' }}
 				/>
 				<br />
-				<button type="submit" style={{ width: '100%' }}>
+				<Button variant="contained" type="submit" sx={{ width: '100%' }}>
 					Send message!
-				</button>
+				</Button>
 			</form>
-		</div>
+		</Box>
 	);
 };
 

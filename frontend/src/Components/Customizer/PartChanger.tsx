@@ -9,14 +9,32 @@ interface props {
 	part: 'head' | 'body' | 'bottom' | 'wheels';
 }
 
+const styling = {
+	container: {
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'space-between',
+		minWidth: '300px',
+		margin: '4px 0',
+	},
+	button: {
+		minWidth: '50px',
+		minHeight: '50px',
+		padding: '0px',
+		margin: '0px',
+		borderRadius: '0px',
+	},
+};
+
 const PartChanger: FC<props> = ({ updatePart, image, part }) => {
 	return (
-		<Box sx={{ display: 'flex', flexDirection: 'row' }}>
+		<Box sx={styling.container}>
 			<Button
 				variant="contained"
 				onClick={() => {
 					updatePart(part, -1);
 				}}
+				sx={styling.button}
 			>
 				<ArrowBackIcon />
 			</Button>
@@ -26,6 +44,7 @@ const PartChanger: FC<props> = ({ updatePart, image, part }) => {
 				onClick={() => {
 					updatePart(part, 1);
 				}}
+				sx={styling.button}
 			>
 				<ArrowForwardIcon />
 			</Button>

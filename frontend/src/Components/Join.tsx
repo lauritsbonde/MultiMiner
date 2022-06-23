@@ -1,3 +1,4 @@
+import { Box, Button, TextField, Typography } from '@mui/material';
 import React, { FC, startTransition, useState } from 'react';
 import DrillCustomizer from './Customizer/DrillCustomizer';
 
@@ -11,11 +12,11 @@ const Join: FC<JoinProps> = ({ joinGame, playerImages }) => {
 	const [avatar, setAvatar] = useState(`https://avatars.dicebear.com/api/personas/${''}.svg`);
 	const [imageIndex, setImageIndex] = useState({ head: '0', body: '0', bottom: '0', wheels: '0' });
 
-	const handleInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setInput(e.target.value);
+	const handleInput = (input: string) => {
+		setInput(input);
 		startTransition(() => {
 			// TODO: do some checks to see if the avatar is valid and if someone else is using it
-			setAvatar(`https://avatars.dicebear.com/api/personas/${e.target.value}.svg`);
+			setAvatar(`https://avatars.dicebear.com/api/personas/${input}.svg`);
 		});
 	};
 
@@ -30,33 +31,34 @@ const Join: FC<JoinProps> = ({ joinGame, playerImages }) => {
 	};
 
 	return (
-		<div style={{ position: 'absolute' }}>
-			<h1>Join</h1>
-			<h3>Enter your username</h3>
+		<Box style={{ position: 'absolute' }}>
+			<Typography variant="h1">Join</Typography>
+			<Typography variant="h4">Enter your username</Typography>
 			<form
 				onSubmit={(e) => {
 					e.preventDefault();
 					joinGame(input, imageIndex);
 				}}
 			>
-				<input
+				<TextField
 					type="text"
-					placeholder="Username"
 					value={input}
+					label="Username"
 					onChange={(e) => {
-						handleInput(e);
+						handleInput(e.target.value);
 					}}
+					sx={{ marginRight: '1rem' }}
 				/>
-				<button type="submit" onClick={() => joinGame(input || `I AM BORING_${(Math.random() + 1).toString(36).substring(2)}`, imageIndex)}>
+				<Button variant="contained" type="submit" onClick={() => joinGame(input || `I AM BORING_${(Math.random() + 1).toString(36).substring(2)}`, imageIndex)}>
 					Join
-				</button>
+				</Button>
 			</form>
-			<div>
-				<h3>Your random avatar</h3>
-				<img src={avatar} alt="random avatar" />
-			</div>
+			<Box>
+				<Typography variant="h4">Your random avatar</Typography>
+				<img src={avatar} alt="random avatar" style={{ width: '50%' }} />
+			</Box>
 			{playerImages ? <DrillCustomizer imageIndex={imageIndex} playerImages={playerImages} updatePart={updatePart} /> : <div>test...</div>}
-		</div>
+		</Box>
 	);
 };
 

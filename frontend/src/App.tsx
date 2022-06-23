@@ -41,15 +41,19 @@ function App() {
 		cacheImages(mineralSprite, (loadedImages) => {
 			setMineralImages(loadedImages);
 		});
-		const loadingPLayerImages = {} as { [key: string]: any };
-		Object.keys(playerSprite).forEach((key) => {
-			cacheImages(playerSprite[key], (loadedImages) => {
-				loadingPLayerImages[key] = loadedImages;
-			});
-		});
-		setPlayerImages(loadingPLayerImages);
-		console.log(loadingPLayerImages);
-		setAllImagesLoaded(true);
+		(async () => {
+			const load = async () => {
+				const loadingPLayerImages = {} as { [key: string]: any };
+				Object.keys(playerSprite).forEach((key) => {
+					cacheImages(playerSprite[key], (loadedImages) => {
+						loadingPLayerImages[key] = loadedImages;
+					});
+				});
+				return loadingPLayerImages;
+			};
+			const loadedPlayerImages = await load();
+			setPlayerImages(loadedPlayerImages);
+		})();
 	}, []);
 
 	const joinGame = (name: string, imageIndex: { head: string; body: string; bottom: string; wheels: string }) => {

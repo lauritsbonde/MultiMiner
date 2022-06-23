@@ -15,19 +15,15 @@ const DrillCustomizer: FC<Props> = ({ playerImages, updatePart, imageIndex }) =>
 	return (
 		<Box>
 			<Typography variant="h6">Customize your drill!</Typography>
-			{Object.keys(playerImages).length > 0 ? (
-				<>
-					{parts.map((part, index) => {
-						if (part === 'head' || part === 'body' || part === 'bottom' || part === 'wheels') {
-							return <PartChanger key={index} updatePart={updatePart} image={playerImages[part][imageIndex[part]].src} part={part} />;
-						} else {
-							return null;
-						}
-					})}
-				</>
-			) : (
-				<Box>Loading...</Box>
-			)}
+			<>
+				{parts.map((part, index) => {
+					if (part === 'head' || part === 'body' || part === 'bottom' || part === 'wheels') {
+						return <PartChanger key={index} updatePart={updatePart} image={playerImages[part] !== undefined ? playerImages[part][imageIndex[part]].src : ''} part={part} />;
+					} else {
+						return null;
+					}
+				})}
+			</>
 		</Box>
 	);
 };
