@@ -34,6 +34,7 @@ const Chat: FC<Props> = ({ socket }) => {
 			minWidth: '300px',
 			maxWidth: '600px',
 			height: '85vh',
+			maxHeight: '1000px',
 			border: '1px solid black',
 			borderRadius: '5px',
 			padding: '2px',
