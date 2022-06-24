@@ -17,6 +17,7 @@ interface PlayerData {
 	isDead: boolean;
 	basket: { items: { [type: string]: number }; amount: number };
 	imageIndex: { head: string; body: string; bottom: string; wheels: string };
+	points: number;
 }
 
 interface BuildingData {
@@ -29,6 +30,7 @@ export interface UpdateGameData {
 	changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>;
 	players: { [id: string]: PlayerData };
 	selfPlayer: PlayerData;
+	leaderBoard: Array<{ id: string; name: string; points: number }>;
 }
 
 export interface StartData {

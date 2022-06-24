@@ -19,7 +19,9 @@ export default class World {
 
 	shopManager: ShopManager;
 
-	chatMessages: Array<{ id: string; message: string }> = [];
+	chatMessages: Array<{ id: string; message: string }>;
+
+	leaderBoard: Array<{ id: string; name: string; points: number }>;
 
 	constructor() {
 		this.size = { width: 4000, height: 4000 }; //there is a concrete level after the height
@@ -39,6 +41,8 @@ export default class World {
 		this.shopManager.setupBuildings(this.mineralSize, this.size, this.groundStart, (index: number) => this.makeMineralConcrete(index));
 
 		this.chatMessages = [];
+
+		this.leaderBoard = [];
 	}
 
 	toDto() {
@@ -49,6 +53,7 @@ export default class World {
 			players: this.playersDto,
 			changedMinerals: mineralChanges,
 			selfPlayer: this.playersDto[Object.keys(this.playersDto)[0]],
+			leaderBoard: this.leaderBoard,
 		};
 	}
 
@@ -93,6 +98,7 @@ export default class World {
 
 	update() {
 		this.updatePlayers();
+		this.createLeaderBoard();
 		//this.buildKdTrees();
 	}
 
@@ -168,5 +174,14 @@ export default class World {
 
 	addChat(message: string, id: string) {
 		this.chatMessages.push({ message, id });
+	}
+
+	createLeaderBoard() {
+		this.leaderBoard = [];
+		for (let id in this.players) {
+			if (this.players[id].isDead) continue;
+			this.leaderBoard.push({ id, name: this.players[id].name, points: this.players[id].points });
+		}
+		this.leaderBoard.sort((a, b) => b.points - a.points);
 	}
 }

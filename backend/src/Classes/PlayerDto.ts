@@ -12,6 +12,8 @@ export default class PlayerDto extends PosClass {
 	isDead: boolean;
 	basket: { items: { [type: string]: number }; amount: number };
 
+	points: number;
+
 	constructor(
 		id: string,
 		name: string,
@@ -23,7 +25,8 @@ export default class PlayerDto extends PosClass {
 		fuel: { max: number; current: number },
 		money: number,
 		isDead: boolean,
-		basket: { items: { [type: string]: number }; amount: number }
+		basket: { items: { [type: string]: number }; amount: number },
+		points: number
 	) {
 		super(size, pos);
 
@@ -37,5 +40,6 @@ export default class PlayerDto extends PosClass {
 		this.money = money;
 		this.isDead = isDead;
 		this.basket = basket;
+		this.points = points;
 	}
 }

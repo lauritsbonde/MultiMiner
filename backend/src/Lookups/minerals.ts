@@ -16,6 +16,24 @@ export const mineralPrices = {
 	Opal: 150,
 } as { [type: string]: number };
 
+export const mineralPoints = {
+	Mud: 10,
+	Coal: 20,
+	Iron: 30,
+	Gold: 40,
+	Diamond: 50,
+	Emerald: 60,
+	Ruby: 70,
+	Sapphire: 80,
+	Topaz: 90,
+	Amethyst: 100,
+	Quartz: 110,
+	Amber: 120,
+	Jade: 130,
+	Pearl: 140,
+	Opal: 150,
+} as { [type: string]: number };
+
 export const mineralSpawn = (depth: number, groundStart: number) => {
 	let type = 'Mud';
 	const rand = Math.random();

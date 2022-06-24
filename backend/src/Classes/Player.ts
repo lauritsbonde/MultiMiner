@@ -40,6 +40,8 @@ export default class Player extends PosClass {
 
 	basket: { maxItems: number; items: { [type: string]: number }; amount: number };
 
+	points: number;
+
 	constructor(
 		id: string,
 		pos: { x: number; y: number },
@@ -80,13 +82,27 @@ export default class Player extends PosClass {
 		this.drillingStartDirection = '';
 
 		this.basket = { maxItems: 10, items: {}, amount: 0 };
+
+		this.points = 0;
 	}
 
 	toDto() {
-		return new PlayerDto(this.id, this.name, this.imageSpriteIndex, this.pos, this.size, this.onBuilding, { current: this.fuel.current, max: this.fuel.max }, this.money, this.isDead, {
-			items: this.basket.items,
-			amount: this.basket.amount,
-		});
+		return new PlayerDto(
+			this.id,
+			this.name,
+			this.imageSpriteIndex,
+			this.pos,
+			this.size,
+			this.onBuilding,
+			{ current: this.fuel.current, max: this.fuel.max },
+			this.money,
+			this.isDead,
+			{
+				items: this.basket.items,
+				amount: this.basket.amount,
+			},
+			this.points
+		);
 	}
 
 	setCanvasSize(canvasSize: { width: number; height: number }) {
@@ -306,7 +322,7 @@ export default class Player extends PosClass {
 
 				addDrillMineralToChanged(this.drillingMineral);
 
-				this.drillingMineral.destroy();
+				this.points += this.drillingMineral.destroy();
 				this.drillingMineral = undefined;
 
 				this.finalDrillPosition = { x: undefined, y: undefined };

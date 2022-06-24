@@ -35,9 +35,6 @@ const Chat: FC<Props> = ({ socket }) => {
 
 	return (
 		<Box style={styling.chat}>
-			<Typography sx={styling.header} variant="h4">
-				Global Chat
-			</Typography>
 			<Box style={styling.chats} ref={chatRef} className={css.noScrollBar}>
 				{chats.map((chat, i) => (
 					<Box key={i} style={chat.senderId === socket.id ? styling.myChat : styling.otherChat}>

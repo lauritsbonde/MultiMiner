@@ -7,9 +7,9 @@ import useCanvas from '../Hooks/useCanvas';
 import { MineralData, ConstantData, DynamicData, UpdateGameData } from '../Types/GameTypes';
 import kdTree from '../kdTree';
 import { drawUpperBackground, drawBuildings, drawMinerals, drawPlayers, drawSelf } from '../CanvasStyles/drawHelper';
-import Chat from './Chat/Chat';
 import { styling } from './MainPageStyling';
 import { Box, Typography } from '@mui/material';
+import ChatLeaderboardShifter from './ChatLeaderboardShifter/ChatLeaderboardShifter';
 
 interface Props {
 	socket: Socket;
@@ -25,6 +25,7 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 	const [mineralsKdTree, setMineralsKdTree] = useState<kdTree>(new kdTree([...startMinerals]));
 	const [gameData, setGameData] = useState<DynamicData>(startGameData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
+	const [leaderBoard, setLeaderBoard] = useState([] as Array<{ id: string; name: string; points: number }>);
 	// const [skies, setSkies] = useState();
 
 	const newMinerals = (changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>) => {
@@ -52,6 +53,7 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 		socket.on('update', (data: UpdateGameData) => {
 			newMinerals(data.changedMinerals);
 			setGameData({ players: data.players, selfPlayer: data.selfPlayer });
+			setLeaderBoard(data.leaderBoard);
 			calculateCanvasOffSet(data);
 		});
 
@@ -143,7 +145,7 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 						bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
 					/>
 				)}
-				<Chat socket={socket} />
+				<ChatLeaderboardShifter socket={socket} leaderboard={leaderBoard} />
 			</Box>
 		</Box>
 	);

@@ -1,4 +1,5 @@
 import PosClass from './PosClass';
+import { mineralPoints } from '../Lookups/minerals';
 
 export default class Mineral extends PosClass {
 	id: number;
@@ -24,8 +25,10 @@ export default class Mineral extends PosClass {
 	}
 
 	destroy() {
+		const oldType = this.type;
 		this.type = 'Empty';
 		this.drillFriction = 0;
+		return mineralPoints[oldType];
 	}
 }
 
