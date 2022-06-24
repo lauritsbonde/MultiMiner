@@ -1,6 +1,6 @@
-import React, { FC, CSSProperties, useRef, useEffect } from 'react';
+import React, { FC, useRef, useEffect } from 'react';
 import { Socket } from 'socket.io-client';
-import { Box, Fab, TextField, Typography } from '@mui/material';
+import { Box, Fab, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { styling } from './ChatStyling';
 import css from './styling.module.css';
