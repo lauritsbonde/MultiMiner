@@ -1,3 +1,4 @@
+import { Box } from '@mui/material';
 import React from 'react';
 import { Socket } from 'socket.io-client';
 import Fuelstation from './Fuelstation';
@@ -17,16 +18,16 @@ const BuildingContainer: React.FC<BuildingContainerProps> = ({ building, bgColor
 		position: 'absolute',
 		top: '25%',
 		minHeight: '50vh',
-		width: '80vw',
-		left: '10vw',
+		width: '50%',
 		backgroundColor: transparentBg,
 		backdropFilter: 'blur(5px)',
 		borderRadius: '10px',
 		padding: '10px',
 		boxSizing: 'border-box',
+		color: '#fff',
 	} as React.CSSProperties;
 	return (
-		<div style={styling}>
+		<Box sx={styling}>
 			{building === 'Fuelstation' ? (
 				<Fuelstation socket={socket} />
 			) : building === 'Mineral Shop' ? (
@@ -38,7 +39,7 @@ const BuildingContainer: React.FC<BuildingContainerProps> = ({ building, bgColor
 			) : (
 				<h2>Building Error</h2>
 			)}
-		</div>
+		</Box>
 	);
 };
 

@@ -1,3 +1,4 @@
+import { Box, Table, TableBody, TableCell, Typography, TableRow, Button } from '@mui/material';
 import React, { useState, CSSProperties } from 'react';
 import socketProps from '../../Types/Socket';
 
@@ -13,7 +14,34 @@ const MineralShop: React.FC<socketProps> = ({ socket }) => {
 			display: 'flex',
 			flexDirection: 'column',
 		},
+		container: {
+			margin: 'auto',
+			display: 'flex',
+			justifyContent: 'space-between',
+			flexDirection: 'column',
+			alignItems: 'center',
+		},
+		title: {
+			margin: '10px 0 20px 0',
+		},
+		item: {
+			display: 'flex',
+			width: '75%',
+			justifyContent: 'space-between',
+			alignItems: 'center',
+			margin: '8px 0',
+		},
+		buyButton: {
+			backgroundColor: '#2B7756',
+			'&:hover': { backgroundColor: '#44916f' },
+		},
 		mineralList: {},
+		cell: {
+			color: '#fff',
+		},
+		sellButtons: {
+			width: '10%',
+		},
 	} as { [key: string]: CSSProperties };
 
 	const sellMineral = (mineral: string, amount?: number) => {
@@ -23,52 +51,59 @@ const MineralShop: React.FC<socketProps> = ({ socket }) => {
 	};
 
 	return (
-		<div>
-			<h3>MineralShop</h3>
+		<Box sx={styling.container}>
+			<Typography variant="h5">MineralShop</Typography>
 			{Object.keys(mineralData).length > 0 ? (
-				<div style={styling.outerContainer}>
-					<ul style={styling.mineralList}>
-						{Object.keys(mineralData).map((mineral) => (
-							<li key={mineral}>
-								<div>
-									<p>{mineral}</p>
-									<p>Amount: {mineralData[mineral].amount}</p>
-									<p>Price pr: {mineralData[mineral].price}$</p>
-									<p>Total price: {mineralData[mineral].totalPrice}$</p>
-								</div>
-								<div>
-									<button
-										onClick={() => {
-											sellMineral(mineral, 1);
-										}}
-									>
-										Sell 1 {mineral}
-									</button>
-									{mineralData[mineral].amount > 1 && (
-										<button
+				<Box sx={styling.outerContainer}>
+					<Table sx={styling.mineralList}>
+						<TableBody>
+							{Object.keys(mineralData).map((mineral) => (
+								<TableRow key={mineral}>
+									<TableCell sx={styling.cell}>
+										<Typography>{mineral}</Typography>
+									</TableCell>
+									<TableCell sx={styling.cell}>Amount: {mineralData[mineral].amount}</TableCell>
+									<TableCell sx={styling.cell}>Price pr: {mineralData[mineral].price}$</TableCell>
+									<TableCell sx={styling.cell}>Total price: {mineralData[mineral].totalPrice}$</TableCell>
+									<TableCell sx={{ ...styling.cell, ...styling.sellButtons }}>
+										<Typography>Sell {mineral}</Typography>
+										<Button
+											variant="contained"
 											onClick={() => {
-												sellMineral(mineral, mineralData[mineral].amount);
+												sellMineral(mineral, 1);
 											}}
 										>
-											Sell all {mineral}
-										</button>
-									)}
-								</div>
-							</li>
-						))}
-					</ul>
-					<button
+											1
+										</Button>
+										{mineralData[mineral].amount > 1 && (
+											<Button
+												variant="contained"
+												onClick={() => {
+													sellMineral(mineral, mineralData[mineral].amount);
+												}}
+											>
+												All
+											</Button>
+										)}
+									</TableCell>
+								</TableRow>
+							))}
+						</TableBody>
+					</Table>
+					<Button
+						sx={{ marginTop: '10px' }}
+						variant="contained"
 						onClick={() => {
 							sellMineral('all');
 						}}
 					>
 						Sell everything
-					</button>
-				</div>
+					</Button>
+				</Box>
 			) : (
-				<p>No minerals</p>
+				<Typography variant="h5">No minerals</Typography>
 			)}
-		</div>
+		</Box>
 	);
 };
 

@@ -39,7 +39,7 @@ const styling = {
 };
 
 const ChatLeaderboardShifter: FC<Props> = ({ socket, leaderboard }) => {
-	const [window, setWindow] = useState('chat');
+	const [window, setWindow] = useState('leaderboard');
 	return (
 		<Box sx={styling.container}>
 			<ButtonGroup variant="contained" sx={styling.buttonGroup} fullWidth={true}>

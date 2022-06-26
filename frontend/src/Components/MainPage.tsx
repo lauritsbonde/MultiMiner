@@ -71,7 +71,8 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 		};
 
 		document.addEventListener('keydown', ({ code, repeat, target }) => {
-			if (!repeat && target === document.body) {
+			if (target instanceof HTMLInputElement) return;
+			if (!repeat) {
 				if (code === 'ArrowUp') {
 					socket.emit('move', 'up');
 				} else if (code === 'ArrowDown') {
@@ -92,7 +93,8 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 			}
 		});
 
-		document.addEventListener('keyup', ({ code }) => {
+		document.addEventListener('keyup', ({ code, target }) => {
+			if (target instanceof HTMLInputElement) return;
 			if (code === 'ArrowUp') {
 				socket.emit('stop', 'up');
 			} else if (code === 'ArrowDown') {

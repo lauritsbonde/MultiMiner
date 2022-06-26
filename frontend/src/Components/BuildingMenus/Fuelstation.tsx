@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import { Box, Button, Typography } from '@mui/material';
+import React, { useState, CSSProperties } from 'react';
 import socketProps from '../../Types/Socket';
 
 const Fuelstation: React.FC<socketProps> = ({ socket }) => {
@@ -14,27 +15,43 @@ const Fuelstation: React.FC<socketProps> = ({ socket }) => {
 	const styling = {
 		container: {
 			margin: 'auto',
+			display: 'flex',
+			justifyContent: 'space-between',
+			flexDirection: 'column',
+			alignItems: 'center',
+		},
+		title: {
+			margin: '10px 0 20px 0',
 		},
 		item: {
 			display: 'flex',
-			width: '40%',
+			width: '75%',
 			justifyContent: 'space-between',
 			alignItems: 'center',
+			margin: '8px 0',
 		},
-	};
+		buyButton: {
+			backgroundColor: '#2B7756',
+			'&:hover': { backgroundColor: '#44916f' },
+		},
+	} as { [key: string]: CSSProperties };
 
 	return (
-		<div style={styling.container}>
-			<h3>Fuelstation</h3>
+		<Box style={styling.container}>
+			<Typography variant="h5" sx={styling.title}>
+				Fuelstation
+			</Typography>
 			{Object.keys(fuelData).map((fuel) => (
-				<div key={fuel} style={styling.item}>
-					<h4>{fuel} tank</h4>
-					<p>{fuelData[fuel].liters}L</p>
-					<p>{fuelData[fuel].price}$</p>
-					<button onClick={() => purchaseFuel({ amount: fuelData[fuel].liters, price: fuelData[fuel].price })}>Buy</button>
-				</div>
+				<Box key={fuel} style={styling.item}>
+					<Typography variant="h6">{fuel} tank</Typography>
+					<Typography>{fuelData[fuel].liters}L</Typography>
+					<Typography>{fuelData[fuel].price}$</Typography>
+					<Button variant="contained" sx={styling.buyButton} onClick={() => purchaseFuel({ amount: fuelData[fuel].liters, price: fuelData[fuel].price })}>
+						Buy
+					</Button>
+				</Box>
 			))}
-		</div>
+		</Box>
 	);
 };
 
