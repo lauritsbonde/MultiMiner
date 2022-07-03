@@ -131,6 +131,7 @@ function App() {
 		if (isAuthenticated) {
 			joinGame(user?.nickname || 'boring');
 		}
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated]);
 
 	if (!aiTraining) {
