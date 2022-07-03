@@ -116,7 +116,7 @@ export const drawPlayers = (ctx: any, gameData: DynamicData, canvasOffSet: { x: 
 		for (let player in gameData.players) {
 			if (!gameData.players[player].isDead) {
 				const currentPlayer = gameData.players[player];
-				if (currentPlayer.id === myId) {
+				if (currentPlayer.id === myId || currentPlayer.id === 'aiSpectator') {
 					continue;
 				}
 				drawHead(ctx, currentPlayer.pos, canvasOffSet, playerImages.head, currentPlayer.imageIndex.head, currentPlayer.size);
@@ -134,14 +134,14 @@ export const drawPlayers = (ctx: any, gameData: DynamicData, canvasOffSet: { x: 
 export const drawSelf = (ctx: any, gameData: DynamicData, myId: string, canvasOffSet: { x: number; y: number }, playerImages: { [key: string]: any }) => {
 	if (gameData.players[myId]) {
 		const currentPlayer = gameData.players[myId];
-		if (!currentPlayer.isDead) {
-			// ctx.fillStyle = '#000';
+		if (!currentPlayer.isDead && currentPlayer.id !== 'aiSpectator') {
+			ctx.fillStyle = '#000';
 			// ctx.fillRect(currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y, currentPlayer.size.width, currentPlayer.size.height);
 			drawHead(ctx, currentPlayer.pos, canvasOffSet, playerImages.head, currentPlayer.imageIndex.head, currentPlayer.size);
 			drawBody(ctx, currentPlayer.pos, canvasOffSet, playerImages.body, currentPlayer.imageIndex.body, currentPlayer.size);
 			drawBottom(ctx, currentPlayer.pos, canvasOffSet, playerImages.bottom, currentPlayer.imageIndex.bottom, currentPlayer.size);
 			drawWheels(ctx, currentPlayer.pos, canvasOffSet, playerImages.wheels, currentPlayer.imageIndex.wheels, currentPlayer.size);
-			ctx.font = '10px Arial';
+			ctx.font = 'bold 14px Arial';
 			ctx.fillText(currentPlayer.name, currentPlayer.pos.x - canvasOffSet.x, currentPlayer.pos.y - canvasOffSet.y - 5);
 		}
 	}

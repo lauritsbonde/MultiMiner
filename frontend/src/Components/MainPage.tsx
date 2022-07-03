@@ -19,9 +19,11 @@ interface Props {
 	startMinerals: MineralData[];
 	images: { [key: string]: { [key: string]: any } };
 	allImagesLoaded: boolean;
+	aiTraining: boolean;
+	setMyId?: (id: string) => void;
 }
 
-const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startMinerals, images, allImagesLoaded }) => {
+const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startMinerals, images, allImagesLoaded, aiTraining, setMyId }) => {
 	const [mineralsKdTree, setMineralsKdTree] = useState<kdTree>(new kdTree([...startMinerals]));
 	const [gameData, setGameData] = useState<DynamicData>(startGameData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
@@ -52,9 +54,17 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 
 		socket.on('update', (data: UpdateGameData) => {
 			newMinerals(data.changedMinerals);
-			setGameData({ players: data.players, selfPlayer: data.selfPlayer });
+			setGameData({ players: data.players });
 			setLeaderBoard(data.leaderBoard);
 			calculateCanvasOffSet(data);
+		});
+
+		socket.on('changeBestAi', (data: { newId: string }) => {
+			if (Object.keys(gameData).length > 0 && gameData.players[data.newId]) {
+				if (setMyId !== undefined && myId !== data.newId) {
+					setMyId(data.newId);
+				}
+			}
 		});
 
 		const calculateCanvasOffSet = (data: DynamicData) => {
@@ -70,52 +80,38 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 			setCanvasOffSet(newOffSet);
 		};
 
-		document.addEventListener('keydown', ({ code, repeat, target }) => {
-			if (target instanceof HTMLInputElement) return;
-			if (!repeat) {
-				if (code === 'ArrowUp') {
-					socket.emit('move', 'up');
-				} else if (code === 'ArrowDown') {
-					socket.emit('move', 'down');
-				} else if (code === 'ArrowLeft') {
-					socket.emit('move', 'left');
-				} else if (code === 'ArrowRight') {
-					socket.emit('move', 'right');
-				} else if (code === 'KeyW') {
-					socket.emit('move', 'up');
-				} else if (code === 'KeyS') {
-					socket.emit('move', 'down');
-				} else if (code === 'KeyA') {
-					socket.emit('move', 'left');
-				} else if (code === 'KeyD') {
-					socket.emit('move', 'right');
+		if (!aiTraining) {
+			document.addEventListener('keydown', ({ code, repeat, target }) => {
+				if (target instanceof HTMLInputElement) return;
+				if (!repeat) {
+					if (code === 'ArrowUp' || code === 'KeyW') {
+						socket.emit('move', { dir: 'up', id: myId });
+					} else if (code === 'ArrowDown' || code === 'KeyS') {
+						socket.emit('move', { dir: 'down', id: myId });
+					} else if (code === 'ArrowLeft' || code === 'KeyA') {
+						socket.emit('move', { dir: 'left', id: myId });
+					} else if (code === 'ArrowRight' || code === 'KeyD') {
+						socket.emit('move', { dir: 'right', id: myId });
+					}
 				}
-			}
-		});
+			});
 
-		document.addEventListener('keyup', ({ code, target }) => {
-			if (target instanceof HTMLInputElement) return;
-			if (code === 'ArrowUp') {
-				socket.emit('stop', 'up');
-			} else if (code === 'ArrowDown') {
-				socket.emit('stop', 'down');
-			} else if (code === 'ArrowLeft') {
-				socket.emit('stop', 'left');
-			} else if (code === 'ArrowRight') {
-				socket.emit('stop', 'right');
-			} else if (code === 'KeyW') {
-				socket.emit('stop', 'up');
-			} else if (code === 'KeyS') {
-				socket.emit('stop', 'down');
-			} else if (code === 'KeyA') {
-				socket.emit('stop', 'left');
-			} else if (code === 'KeyD') {
-				socket.emit('stop', 'right');
-			}
-		});
+			document.addEventListener('keyup', ({ code, target }) => {
+				if (target instanceof HTMLInputElement) return;
+				if (code === 'ArrowUp' || code === 'KeyW') {
+					socket.emit('stop', { dir: 'up', id: myId });
+				} else if (code === 'ArrowDown' || code === 'KeyS') {
+					socket.emit('stop', { dir: 'down', id: myId });
+				} else if (code === 'ArrowLeft' || code === 'KeyA') {
+					socket.emit('stop', { dir: 'left', id: myId });
+				} else if (code === 'ArrowRight' || code === 'KeyD') {
+					socket.emit('stop', { dir: 'right', id: myId });
+				}
+			});
+		}
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, []);
+	}, [gameData.players]);
 
 	const fuelRatio = gameData.players !== undefined && myId !== '' ? (gameData.players[myId].fuel.current / gameData.players[myId].fuel.max) * 100 : 0;
 
@@ -140,14 +136,18 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 			</Box>
 			<Box sx={styling.canvasAndChat}>
 				<Canvas draw={draw} canvasRef={canvasRef} />
-				{gameData.players !== undefined && gameData.players[myId].onBuilding !== '' && gameData.players[myId].onBuilding !== 'graveyard' && (
-					<BuildingContainer
-						socket={socket}
-						building={gameData.players[myId].onBuilding}
-						bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
-					/>
-				)}
-				<ChatLeaderboardShifter socket={socket} leaderboard={leaderBoard} />
+				{gameData.players !== undefined &&
+					gameData.players[myId].onBuilding !== '' &&
+					gameData.players[myId].onBuilding !== 'graveyard' &&
+					gameData.players[myId].onBuilding !== 'spectating' && (
+						<BuildingContainer
+							socket={socket}
+							building={gameData.players[myId].onBuilding}
+							bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
+							myId={myId}
+						/>
+					)}
+				<ChatLeaderboardShifter socket={socket} leaderboard={leaderBoard} myId={myId} />
 			</Box>
 		</Box>
 	);

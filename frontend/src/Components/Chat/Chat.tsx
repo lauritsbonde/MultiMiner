@@ -1,4 +1,4 @@
-import React, { FC, useRef, useEffect } from 'react';
+import React, { FC, useRef, useEffect, FormEvent } from 'react';
 import { Socket } from 'socket.io-client';
 import { Box, Fab, TextField } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
@@ -7,15 +7,16 @@ import css from './styling.module.css';
 
 interface Props {
 	socket: Socket;
+	myId: string;
 }
 
-const Chat: FC<Props> = ({ socket }) => {
+const Chat: FC<Props> = ({ socket, myId }) => {
 	const [chats, setChats] = React.useState<Array<{ senderId: string; senderName: string; message: string }>>([]);
 	const [input, setInput] = React.useState('');
 
-	const sendChat = (e: React.FormEvent) => {
+	const sendChat = (e: FormEvent) => {
 		e.preventDefault();
-		socket.emit('chat', { message: input });
+		socket.emit('chat', { message: input, id: myId });
 		setInput('');
 	};
 

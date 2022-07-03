@@ -7,6 +7,7 @@ import Leaderboard from '../Leaderboard/Leaderboard';
 interface Props {
 	socket: Socket;
 	leaderboard: Array<{ id: string; name: string; points: number }>;
+	myId: string;
 }
 
 const styling = {
@@ -38,7 +39,7 @@ const styling = {
 	},
 };
 
-const ChatLeaderboardShifter: FC<Props> = ({ socket, leaderboard }) => {
+const ChatLeaderboardShifter: FC<Props> = ({ socket, leaderboard, myId }) => {
 	const [window, setWindow] = useState('leaderboard');
 	return (
 		<Box sx={styling.container}>
@@ -50,7 +51,7 @@ const ChatLeaderboardShifter: FC<Props> = ({ socket, leaderboard }) => {
 					LeaderBoard
 				</Button>
 			</ButtonGroup>
-			{window === 'chat' ? <Chat socket={socket} /> : <Leaderboard leaderboard={leaderboard} />}
+			{window === 'chat' ? <Chat socket={socket} myId={myId} /> : <Leaderboard leaderboard={leaderboard} />}
 		</Box>
 	);
 };

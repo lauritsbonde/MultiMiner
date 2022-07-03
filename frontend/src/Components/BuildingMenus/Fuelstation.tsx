@@ -1,15 +1,15 @@
 import { Box, Button, Typography } from '@mui/material';
-import React, { useState, CSSProperties } from 'react';
+import React, { useState, CSSProperties, FC } from 'react';
 import socketProps from '../../Types/Socket';
 
-const Fuelstation: React.FC<socketProps> = ({ socket }) => {
+const Fuelstation: FC<socketProps> = ({ socket, myId }) => {
 	const [fuelData, setFueldata] = useState({} as { [key: string]: { liters: number; price: number } });
-	socket.emit('enterFuelStation', {}, (response: { [key: string]: { liters: number; price: number } }) => {
+	socket.emit('enterFuelStation', { id: myId }, (response: { [key: string]: { liters: number; price: number } }) => {
 		setFueldata(response);
 	});
 
 	const purchaseFuel = (fuel: { amount: number; price: number }) => {
-		socket.emit('purchaseFuel', fuel);
+		socket.emit('purchaseFuel', { fuel, id: myId });
 	};
 
 	const styling = {

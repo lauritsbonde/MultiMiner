@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import MainPage from './Components/MainPage';
-import Join from './Components/Join';
 import { ConstantData, DynamicData, StartData, MineralData } from './Types/GameTypes';
 import { io, Socket } from 'socket.io-client';
 import { mineralSprite, playerSprite } from './CanvasStyles/Sprites';
-import { Box, createTheme, ThemeProvider } from '@mui/material';
+import { Box, createTheme, ThemeProvider, Button } from '@mui/material';
+import { useAuth0 } from '@auth0/auth0-react';
 
 declare module '@mui/material/styles' {
 	interface Theme {
@@ -21,7 +21,6 @@ declare module '@mui/material/styles' {
 }
 
 function App() {
-	const [joined, setJoined] = useState(false);
 	const [socket, setSocket] = useState({} as Socket);
 	const [myId, setMyId] = useState<string>('');
 	const [constantData, setConstantData] = useState<ConstantData>({} as ConstantData);
@@ -30,6 +29,11 @@ function App() {
 	const [mineralImages, setMineralImages] = useState({} as { [key: string]: any });
 	const [allImagesLoaded, setAllImagesLoaded] = useState(false);
 	const [playerImages, setPlayerImages] = useState({} as { [key: string]: { [key: string]: any } });
+
+	//MAYBE REMOVE
+	const [aiTraining, setAiTraining] = useState(false);
+
+	const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
 
 	const cacheImages = async (sources: { [key: string]: string }, callback: (loadedImages: { [key: string]: any }) => void) => {
 		const loadedImages = {} as { [key: string]: any };
@@ -72,22 +76,20 @@ function App() {
 		})();
 	}, []);
 
-	const joinGame = (name: string, imageIndex: { head: string; body: string; bottom: string; wheels: string }) => {
+	const joinGame = (name: string) => {
 		socket.emit(
 			'join',
 			{
 				name,
-				imageIndex,
 			},
 			(data: StartData) => {
+				setMyId(data.id);
 				setConstantData({ size: data.size, groundStart: data.groundStart, buildings: data.buildings });
-				setGameData({ players: data.players, selfPlayer: data.selfPlayer });
+				setGameData({ players: data.players });
 				setMinerals(data.minerals);
 			}
 		);
-		setMyId(socket.id);
 		setSocket(socket);
-		setJoined(true);
 	};
 
 	const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
@@ -96,7 +98,6 @@ function App() {
 		const socket = io(BACKEND_URL);
 
 		socket.on('connect', () => {
-			setMyId(socket.id);
 			setSocket(socket);
 		});
 
@@ -126,13 +127,58 @@ function App() {
 	});
 
 	useEffect(() => {
-		document.title = joined ? 'MultiMiner' : 'MultiMiner - Join';
-	}, [joined]);
+		document.title = isAuthenticated ? 'MultiMiner' : 'MultiMiner - Join';
+		if (isAuthenticated) {
+			joinGame(user?.nickname || 'boring');
+		}
+	}, [isAuthenticated]);
+
+	if (!aiTraining) {
+		if (isLoading) return <div>Loading...</div>;
+		if (!isAuthenticated)
+			return (
+				<>
+					<Button variant="contained" onClick={() => loginWithRedirect()}>
+						Login
+					</Button>
+					<Button
+						variant="contained"
+						onClick={() => {
+							setAiTraining(true);
+							joinGame('ai');
+						}}
+					>
+						AI
+					</Button>
+				</>
+			);
+	}
 
 	return (
 		<ThemeProvider theme={theme}>
+			<Button
+				variant="contained"
+				onClick={() => {
+					console.log(socket);
+					socket.disconnect();
+					logout({ returnTo: window.location.origin });
+				}}
+			>
+				Logout
+			</Button>
+			{aiTraining && (
+				<Button
+					variant="contained"
+					onClick={() =>
+						socket.emit('newAis', {}, (data: string) => {
+							setMyId(data);
+						})
+					}
+				>
+					New ais
+				</Button>
+			)}
 			<Box sx={{ height: '100vh' }}>
-				{!joined && <Join joinGame={joinGame} playerImages={playerImages} />}
 				{minerals.length > 0 && (
 					<MainPage
 						socket={socket}
@@ -142,6 +188,8 @@ function App() {
 						startMinerals={minerals}
 						images={{ mineralImages, playerImages }}
 						allImagesLoaded={allImagesLoaded}
+						aiTraining={aiTraining}
+						setMyId={setMyId}
 					/>
 				)}
 			</Box>

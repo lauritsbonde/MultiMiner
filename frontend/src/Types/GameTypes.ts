@@ -29,23 +29,21 @@ interface BuildingData {
 export interface UpdateGameData {
 	changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>;
 	players: { [id: string]: PlayerData };
-	selfPlayer: PlayerData;
 	leaderBoard: Array<{ id: string; name: string; points: number }>;
 }
 
 export interface StartData {
+	id: string;
 	size: { width: number; height: number };
 	groundStart: number;
 	buildings: Array<BuildingData>;
 
 	minerals: Array<MineralData>;
 	players: { [id: string]: PlayerData };
-	selfPlayer: PlayerData;
 }
 
 export interface DynamicData {
 	players: { [id: string]: PlayerData };
-	selfPlayer: PlayerData;
 }
 
 export interface ConstantData {

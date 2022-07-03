@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import React from 'react';
+import React, { FC } from 'react';
 import { Socket } from 'socket.io-client';
 import Fuelstation from './Fuelstation';
 import MineralShop from './MineralShop';
@@ -10,9 +10,10 @@ interface BuildingContainerProps {
 	building: string;
 	bgColor: string;
 	socket: Socket;
+	myId: string;
 }
 
-const BuildingContainer: React.FC<BuildingContainerProps> = ({ building, bgColor, socket }) => {
+const BuildingContainer: FC<BuildingContainerProps> = ({ building, bgColor, socket, myId }) => {
 	const transparentBg = bgColor + 'd8';
 	const styling = {
 		position: 'absolute',
@@ -29,13 +30,13 @@ const BuildingContainer: React.FC<BuildingContainerProps> = ({ building, bgColor
 	return (
 		<Box sx={styling}>
 			{building === 'Fuelstation' ? (
-				<Fuelstation socket={socket} />
+				<Fuelstation socket={socket} myId={myId} />
 			) : building === 'Mineral Shop' ? (
-				<MineralShop socket={socket} />
+				<MineralShop socket={socket} myId={myId} />
 			) : building === 'Upgrade Shop' ? (
-				<UpgradeShop socket={socket} />
+				<UpgradeShop socket={socket} myId={myId} />
 			) : building === 'Research Lab' ? (
-				<ResearchLab socket={socket} />
+				<ResearchLab socket={socket} myId={myId} />
 			) : (
 				<h2>Building Error</h2>
 			)}

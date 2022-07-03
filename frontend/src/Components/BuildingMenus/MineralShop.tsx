@@ -2,10 +2,10 @@ import { Box, Table, TableBody, TableCell, Typography, TableRow, Button } from '
 import React, { useState, CSSProperties } from 'react';
 import socketProps from '../../Types/Socket';
 
-const MineralShop: React.FC<socketProps> = ({ socket }) => {
+const MineralShop: React.FC<socketProps> = ({ socket, myId }) => {
 	const [mineralData, setMineralData] = useState({} as { [type: string]: { price: number; amount: number; totalPrice: number } });
 
-	socket.emit('enterMineralShop', {}, (response: { [type: string]: { price: number; amount: number; totalPrice: number } }) => {
+	socket.emit('enterMineralShop', { id: myId }, (response: { [type: string]: { price: number; amount: number; totalPrice: number } }) => {
 		setMineralData(response);
 	});
 
@@ -45,7 +45,7 @@ const MineralShop: React.FC<socketProps> = ({ socket }) => {
 	} as { [key: string]: CSSProperties };
 
 	const sellMineral = (mineral: string, amount?: number) => {
-		socket.emit('sellMineral', { mineral, amount: amount !== undefined ? amount : -1 }, () => {
+		socket.emit('sellMineral', { id: myId, mineral, amount: amount !== undefined ? amount : -1 }, () => {
 			console.log('sell');
 		});
 	};

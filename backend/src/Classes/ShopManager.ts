@@ -5,14 +5,16 @@ import { mineralPrices } from '../Lookups/minerals';
 
 export default class ShopManager {
 	buildings: Array<Bulding>;
+	buildingSize: { width: number; height: number };
 
 	constructor() {
 		this.buildings = [];
+		this.buildingSize = { width: 100, height: 100 };
 	}
 
 	setupBuildings(mineralSize: number, worldSize: { width: number; height: number }, groundStart: number, changeMineral: (index: number) => void) {
 		const buildingsNeeded = ['Fuelstation', 'Mineral Shop', 'Upgrade Shop', 'Research Lab'];
-		const buildingSize = { width: 100, height: 100 };
+		const buildingSize = this.buildingSize;
 		const xDistanceBetweenBuildings = worldSize.width / (buildingsNeeded.length + 1);
 
 		for (let i = 0; i < buildingsNeeded.length; i++) {

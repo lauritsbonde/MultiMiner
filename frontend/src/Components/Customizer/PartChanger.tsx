@@ -15,7 +15,7 @@ const styling = {
 		flexDirection: 'row',
 		justifyContent: 'space-around',
 		width: '100%',
-		margin: '4px 0',
+		margin: '2px 0',
 		height: '50px',
 	},
 	button: {

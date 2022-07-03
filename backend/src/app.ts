@@ -41,68 +41,107 @@ io.on('connection', function (socket: any) {
 	socket.on(
 		'join',
 		(
-			data: { canvasSize: { width: number; height: number }; name: string; imageIndex: { head: string; body: string; bottom: string; wheels: string } },
-			callback: (response: {
-				size: { width: number; height: number };
-				groundStart: number;
-				players: { [id: string]: PlayerDto };
-				minerals: Mineral[];
-				buildings: Building[];
-				selfPlayer: PlayerDto;
-			}) => void
+			data: { canvasSize: { width: number; height: number }; name: string },
+			callback: (response: { id: string; size: { width: number; height: number }; groundStart: number; players: { [id: string]: PlayerDto }; minerals: Mineral[]; buildings: Building[] }) => void
 		) => {
-			world.addPlayer(socket.id, data.name, data.imageIndex);
-			world.players[socket.id].setCanvasSize(data.canvasSize);
-			console.log('a user connected');
+			if (data.name === 'ai') {
+				world.createAiSpectator(socket.id);
+				callback({
+					id: 'aiSpectator',
+					size: world.size,
+					groundStart: world.groundStart,
+					players: world.playersDto,
+					minerals: world.minerals,
+					buildings: world.shopManager.buildings,
+				});
+			} else {
+				world
+					.addPlayer(data.name, socket.id)
+					.then((id: string) => {
+						if (id !== 'err') {
+							world.players[id].setCanvasSize(data.canvasSize);
+							console.log('a user connected');
 
-			callback({
-				size: world.size,
-				groundStart: world.groundStart,
-				players: world.playersDto,
-				minerals: world.minerals,
-				buildings: world.shopManager.buildings,
-				selfPlayer: world.playersDto[socket.id],
-			});
+							callback({
+								id: id,
+								size: world.size,
+								groundStart: world.groundStart,
+								players: world.playersDto,
+								minerals: world.minerals,
+								buildings: world.shopManager.buildings,
+							});
+						} else {
+							//TODO: handle error
+							// callback({ err: 'err' });
+						}
+					})
+					.catch((err) => {
+						console.log('adderr', err);
+					});
+			}
 		}
 	);
 
 	// PLAYER MOVEMONT
 
-	socket.on('move', (data: string) => {
-		world.players[socket.id].moving[data] = true;
+	socket.on('move', (data: { dir: string; id: string }) => {
+		world.players[data.id].moving[data.dir] = true;
 	});
 
-	socket.on('stop', (data: string) => {
-		world.players[socket.id].moving[data] = false;
+	socket.on('stop', (data: { dir: string; id: string }) => {
+		world.players[data.id].moving[data.dir] = false;
 	});
 
 	// FUEL STATION
 
-	socket.on('enterFuelStation', (data: {}, callback: (response: {}) => void) => {
-		callback(world.shopManager.getFuelPrice(world.players[socket.id]));
+	socket.on('enterFuelStation', (data: { id: string }, callback: (response: {}) => void) => {
+		if (data.id.includes('ai')) {
+			callback(world.shopManager.getFuelPrice(world.aiController.ais[data.id]));
+		} else {
+			callback(world.shopManager.getFuelPrice(world.players[data.id]));
+		}
 	});
 
-	socket.on('purchaseFuel', (data: { amount: number; price: number }) => {
-		world.shopManager.purchaseFuel(world.players[socket.id], data);
+	socket.on('purchaseFuel', (data: { fuel: { amount: number; price: number }; id: string }) => {
+		if (data.id.includes('ai')) {
+			world.shopManager.purchaseFuel(world.aiController.ais[data.id], data.fuel);
+		} else {
+			world.shopManager.purchaseFuel(world.players[data.id], data.fuel);
+		}
 	});
 
 	// MINERAL SHOP
-	socket.on('enterMineralShop', (data: {}, callback: (response: { [type: string]: { price: number; amount: number; totalPrice: number } }) => void) => {
-		callback(world.shopManager.getBasketPrices(world.players[socket.id]));
+	socket.on('enterMineralShop', (data: { id: string }, callback: (response: { [type: string]: { price: number; amount: number; totalPrice: number } }) => void) => {
+		if (data.id.includes('ai')) {
+			callback(world.shopManager.getBasketPrices(world.aiController.ais[data.id]));
+		} else {
+			callback(world.shopManager.getBasketPrices(world.players[data.id]));
+		}
 	});
 
-	socket.on('sellMineral', (data: { mineral: string; amount: number }) => {
-		world.shopManager.sellMineral(world.players[socket.id], data.mineral, data.amount);
+	socket.on('sellMineral', (data: { id: string; mineral: string; amount: number }) => {
+		if (data.id.includes('ai')) {
+			world.shopManager.sellMineral(world.aiController.ais[data.id], data.mineral, data.amount);
+		} else {
+			world.shopManager.sellMineral(world.players[data.id], data.mineral, data.amount);
+		}
 	});
 
 	// CHAT
-	socket.on('chat', (data: { message: string }) => {
-		world.addChat(data.message, socket.id);
+	socket.on('chat', (data: { message: string; id: string }) => {
+		world.addChat(data.message, data.id);
 		// TODO: check the message for bad words
-		io.emit('newchat', { message: data.message, senderName: world.players[socket.id].name, senderId: socket.id });
+		io.emit('newchat', { message: data.message, senderName: world.players[data.id].name, senderId: data.id });
+	});
+
+	// AI
+	socket.on('newAis', (data: {}, callback: (id: string) => void) => {
+		world.newAiGeneration();
+		callback(world.aiController.getAiSpectator().id);
 	});
 
 	socket.on('disconnect', () => {
+		//TODO: save the player in the db
 		world.removePlayer(socket.id);
 		console.log('user disconnected');
 	});
@@ -110,6 +149,9 @@ io.on('connection', function (socket: any) {
 
 setInterval(() => {
 	world.update();
+	if (world.aiController.aiSpectator && world.aiController.changeAiId()) {
+		io.emit('changeBestAi', { newId: world.aiController.getFollowAiId() });
+	}
 	io.emit('update', world.toDto());
 }, 1000 / 30);
 

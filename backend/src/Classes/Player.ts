@@ -3,7 +3,7 @@ import Mineral from './Mineral';
 import Bulding from './Building';
 import PosClass from './PosClass';
 
-interface surroundingMinerals {
+export interface surroundingMinerals {
 	topMineral: Mineral;
 	bottomMineral: Mineral;
 	leftMineral: Mineral;
@@ -12,6 +12,7 @@ interface surroundingMinerals {
 
 export default class Player extends PosClass {
 	id: string;
+	socketId: string;
 	name: string;
 	canvasSize: { width: number; height: number };
 	imageSpriteIndex: { head: string; body: string; bottom: string; wheels: string };
@@ -42,19 +43,22 @@ export default class Player extends PosClass {
 
 	points: number;
 
+	getSurroundingMinerals: (player: Player) => surroundingMinerals;
+
 	constructor(
-		id: string,
+		socketId: string,
 		pos: { x: number; y: number },
 		worldSize: { width: number; height: number },
 		worldGroundLevel: number,
 		worldBuildings: Array<Bulding>,
 		name: string,
-		imageIndex: { head: string; body: string; bottom: string; wheels: string }
+		getSurroundingMinerals: (player: Player) => surroundingMinerals
 	) {
 		super({ width: 32, height: 32 }, pos);
-		this.id = id;
+		this.id = undefined;
+		this.socketId = socketId;
 		this.name = name;
-		this.imageSpriteIndex = imageIndex;
+		this.imageSpriteIndex = { head: '0', body: '0', bottom: '0', wheels: '0' };
 
 		this.canvasSize = { width: 1000, height: 1000 };
 
@@ -84,6 +88,8 @@ export default class Player extends PosClass {
 		this.basket = { maxItems: 10, items: {}, amount: 0 };
 
 		this.points = 0;
+
+		this.getSurroundingMinerals = getSurroundingMinerals;
 	}
 
 	toDto() {
@@ -109,7 +115,7 @@ export default class Player extends PosClass {
 		this.canvasSize = canvasSize;
 	}
 
-	move(surroundingMinerals: surroundingMinerals, addDrillMineralToChanged: (mineral: Mineral) => void) {
+	move(addDrillMineralToChanged: (mineral: Mineral) => void, getSurroundingMinerals: (player: Player) => surroundingMinerals) {
 		this.useFuel();
 		if (this.isDrilling) {
 			this.drill(undefined, undefined, addDrillMineralToChanged);
@@ -144,6 +150,8 @@ export default class Player extends PosClass {
 
 		//stop player if not moving
 		this.stopIfNotMovin(movingy, movingx);
+
+		const surroundingMinerals = this.getSurroundingMinerals(this);
 
 		// check if gravity should be applied
 		this.applyGravity(movingy, surroundingMinerals.bottomMineral);
@@ -306,7 +314,7 @@ export default class Player extends PosClass {
 		// create a vector from player to final drill position
 		if (this.finalDrillPosition.x !== undefined && this.finalDrillPosition.y !== undefined && this.drillingMineral !== undefined) {
 			//move player center towards final drill position
-			this.movePlayerTowardsFinalDrillPosition();
+			this.moveTowardsVector(this.finalDrillPosition);
 
 			//check that max speed is not exceeded
 			const mineralMaxSpeed = this.maxSpeed * this.drillingMineral.drillFriction;
@@ -320,11 +328,21 @@ export default class Player extends PosClass {
 
 				this.addMineralToBasket(this.drillingMineral);
 
-				addDrillMineralToChanged(this.drillingMineral);
+				if (addDrillMineralToChanged !== undefined) {
+					addDrillMineralToChanged(this.drillingMineral);
+				}
 
-				this.points += this.drillingMineral.destroy();
+				if (this.basket.amount < this.basket.maxItems) {
+					this.points += this.drillingMineral.destroy();
+				}
 				this.drillingMineral = undefined;
 
+				this.finalDrillPosition = { x: undefined, y: undefined };
+				this.drillingStartDirection = '';
+				this.speed = { x: 0, y: 0 };
+			} else if (this.drillingMineral.type === 'Empty') {
+				this.isDrilling = false;
+				this.drillingMineral = undefined;
 				this.finalDrillPosition = { x: undefined, y: undefined };
 				this.drillingStartDirection = '';
 				this.speed = { x: 0, y: 0 };
@@ -337,19 +355,19 @@ export default class Player extends PosClass {
 	}
 
 	// move towards final drill position if one axis is on position move a little random for effect
-	movePlayerTowardsFinalDrillPosition() {
-		if (this.finalDrillPosition.x !== undefined && this.finalDrillPosition.y !== undefined && this.drillingMineral !== undefined) {
-			if (this.pos.x < this.finalDrillPosition.x) {
+	moveTowardsVector(vector: { x?: number; y?: number }) {
+		if (vector.x !== undefined && vector.y !== undefined && this.drillingMineral !== undefined) {
+			if (this.pos.x < vector.x) {
 				this.speed.x += this.acceleration * this.drillingMineral.drillFriction;
-			} else if (this.pos.x > this.finalDrillPosition.x) {
+			} else if (this.pos.x > vector.x) {
 				this.speed.x -= this.acceleration * this.drillingMineral.drillFriction;
 			} else {
 				this.speed.x = Math.random() > 0.5 ? this.acceleration * this.drillingMineral.drillFriction : -this.acceleration * this.drillingMineral.drillFriction;
 			}
 
-			if (this.pos.y < this.finalDrillPosition.y) {
+			if (this.pos.y < vector.y) {
 				this.speed.y += this.acceleration * this.drillingMineral.drillFriction;
-			} else if (this.pos.y > this.finalDrillPosition.y) {
+			} else if (this.pos.y > vector.y) {
 				this.speed.y -= this.acceleration * this.drillingMineral.drillFriction;
 			} else {
 				this.speed.y = Math.random() > 0.5 ? this.acceleration * this.drillingMineral.drillFriction : -this.acceleration * this.drillingMineral.drillFriction;
