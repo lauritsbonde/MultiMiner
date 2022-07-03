@@ -5,6 +5,7 @@
 	"main": "app.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
+		"build": "tsc && node build/app.js",
 		"start": "nodemon src/app.ts",
 		"pushToHeroku": "git subtree push --prefix backend heroku master"
 	},
