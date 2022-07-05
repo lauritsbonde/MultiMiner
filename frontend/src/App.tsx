@@ -139,7 +139,7 @@ function App() {
 		if (!isAuthenticated)
 			return (
 				<>
-					<Button variant="contained" onClick={() => loginWithRedirect({ redirectUri: window.origin })}>
+					<Button variant="contained" onClick={() => loginWithRedirect({ redirectUri: window.location.href })}>
 						Login
 					</Button>
 					<Button
