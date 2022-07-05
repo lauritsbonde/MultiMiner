@@ -18,7 +18,10 @@ export default class AIplayer extends Player {
 		worldBuildings: Array<Bulding>,
 		name: string,
 		shopManager: ShopManager,
-		getSurroundingMinerals: (player: Player) => surroundingMinerals,
+		getSurroundingMinerals: (
+			pos: { x: number; y: number },
+			size: { width: number; height: number }
+		) => { topMineral: Mineral; bottomMineral: Mineral; leftMineral: Mineral; rightMineral: Mineral },
 		aiWeights?: savedWeights
 	) {
 		super(socketId, pos, worldSize, worldGroundLevel, worldBuildings, name, getSurroundingMinerals);
@@ -129,7 +132,7 @@ export default class AIplayer extends Player {
 			//Find path
 			const mineralBuilding = this.shopManager.buildings.find((building) => building.title === 'Mineral Shop');
 			console.log(this.pos);
-			const path = this.calculatePath({ ...mineralBuilding.pos, width: this.shopManager.buildingSize.width, height: this.shopManager.buildingSize.height }, this.pos);
+			//const path = this.calculatePath({ ...mineralBuilding.pos, width: this.shopManager.buildingSize.width, height: this.shopManager.buildingSize.height }, this.pos);
 			// move player along path
 
 			//Sells all minerals
@@ -154,8 +157,21 @@ export default class AIplayer extends Player {
 		console.log('Calculating path');
 
 		let test = 0;
-		while (!this.posInBB(pos, boundingBox)) {
-			const surrounding = this.getSurroundingMinerals(this);
+		while (!this.posInBB(pos, boundingBox) && frontier.length > 0) {
+			const surrounding = this.getSurroundingMinerals({ x: frontier[0].x, y: frontier[0].y }, this.size);
+
+			if (surrounding.topMineral.type === 'Empty') {
+				path.push({ x: surrounding.topMineral.pos.x, y: surrounding.topMineral.pos.y });
+			}
+			if (surrounding.rightMineral.type === 'Empty') {
+				path.push({ x: surrounding.rightMineral.pos.x, y: surrounding.rightMineral.pos.y });
+			}
+			if (surrounding.bottomMineral.type === 'Empty') {
+				path.push({ x: surrounding.bottomMineral.pos.x, y: surrounding.bottomMineral.pos.y });
+			}
+			if (surrounding.leftMineral.type === 'Empty') {
+				path.push({ x: surrounding.leftMineral.pos.x, y: surrounding.leftMineral.pos.y });
+			}
 
 			//TODO: remove
 			if (test > 1000) break;

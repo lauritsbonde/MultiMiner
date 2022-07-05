@@ -19,9 +19,15 @@ export default class AiController {
 
 	mineralSize: number;
 
-	getSurroundingMinerals: (player: Player) => surroundingMinerals;
+	getSurroundingMinerals: (pos: { x: number; y: number }, size: { width: number; height: number }) => { topMineral: Mineral; bottomMineral: Mineral; leftMineral: Mineral; rightMineral: Mineral };
 
-	constructor(size: { width: number; height: number }, groundStart: number, shopManager: ShopManager, mineralSize: number, getSurroundingMinerals: (player: Player) => surroundingMinerals) {
+	constructor(
+		size: { width: number; height: number },
+		groundStart: number,
+		shopManager: ShopManager,
+		mineralSize: number,
+		getSurroundingMinerals: (pos: { x: number; y: number }, size: { width: number; height: number }) => { topMineral: Mineral; bottomMineral: Mineral; leftMineral: Mineral; rightMineral: Mineral }
+	) {
 		this.ais = {};
 		this.bestAI = undefined;
 		this.changeId = false;
@@ -89,7 +95,7 @@ export default class AiController {
 		this.changeId = false;
 		for (let id in this.ais) {
 			if (this.ais[id].isDead) continue;
-			this.ais[id].move((mineral) => turnDrilledMineralToIndexAndType(mineral, mineralSize), this.getSurroundingMinerals);
+			this.ais[id].move((mineral) => turnDrilledMineralToIndexAndType(mineral, mineralSize));
 			this.ais[id].makeDecission();
 			if (this.ais[id].points > this.bestAI.points) {
 				this.bestAI = this.ais[id];

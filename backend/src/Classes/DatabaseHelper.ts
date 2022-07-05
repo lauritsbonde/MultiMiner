@@ -1,6 +1,6 @@
 import mongoose, { Model } from 'mongoose';
 // const URI = `mongodb+srv://lauritsbonde:${process.env.MONGODB}@cluster0.3qe1rjx.mongodb.net/?retryWrites=true&w=majority`;
-const URI = 'mongodb://localhost/multiminer';
+const URI = `mongodb+srv://lauritsbonde:${process.env.MONGODB_PASSWORD}@users.pn1fzrq.mongodb.net/?retryWrites=true&w=majority`;
 import UserModel from '../Models/UserModel';
 import Player from './Player';
 

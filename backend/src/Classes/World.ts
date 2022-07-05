@@ -4,8 +4,6 @@ import Mineral from './Mineral';
 import Player from './Player';
 import PlayerDto from './PlayerDto';
 import ShopManager from './ShopManager';
-import AIplayer from './AI/AIplayer';
-import { savedWeights } from './AI/Brain';
 import AiController from './AI/AiController';
 
 export default class World {
@@ -169,13 +167,13 @@ export default class World {
 		// this.mineralKdTree = new kdTree(this.minerals, 50);
 	}
 
-	getSurroundingMinerals(player: Player) {
-		let column = Math.floor((player.pos.x + player.size.width / 2) / this.mineralSize);
+	getSurroundingMinerals(pos: { x: number; y: number }, size: { width: number; height: number }) {
+		let column = Math.floor((pos.x + size.width / 2) / this.mineralSize);
 		let row = -1;
 		let index = -1;
 		const surroundingMinerals = { top: -1, bottom: -1, left: -1, right: -1 };
-		for (let i = player.pos.y; i < this.size.height + this.mineralSize; i += this.mineralSize) {
-			row = Math.floor((i + player.size.height / 2 - this.groundStart) / this.mineralSize);
+		for (let i = pos.y; i < this.size.height + this.mineralSize; i += this.mineralSize) {
+			row = Math.floor((i + size.height / 2 - this.groundStart) / this.mineralSize);
 			index = row * Math.floor(this.size.width / this.mineralSize) + column;
 			if (index >= 0 && this.minerals[index].type !== 'Empty') {
 				surroundingMinerals.bottom = index;
@@ -183,8 +181,8 @@ export default class World {
 			}
 		}
 
-		for (let i = player.pos.y; i >= this.groundStart; i -= this.mineralSize) {
-			row = Math.floor((i + player.size.height / 2 - this.groundStart) / this.mineralSize);
+		for (let i = pos.y; i >= this.groundStart; i -= this.mineralSize) {
+			row = Math.floor((i + size.height / 2 - this.groundStart) / this.mineralSize);
 			index = row * Math.floor(this.size.width / this.mineralSize) + column;
 			if (index >= 0 && this.minerals[index].type !== 'Empty') {
 				surroundingMinerals.top = index;
@@ -193,7 +191,7 @@ export default class World {
 			if (index < 0) break;
 		}
 
-		row = Math.floor((player.pos.y + player.size.height / 2 - this.groundStart) / this.mineralSize);
+		row = Math.floor((pos.y + size.height / 2 - this.groundStart) / this.mineralSize);
 		index = row * Math.floor(this.size.width / this.mineralSize) + column;
 
 		if (index - 1 >= 0 && this.minerals[index - 1].type !== 'Empty') {
@@ -228,7 +226,7 @@ export default class World {
 			if (this.players[id].isDead) {
 				this.removePlayer(id);
 			} else {
-				this.players[id].move((mineral) => this.turnDrilledMineralToIndexAndType(mineral), this.getSurroundingMinerals.bind(this));
+				this.players[id].move((mineral) => this.turnDrilledMineralToIndexAndType(mineral));
 				this.playersDto[id] = this.players[id].toDto();
 			}
 		}

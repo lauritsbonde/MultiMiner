@@ -43,7 +43,7 @@ export default class Player extends PosClass {
 
 	points: number;
 
-	getSurroundingMinerals: (player: Player) => surroundingMinerals;
+	getSurroundingMinerals: (pos: { x: number; y: number }, size: { width: number; height: number }) => { topMineral: Mineral; bottomMineral: Mineral; leftMineral: Mineral; rightMineral: Mineral };
 
 	constructor(
 		socketId: string,
@@ -52,7 +52,7 @@ export default class Player extends PosClass {
 		worldGroundLevel: number,
 		worldBuildings: Array<Bulding>,
 		name: string,
-		getSurroundingMinerals: (player: Player) => surroundingMinerals
+		getSurroundingMinerals: (pos: { x: number; y: number }, size: { width: number; height: number }) => { topMineral: Mineral; bottomMineral: Mineral; leftMineral: Mineral; rightMineral: Mineral }
 	) {
 		super({ width: 32, height: 32 }, pos);
 		this.id = undefined;
@@ -115,7 +115,7 @@ export default class Player extends PosClass {
 		this.canvasSize = canvasSize;
 	}
 
-	move(addDrillMineralToChanged: (mineral: Mineral) => void, getSurroundingMinerals: (player: Player) => surroundingMinerals) {
+	move(addDrillMineralToChanged: (mineral: Mineral) => void) {
 		this.useFuel();
 		if (this.isDrilling) {
 			this.drill(undefined, undefined, addDrillMineralToChanged);
@@ -151,7 +151,7 @@ export default class Player extends PosClass {
 		//stop player if not moving
 		this.stopIfNotMovin(movingy, movingx);
 
-		const surroundingMinerals = this.getSurroundingMinerals(this);
+		const surroundingMinerals = this.getSurroundingMinerals(this.pos, this.size);
 
 		// check if gravity should be applied
 		this.applyGravity(movingy, surroundingMinerals.bottomMineral);
