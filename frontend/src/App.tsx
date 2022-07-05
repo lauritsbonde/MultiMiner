@@ -155,6 +155,8 @@ function App() {
 			);
 	}
 
+	console.log('isAuthenticated', isAuthenticated);
+
 	return (
 		<ThemeProvider theme={theme}>
 			<Button
@@ -162,7 +164,7 @@ function App() {
 				onClick={() => {
 					console.log(socket);
 					socket.disconnect();
-					logout({ returnTo: window.location.origin });
+					logout({ returnTo: window.location.href });
 				}}
 			>
 				Logout
