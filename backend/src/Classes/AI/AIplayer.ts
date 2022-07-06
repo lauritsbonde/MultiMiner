@@ -131,7 +131,6 @@ export default class AIplayer extends Player {
 			//TODO: make the AI move to mineralbuilding
 			//Find path
 			const mineralBuilding = this.shopManager.buildings.find((building) => building.title === 'Mineral Shop');
-			console.log(this.pos);
 			//const path = this.calculatePath({ ...mineralBuilding.pos, width: this.shopManager.buildingSize.width, height: this.shopManager.buildingSize.height }, this.pos);
 			// move player along path
 
