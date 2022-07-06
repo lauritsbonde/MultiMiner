@@ -93,9 +93,9 @@ function App() {
 	};
 
 	const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
-	const socketOptions = {
-		path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
-	};
+	// const socketOptions = {
+	// 	path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
+	// };
 
 	useEffect(() => {
 		const socket = io(BACKEND_URL);
