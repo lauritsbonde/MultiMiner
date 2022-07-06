@@ -98,7 +98,7 @@ function App() {
 	};
 
 	useEffect(() => {
-		const socket = io(BACKEND_URL, socketOptions);
+		const socket = io(BACKEND_URL);
 
 		socket.on('connect', () => {
 			setSocket(socket);
