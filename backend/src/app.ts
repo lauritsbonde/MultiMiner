@@ -7,7 +7,7 @@ const app = express();
 const http = require('http').Server(app);
 const { auth } = require('express-openid-connect');
 
-const allowedOrigins = ['http://localhost:3000', 'https://multiminer.herokuapp.com', 'https://lauritsbonde.github.io'];
+const allowedOrigins = ['http://localhost:3000', 'https://multiminer.click'];
 
 const io = require('socket.io')(http, {
 	cors: {
