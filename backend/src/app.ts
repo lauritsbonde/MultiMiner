@@ -19,20 +19,12 @@ const io = require('socket.io')(http, {
 			}
 		},
 		methods: ['GET', 'POST'],
+		allowedHeaders: ['my-custom-header'],
+		credentials: true,
 	},
 });
+
 require('dotenv').config();
-
-// const authConfig = {
-// 	authRequired: false,
-// 	auth0Logout: true,
-// 	secret: process.env.AUTH0_SECRET,
-// 	baseURL: 'http://localhost:3333',
-// 	clientID: 'h7086nRe5Ew6otpzhBDxxG9kubS99QDq',
-// 	issuerBaseURL: 'https://dev-m7wdzvfk.eu.auth0.com',
-// };
-
-// app.use(auth(authConfig));
 
 import World from './Classes/World';
 const world = new World();
