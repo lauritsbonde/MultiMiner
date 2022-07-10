@@ -102,6 +102,7 @@ function App() {
 			withCredentials: true,
 			extraHeaders: {
 				'Access-Control-Allow-Origin': '*',
+				'my-custom-header': 'abcd',
 			},
 		});
 
