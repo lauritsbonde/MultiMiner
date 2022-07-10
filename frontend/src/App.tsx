@@ -98,9 +98,8 @@ function App() {
 	useEffect(() => {
 		const socket = io(BACKEND_URL, {
 			path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
-			withCredentials: true,
 			extraHeaders: {
-				'Access-Control-Allow-Origin': 'multiminer.click/api',
+				'Access-Control-Allow-Origin': '*',
 				'my-custom-header': 'abcd',
 			},
 		});
