@@ -30,7 +30,6 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 	const [leaderBoard, setLeaderBoard] = useState([] as Array<{ id: string; name: string; points: number }>);
 	// const [skies, setSkies] = useState();
 
-	console.log('MainPage');
 	const newMinerals = (changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>) => {
 		const oldKdTree = mineralsKdTree;
 		for (let i = 0; i < changedMinerals.length; i++) {

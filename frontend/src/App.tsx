@@ -99,6 +99,7 @@ function App() {
 
 	useEffect(() => {
 		const socket = io(BACKEND_URL, {
+			withCredentials: true,
 			extraHeaders: {
 				'Access-Control-Allow-Origin': BACKEND_URL,
 			},
@@ -141,14 +142,11 @@ function App() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated]);
 
-	console.log('start');
 	if (!aiTraining) {
 		if (isLoading) {
-			console.log('loading');
 			return <div>Loading...</div>;
 		}
 		if (!isAuthenticated) {
-			console.log('not authenticated');
 			return (
 				<>
 					<Button variant="contained" onClick={() => loginWithRedirect({ redirectUri: window.location.href })}>
@@ -167,7 +165,7 @@ function App() {
 			);
 		}
 	}
-	console.log('end', 'minerals', minerals.length);
+
 	return (
 		<ThemeProvider theme={theme}>
 			<Button
