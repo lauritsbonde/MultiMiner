@@ -99,6 +99,7 @@ function App() {
 		const socket = io(BACKEND_URL, {
 			path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
 			withCredentials: true,
+			autoConnect: true,
 			extraHeaders: {
 				'Access-Control-Allow-Origin': 'https://www.multiminer.click/api',
 				'my-custom-header': 'abcd',
@@ -110,6 +111,7 @@ function App() {
 		});
 
 		return () => {
+			console.log('disconnecting');
 			socket.close();
 		};
 	}, [BACKEND_URL]);
