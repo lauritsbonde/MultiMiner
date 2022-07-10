@@ -19,7 +19,7 @@ const io = require('socket.io')(http, {
 			}
 		},
 		methods: ['GET', 'POST', 'OPTIONS'],
-		allowedHeaders: ['Access-Control-Allow-Origin', 'Content-Type', 'Authorization'],
+		allowedHeaders: ['my-custom-header', 'Access-Control-Allow-Origin', 'Content-Type', 'Authorization'],
 		credentials: true,
 		path: process.env.NODE_ENV === 'production' ? '/api/socket.io' : '/socket.io',
 	},
