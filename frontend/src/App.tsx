@@ -93,6 +93,7 @@ function App() {
 	};
 
 	const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
+	console.log(BACKEND_URL);
 	// const socketOptions = {
 	// 	path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
 	// };
