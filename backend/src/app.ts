@@ -19,7 +19,7 @@ const io = require('socket.io')(http, {
 			}
 		},
 		methods: ['GET', 'POST', 'OPTIONS'],
-		allowedHeaders: ['my-custom-header'],
+		allowedHeaders: ['my-custom-header', 'Access-Control-Allow-Origin', 'Content-Type', 'Authorization'],
 		credentials: true,
 	},
 });

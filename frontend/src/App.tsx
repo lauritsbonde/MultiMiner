@@ -98,7 +98,11 @@ function App() {
 	// };
 
 	useEffect(() => {
-		const socket = io(BACKEND_URL);
+		const socket = io(BACKEND_URL, {
+			extraHeaders: {
+				'Access-Control-Allow-Origin': BACKEND_URL,
+			},
+		});
 
 		socket.on('connect', () => {
 			setSocket(socket);
