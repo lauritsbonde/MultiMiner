@@ -101,7 +101,7 @@ function App() {
 		const socket = io(BACKEND_URL, {
 			withCredentials: true,
 			extraHeaders: {
-				'Access-Control-Allow-Origin': BACKEND_URL,
+				'Access-Control-Allow-Origin': '*',
 			},
 		});
 
