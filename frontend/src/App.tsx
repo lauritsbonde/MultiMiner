@@ -99,10 +99,11 @@ function App() {
 
 	useEffect(() => {
 		const socket = io(BACKEND_URL, {
+			transports: ['websocket'],
 			withCredentials: true,
 			extraHeaders: {
 				'my-custom-header': 'abcd',
-				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Origin': BACKEND_URL,
 			},
 		});
 
