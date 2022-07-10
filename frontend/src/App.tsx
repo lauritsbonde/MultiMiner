@@ -105,9 +105,11 @@ function App() {
 			},
 		});
 
+		console.log('socket', socket);
+
 		socket.on('connect', () => {
 			setSocket(socket);
-			console.log(socket);
+			console.log('connected', socket);
 		});
 
 		return () => {
