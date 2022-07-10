@@ -11,14 +11,13 @@ const allowedOrigins = ['http://localhost:3000', 'https://multiminer.click', 'ht
 
 const io = require('socket.io')(http, {
 	cors: {
-		// origin: (origin: string, callback: any) => {
-		// 	if (allowedOrigins.includes(origin)) {
-		// 		callback(null, true);
-		// 	} else {
-		// 		callback(new Error('Not allowed by CORS'));
-		// 	}
-		// },
-		origin: '*',
+		origin: (origin: string, callback: any) => {
+			if (allowedOrigins.includes(origin)) {
+				callback(null, true);
+			} else {
+				callback(new Error('Not allowed by CORS'));
+			}
+		},
 		methods: ['GET', 'POST', 'OPTIONS'],
 		allowedHeaders: ['my-custom-header', 'Access-Control-Allow-Origin', 'Content-Type', 'Authorization'],
 		credentials: true,
