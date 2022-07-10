@@ -98,7 +98,13 @@ function App() {
 	// };
 
 	useEffect(() => {
-		const socket = io(BACKEND_URL);
+		const socket = io(BACKEND_URL, {
+			withCredentials: true,
+			extraHeaders: {
+				'my-custom-header': 'abcd',
+				'Access-Control-Allow-Origin': '*',
+			},
+		});
 
 		socket.on('connect', () => {
 			setSocket(socket);
