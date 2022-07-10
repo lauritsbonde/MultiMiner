@@ -170,7 +170,7 @@ function App() {
 			);
 		}
 	}
-	console.log('end');
+	console.log('end', 'minerals', minerals.length);
 	return (
 		<ThemeProvider theme={theme}>
 			<Button
