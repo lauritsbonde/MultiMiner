@@ -93,7 +93,6 @@ function App() {
 	};
 
 	const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
-	console.log(BACKEND_URL);
 
 	useEffect(() => {
 		const socket = io(BACKEND_URL, {
@@ -108,6 +107,7 @@ function App() {
 
 		socket.on('connect', () => {
 			setSocket(socket);
+			console.log(socket);
 		});
 
 		return () => {
