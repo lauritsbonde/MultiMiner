@@ -112,7 +112,7 @@ function App() {
 
 		return () => {
 			console.log('disconnecting');
-			socket.close();
+			// socket.close();
 		};
 	}, [BACKEND_URL]);
 
