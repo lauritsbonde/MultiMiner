@@ -144,9 +144,14 @@ function App() {
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [isAuthenticated]);
 
+	console.log('start');
 	if (!aiTraining) {
-		if (isLoading) return <div>Loading...</div>;
-		if (!isAuthenticated)
+		if (isLoading) {
+			console.log('loading');
+			return <div>Loading...</div>;
+		}
+		if (!isAuthenticated) {
+			console.log('not authenticated');
 			return (
 				<>
 					<Button variant="contained" onClick={() => loginWithRedirect({ redirectUri: window.location.href })}>
@@ -163,8 +168,9 @@ function App() {
 					</Button>
 				</>
 			);
+		}
 	}
-
+	console.log('end');
 	return (
 		<ThemeProvider theme={theme}>
 			<Button
