@@ -100,7 +100,7 @@ function App() {
 			path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
 			withCredentials: true,
 			extraHeaders: {
-				'Access-Control-Allow-Origin': 'multiminer.click',
+				'Access-Control-Allow-Origin': 'multiminer.click/api',
 				'my-custom-header': 'abcd',
 			},
 		});
