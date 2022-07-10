@@ -1,0 +1,1 @@
+{"version":3,"file":"static/css/main.37c352ce.css","mappings":"AAAA,+CACC,YACD,CAEA,4BACC,uBAAwB,CACxB,oBACD","sources":["Components/Chat/styling.module.css"],"sourcesContent":[".noScrollBar::-webkit-scrollbar {\n\tdisplay: none;\n}\n\n.noScrollBar {\n\t-ms-overflow-style: none; /* IE and Edge */\n\tscrollbar-width: none; /* Firefox */\n}\n"],"names":[],"sourceRoot":""}
