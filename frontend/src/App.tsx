@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { mineralSprite, playerSprite } from './CanvasStyles/Sprites';
 import { Box, createTheme, ThemeProvider, Button } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
+import axios from 'axios';
 
 declare module '@mui/material/styles' {
 	interface Theme {
@@ -77,6 +78,10 @@ function App() {
 	}, []);
 
 	const joinGame = (name: string) => {
+		if (socket.emit === undefined) {
+			console.error('socket.emit is undefined');
+			return;
+		}
 		socket.emit(
 			'join',
 			{
@@ -92,11 +97,10 @@ function App() {
 		setSocket(socket);
 	};
 
-	const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
-
 	useEffect(() => {
+		const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
 		const socket = io(BACKEND_URL, {
-			path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
+			path: '/socket.io',
 			withCredentials: true,
 			autoConnect: true,
 			extraHeaders: {
@@ -105,18 +109,14 @@ function App() {
 			},
 		});
 
-		console.log('socket', socket);
-
 		socket.on('connect', () => {
 			setSocket(socket);
-			console.log('connected', socket);
 		});
 
 		return () => {
-			console.log('disconnecting');
 			socket.close();
 		};
-	}, [BACKEND_URL]);
+	}, []);
 
 	const theme = createTheme({
 		status: {

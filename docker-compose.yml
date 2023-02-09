@@ -1,0 +1,24 @@
+version: '3.7'
+
+services:
+    backend:
+        environment:
+            MONGODB_PASSWORD: ${MONGODB_PASSWORD}
+            NODE_ENV: ${NODE_ENV}
+        build: ./backend
+        image: lauritsbonde/backend
+        container_name: backend
+        ports:
+            - 3333:3333
+
+    frontend:
+        environment:
+            REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL}
+            REACT_APP_ENVIRONMENT: ${REACT_APP_ENVIRONMENT}
+        build: ./frontend
+        image: lauritsbonde/frontend
+        container_name: frontend
+        ports:
+            - 3000:3000
+        depends_on:
+            - backend

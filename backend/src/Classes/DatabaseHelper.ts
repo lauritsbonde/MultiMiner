@@ -8,6 +8,7 @@ const user = mongoose.model('User', UserModel);
 
 export default class DatabaseHelper {
 	constructor() {
+		console.log(URI);
 		this.connectToDatabase();
 	}
 

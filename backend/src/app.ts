@@ -5,7 +5,6 @@ import Building from './Classes/Building';
 
 const app = express();
 const http = require('http').Server(app);
-const { auth } = require('express-openid-connect');
 
 const allowedOrigins = ['http://localhost:3000', 'https://www.multiminer.click', 'https://lauritsbonde.github.io/MultiMiner/'];
 
@@ -150,7 +149,9 @@ setInterval(() => {
 
 app.get('/', function (req: any, res: Response) {
 	// res.send(req.oidc.isAuthenticated() ? 'Logged in -> ' + req.oidc.user : 'Not logged in');
-	res.send('Hello World!');
+	res.setHeader('Content-Type', 'application/json');
+	res.status(200).json({ message: 'hooray! welcome to our api!' });
+	res.end();
 });
 
 const port = process.env.PORT || 3333;

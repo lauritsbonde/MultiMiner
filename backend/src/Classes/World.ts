@@ -1,5 +1,5 @@
 import { mineralSpawn } from '../Lookups/minerals';
-import DatabaseHelper from './DatabaseHelper';
+// import DatabaseHelper from './DatabaseHelper';
 import Mineral from './Mineral';
 import Player from './Player';
 import PlayerDto from './PlayerDto';
@@ -26,7 +26,7 @@ export default class World {
 
 	leaderBoard: Array<{ id: string; name: string; points: number }>;
 
-	dataBase: DatabaseHelper;
+	// dataBase: DatabaseHelper;
 
 	constructor() {
 		this.size = { width: 4000, height: 4000 }; //there is a concrete level after the height
@@ -49,7 +49,7 @@ export default class World {
 
 		this.leaderBoard = [];
 
-		this.dataBase = new DatabaseHelper();
+		// this.dataBase = new DatabaseHelper();
 
 		this.aiController = new AiController(this.size, this.groundStart, this.shopManager, this.mineralSize, this.getSurroundingMinerals.bind(this));
 	}
@@ -105,22 +105,26 @@ export default class World {
 				this.getSurroundingMinerals.bind(this)
 			);
 
-			this.dataBase
-				.saveUser(newPlayer)
-				.then((res: { success: boolean; data: any; errmsg: string }) => {
-					if (res.success) {
-						const id = res.data._id.toString();
-						newPlayer.id = id;
-						this.players[id] = newPlayer;
-						this.playersDto[id] = newPlayer.toDto();
-						resolve(id);
-					} else {
-						reject(res.errmsg);
-					}
-				})
-				.catch((err) => {
-					reject(err);
-				});
+			this.players[socketId] = newPlayer;
+			this.playersDto[socketId] = newPlayer.toDto();
+			resolve(socketId);
+
+			// this.dataBase
+			// 	.saveUser(newPlayer)
+			// 	.then((res: { success: boolean; data: any; errmsg: string }) => {
+			// 		if (res.success) {
+			// 			const id = res.data._id.toString();
+			// 			newPlayer.id = id;
+			// 			this.players[id] = newPlayer;
+			// 			this.playersDto[id] = newPlayer.toDto();
+			// 			resolve(id);
+			// 		} else {
+			// 			reject(res.errmsg);
+			// 		}
+			// 	})
+			// 	.catch((err) => {
+			// 		reject(err);
+			// 	});
 		});
 	}
 
