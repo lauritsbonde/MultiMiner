@@ -556,5 +556,10 @@ FodyWeavers.xsd
 
 build/
 
+# ignore certificates
+*.cer
+certbot/*
+letsencrypt/*
+
 
 # End of https://www.toptal.com/developers/gitignore/api/node,react,visualstudio
