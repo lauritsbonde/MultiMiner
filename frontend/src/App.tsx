@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { mineralSprite, playerSprite } from './CanvasStyles/Sprites';
 import { Box, createTheme, ThemeProvider, Button } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
+import axios from 'axios';
 
 declare module '@mui/material/styles' {
 	interface Theme {
@@ -98,12 +99,18 @@ function App() {
 
 	useEffect(() => {
 		const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
+
+		axios.get(`${BACKEND_URL}`).then((res) => {
+			console.log(res.data);
+		});
+
 		const socket = io(BACKEND_URL, {
 			path: '/socket.io',
 			withCredentials: true,
 			autoConnect: true,
 			extraHeaders: {
-				'Access-Control-Allow-Origin': 'https://www.multiminer.click/api',
+				'Access-Control-Allow-Origin': BACKEND_URL,
+				'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
 				'my-custom-header': 'abcd',
 			},
 		});

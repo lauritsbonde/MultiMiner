@@ -6,11 +6,12 @@ import Building from './Classes/Building';
 const app = express();
 const http = require('http').Server(app);
 
-const allowedOrigins = ['http://localhost:3000', 'https://www.multiminer.click', 'https://lauritsbonde.github.io/MultiMiner/'];
+const allowedOrigins = ['http://localhost:3000', 'https://www.multiminer.click', 'https://lauritsbonde.github.io/MultiMiner/', 'https://app.localhost'];
 
 const io = require('socket.io')(http, {
 	cors: {
 		origin: (origin: string, callback: any) => {
+			console.log(origin, allowedOrigins, allowedOrigins.includes(origin));
 			if (allowedOrigins.includes(origin)) {
 				callback(null, true);
 			} else {
@@ -18,7 +19,7 @@ const io = require('socket.io')(http, {
 			}
 		},
 		methods: ['GET', 'POST', 'OPTIONS'],
-		allowedHeaders: ['my-custom-header', 'Access-Control-Allow-Origin', 'Content-Type', 'Authorization'],
+		allowedHeaders: ['my-custom-header', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Methods', 'Content-Type', 'Authorization'],
 		credentials: true,
 		path: process.env.NODE_ENV === 'production' ? '/api/socket.io' : '/socket.io',
 	},
