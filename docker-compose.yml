@@ -22,6 +22,8 @@ services:
         container_name: backend
         labels:
             - traefik.enable=true
+
+            # Define the router for HTTPS
             - traefik.http.routers.backend.rule=Host(`${BASEURL}`) && PathPrefix(`/api`)
             - traefik.http.routers.backend.entrypoints=websecure
 
@@ -32,7 +34,7 @@ services:
             - 'traefik.http.routers.backend.middlewares=myservice-strip'
 
             - 'traefik.http.middlewares.backend.headers.accesscontrolallowmethods=GET,OPTIONS,PUT'
-            - 'traefik.http.middlewares.backend.headers.accesscontrolalloworiginlist=https://app.localhost'
+            - 'traefik.http.middlewares.backend.headers.accesscontrolalloworiginlist=https://localhost'
             - 'traefik.http.middlewares.backend.headers.accesscontrolmaxage=100'
             - 'traefik.http.middlewares.backend.headers.addvaryheader=true'
 

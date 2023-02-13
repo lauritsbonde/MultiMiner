@@ -6,7 +6,7 @@ import Building from './Classes/Building';
 const app = express();
 const http = require('http').Server(app);
 
-const allowedOrigins = ['http://localhost:3000', 'https://www.multiminer.click', 'https://lauritsbonde.github.io/MultiMiner/', 'https://app.localhost', 'multiminer.click', 'https://multiminer.click'];
+const allowedOrigins = ['http://localhost:3000', 'https://www.multiminer.click', 'https://lauritsbonde.github.io/MultiMiner/', 'multiminer.click', 'https://multiminer.click', 'https://localhost'];
 
 const io = require('socket.io')(http, {
 	cors: {

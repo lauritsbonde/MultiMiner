@@ -100,7 +100,7 @@ function App() {
 		const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
 
 		const socket = io(BACKEND_URL, {
-			path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
+			path: process.env.REACT_APP_ENVIRONMENT === 'developments' ? '/socket.io' : '/api/socket.io',
 			withCredentials: true,
 			autoConnect: true,
 			extraHeaders: {
@@ -142,11 +142,10 @@ function App() {
 
 	useEffect(() => {
 		document.title = isAuthenticated ? 'MultiMiner' : 'MultiMiner - Join';
-		if (isAuthenticated && socket.emit !== undefined) {
+		if (isAuthenticated) {
 			joinGame(user?.nickname || 'boring');
 		}
-		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isAuthenticated, socket]);
+	}, [isAuthenticated]);
 
 	if (!aiTraining) {
 		if (isLoading) {
