@@ -112,11 +112,12 @@ function App() {
 
 		socket.on('connect', () => {
 			setSocket(socket);
-			console.log(socket);
 		});
 
 		return () => {
-			socket.close();
+			if (socket.connected === true) {
+				socket.close();
+			}
 		};
 	}, []);
 
