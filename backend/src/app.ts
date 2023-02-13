@@ -6,12 +6,11 @@ import Building from './Classes/Building';
 const app = express();
 const http = require('http').Server(app);
 
-const allowedOrigins = ['http://localhost:3000', 'https://www.multiminer.click', 'https://lauritsbonde.github.io/MultiMiner/', 'https://app.localhost'];
+const allowedOrigins = ['http://localhost:3000', 'https://www.multiminer.click', 'https://lauritsbonde.github.io/MultiMiner/', 'https://app.localhost', 'multiminer.click', 'https://multiminer.click'];
 
 const io = require('socket.io')(http, {
 	cors: {
 		origin: (origin: string, callback: any) => {
-			console.log(origin, allowedOrigins, allowedOrigins.includes(origin));
 			if (allowedOrigins.includes(origin)) {
 				callback(null, true);
 			} else {

@@ -5,7 +5,6 @@ import { io, Socket } from 'socket.io-client';
 import { mineralSprite, playerSprite } from './CanvasStyles/Sprites';
 import { Box, createTheme, ThemeProvider, Button } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
-import axios from 'axios';
 
 declare module '@mui/material/styles' {
 	interface Theme {
@@ -100,16 +99,12 @@ function App() {
 	useEffect(() => {
 		const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
 
-		axios.get(`${BACKEND_URL}`).then((res) => {
-			console.log(res.data);
-		});
-
 		const socket = io(BACKEND_URL, {
-			path: '/socket.io',
+			path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
 			withCredentials: true,
 			autoConnect: true,
 			extraHeaders: {
-				'Access-Control-Allow-Origin': BACKEND_URL,
+				'Access-Control-Allow-Origin': '*',
 				'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
 				'my-custom-header': 'abcd',
 			},
@@ -117,6 +112,7 @@ function App() {
 
 		socket.on('connect', () => {
 			setSocket(socket);
+			console.log(socket);
 		});
 
 		return () => {
@@ -146,11 +142,11 @@ function App() {
 
 	useEffect(() => {
 		document.title = isAuthenticated ? 'MultiMiner' : 'MultiMiner - Join';
-		if (isAuthenticated) {
+		if (isAuthenticated && socket.emit !== undefined) {
 			joinGame(user?.nickname || 'boring');
 		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
-	}, [isAuthenticated]);
+	}, [isAuthenticated, socket]);
 
 	if (!aiTraining) {
 		if (isLoading) {

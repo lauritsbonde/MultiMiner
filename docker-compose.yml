@@ -22,13 +22,19 @@ services:
         container_name: backend
         labels:
             - traefik.enable=true
-            - traefik.http.routers.backend.rule=Host(`api.localhost`)
+            - traefik.http.routers.backend.rule=Host(`${BASEURL}`) && PathPrefix(`/api`)
             - traefik.http.routers.backend.entrypoints=websecure
 
-            - 'traefik.http.middlewares.testheader.headers.accesscontrolallowmethods=GET,OPTIONS,PUT'
-            - 'traefik.http.middlewares.testheader.headers.accesscontrolalloworiginlist=https://app.localhost'
-            - 'traefik.http.middlewares.testheader.headers.accesscontrolmaxage=100'
-            - 'traefik.http.middlewares.testheader.headers.addvaryheader=true'
+            # Create a middleware to strip the /api prefix
+            - 'traefik.http.middlewares.myservice-strip.stripprefix.prefixes=/api'
+            - 'traefik.http.middlewares.myservice-strip.stripprefix.forceslash=false'
+            # Add the middleware to the router (backend)
+            - 'traefik.http.routers.backend.middlewares=myservice-strip'
+
+            - 'traefik.http.middlewares.backend.headers.accesscontrolallowmethods=GET,OPTIONS,PUT'
+            - 'traefik.http.middlewares.backend.headers.accesscontrolalloworiginlist=https://app.localhost'
+            - 'traefik.http.middlewares.backend.headers.accesscontrolmaxage=100'
+            - 'traefik.http.middlewares.backend.headers.addvaryheader=true'
 
             - traefik.http.routers.backend.tls=true
             - traefik.http.routers.backend.tls.certresolver=staging
@@ -42,11 +48,11 @@ services:
         container_name: frontend
         labels:
             - traefik.enable=true
-            - traefik.http.routers.frontend.rule=Host(`app.localhost`)
+            - traefik.http.routers.frontend.rule=Host(`${BASEURL}`)
             - traefik.http.routers.frontend.entrypoints=websecure
 
             - 'traefik.http.middlewares.testheader.headers.accesscontrolallowmethods=GET,OPTIONS,PUT'
-            - 'traefik.http.middlewares.testheader.headers.accesscontrolalloworiginlist=https://api.localhost,http://api.localhost'
+            - 'traefik.http.middlewares.testheader.headers.accesscontrolalloworiginlist=https://api.localhost,http://api.localhost, https://multiminer.click/api, http://multiminer.click/api'
             - 'traefik.http.middlewares.testheader.headers.accesscontrolmaxage=100'
             - 'traefik.http.middlewares.testheader.headers.addvaryheader=true'
 
