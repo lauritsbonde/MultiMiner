@@ -5,6 +5,7 @@ import { io, Socket } from 'socket.io-client';
 import { mineralSprite, playerSprite } from './CanvasStyles/Sprites';
 import { Box, createTheme, ThemeProvider, Button } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
+import axios from 'axios';
 
 declare module '@mui/material/styles' {
 	interface Theme {
@@ -100,7 +101,7 @@ function App() {
 		const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
 
 		const socket = io(BACKEND_URL, {
-			path: process.env.REACT_APP_ENVIRONMENT === 'developments' ? '/socket.io' : '/api/socket.io',
+			path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
 			withCredentials: true,
 			autoConnect: true,
 			extraHeaders: {
@@ -108,10 +109,20 @@ function App() {
 				'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
 				'my-custom-header': 'abcd',
 			},
+			transports: ['websocket', 'polling'],
+		});
+
+		axios.get(`${BACKEND_URL}`).then((res) => {
+			console.log(res.data);
 		});
 
 		socket.on('connect', () => {
 			setSocket(socket);
+		});
+
+		socket.on('connect_error', (err) => {
+			console.log('connect_error', err.message);
+			socket.connect();
 		});
 
 		return () => {

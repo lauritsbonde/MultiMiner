@@ -33,6 +33,8 @@ services:
             # Add the middleware to the router (backend)
             - 'traefik.http.routers.backend.middlewares=myservice-strip'
 
+            - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto = https
+
             - 'traefik.http.middlewares.backend.headers.accesscontrolallowmethods=GET,OPTIONS,PUT'
             - 'traefik.http.middlewares.backend.headers.accesscontrolalloworiginlist=https://localhost'
             - 'traefik.http.middlewares.backend.headers.accesscontrolmaxage=100'

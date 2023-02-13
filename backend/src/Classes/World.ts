@@ -135,8 +135,8 @@ export default class World {
 					this.aiController.removeSpectator();
 					this.players = this.aiController.removeAis(this.players);
 				}
-				delete this.players[player.id];
-				delete this.playersDto[player.id];
+				delete this.players[player.socketId];
+				delete this.playersDto[player.socketId];
 				return true;
 				// this.playersKdTree.remove(player.toDto());
 			}
