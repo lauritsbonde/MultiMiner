@@ -560,6 +560,7 @@ build/
 *.cer
 certbot/*
 letsencrypt/*
+traefik-ssl-certs/*
 
 
 # End of https://www.toptal.com/developers/gitignore/api/node,react,visualstudio
