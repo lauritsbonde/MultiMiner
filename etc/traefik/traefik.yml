@@ -41,16 +41,16 @@ entryPoints:
 certificatesResolvers:
     staging:
         acme:
-            email: lauritsbonde@hotmail.dk
-            storage: /etc/traefik/certs/acme.json
+            email: 'lauritsbonde@hotmail.dk'
+            storage: '/ssl-certs/acme.json'
             caServer: 'https://acme-staging-v02.api.letsencrypt.org/directory'
             httpChallenge:
                 entryPoint: web
 
     production:
         acme:
-            email: lauritsbonde@hotmail.dk
-            storage: /etc/traefik/certs/acme.json
+            email: 'lauritsbonde@hotmail.dk'
+            storage: '/ssl-certs/acme.json'
             caServer: 'https://acme-v02.api.letsencrypt.org/directory'
             httpChallenge:
                 entryPoint: web
