@@ -562,5 +562,8 @@ certbot/*
 letsencrypt/*
 traefik-ssl-certs/*
 
+#ignore vagrant secrets
+vagrantSettings.yaml
+
 
 # End of https://www.toptal.com/developers/gitignore/api/node,react,visualstudio

@@ -17,7 +17,7 @@ export default class Player extends PosClass {
 	canvasSize: { width: number; height: number };
 	imageSpriteIndex: { head: string; body: string; bottom: string; wheels: string };
 
-	moving: { [key: string]: boolean };
+	moving: { up: boolean; down: boolean; left: boolean; right: boolean };
 	speed: { x: number; y: number };
 	acceleration: number;
 	maxSpeed: number;

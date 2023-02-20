@@ -76,11 +76,11 @@ io.on('connection', function (socket: any) {
 
 	// PLAYER MOVEMONT
 
-	socket.on('move', (data: { dir: string; id: string }) => {
+	socket.on('move', (data: { dir: 'up' | 'left' | 'right' | 'down'; id: string }) => {
 		world.players[data.id].moving[data.dir] = true;
 	});
 
-	socket.on('stop', (data: { dir: string; id: string }) => {
+	socket.on('stop', (data: { dir: 'up' | 'left' | 'right' | 'down'; id: string }) => {
 		world.players[data.id].moving[data.dir] = false;
 	});
 

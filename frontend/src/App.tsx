@@ -164,15 +164,17 @@ function App() {
 					<Button variant="contained" onClick={() => loginWithRedirect({ redirectUri: window.location.href })}>
 						Login
 					</Button>
-					<Button
-						variant="contained"
-						onClick={() => {
-							setAiTraining(true);
-							joinGame('ai');
-						}}
-					>
-						AI
-					</Button>
+					{process.env.REACT_APP_ENVIRONMENT === 'development' && (
+						<Button
+							variant="contained"
+							onClick={() => {
+								setAiTraining(true);
+								joinGame('ai');
+							}}
+						>
+							AI
+						</Button>
+					)}
 				</>
 			);
 		}

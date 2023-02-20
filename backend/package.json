@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "app.js",
 	"scripts": {
-		"test": "echo \"Error: no test specified\" && exit 1",
+		"test": "NODE_OPTIONS=--experimental-vm-modules jest --verbose --watch-all",
 		"build": "tsc && node build/app.js",
 		"start": "nodemon src/app.ts",
 		"pushToHeroku": "git subtree push --prefix backend heroku master"
@@ -21,7 +21,10 @@
 		"typescript": "^4.6.4"
 	},
 	"devDependencies": {
+		"@jest/globals": "^29.4.3",
+		"jest": "^29.4.3",
 		"nodemon": "^2.0.16",
+		"ts-jest": "^29.0.5",
 		"ts-node": "^10.7.0"
 	},
 	"engines": {
