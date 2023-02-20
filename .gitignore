@@ -563,6 +563,7 @@ letsencrypt/*
 traefik-ssl-certs/*
 
 #ignore vagrant secrets
+vagrantSettings.yaml
 *.vagrant/
 vagrantSettings.yaml
 
