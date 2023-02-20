@@ -72,6 +72,20 @@ Vagrant.configure('2') do |config|
         echo "BASEURL=$BASEURL">> .env
         echo "CERT_RESOLVER=production">> .env
 
+        # set the env variables for frontend
+        cd frontend
+        echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL">> .env
+        echo "REACT_APP_ENVIRONMENT=$REACT_APP_ENVIRONMENT">> .env
+
+        cd ..
+
+        set the env variables for backend
+        cd backend  
+        echo "MONGODB_PASSWORD=$MONGODB_PASSWORD">> .env
+        echo "NODE_ENV=$NODE_ENV">> .env
+
+        cd ..
+
         docker-compose up -d --build
         echo "finished docker-compose"
       
