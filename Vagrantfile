@@ -54,7 +54,6 @@ Vagrant.configure('2') do |config|
 
         echo "starting git clone"
         git clone https://github.com/lauritsbonde/MultiMiner.git
-        46.101.251.67
         echo "finished git clone"
 
         echo "starting docker-compose"
@@ -71,7 +70,7 @@ Vagrant.configure('2') do |config|
 
         # GLOBAL
         echo "BASEURL=$BASEURL">> .env
-        echo "CERT_RESOLVER="production">> .env
+        echo "CERT_RESOLVER=production">> .env
 
         docker-compose up -d --build
         echo "finished docker-compose"
