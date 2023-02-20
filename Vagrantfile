@@ -71,6 +71,7 @@ Vagrant.configure('2') do |config|
 
         # GLOBAL
         echo "BASEURL=$BASEURL">> .env
+        echo "CERT_RESOLVER="production">> .env
 
         docker-compose up -d --build
         echo "finished docker-compose"

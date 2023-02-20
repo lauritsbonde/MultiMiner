@@ -42,7 +42,7 @@ services:
             - 'traefik.http.middlewares.backend.headers.addvaryheader=true'
 
             - traefik.http.routers.backend.tls=true
-            - traefik.http.routers.backend.tls.certresolver=staging
+            - traefik.http.routers.backend.tls.certresolver=${CERT_RESOLVER}
 
     frontend:
         environment:
@@ -62,7 +62,7 @@ services:
             - 'traefik.http.middlewares.testheader.headers.addvaryheader=true'
 
             - traefik.http.routers.frontend.tls=true
-            - traefik.http.routers.frontend.tls.certresolver=staging
+            - traefik.http.routers.frontend.tls.certresolver=${CERT_RESOLVER}
 
         depends_on:
             - backend
