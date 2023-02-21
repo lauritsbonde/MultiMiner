@@ -4,6 +4,7 @@ Vagrant.configure('2') do |config|
   settings = YAML.load_file 'vagrantSettings.yaml'
 
   config.vm.define "droplet1" do |config|
+    config.vm.network "public_network", ip: "164.92.179.95"
       config.vm.provider :digital_ocean do |provider, override|
         override.ssh.private_key_path = '~/.ssh/multiminer'
         override.vm.box = 'digital_ocean'
@@ -46,11 +47,15 @@ Vagrant.configure('2') do |config|
         doctl auth init -t $provider_token
         echo "finished granting account access to doctl"
 
-        myip="$(dig +short myip.opendns.com @resolver1.opendns.com)"
-        echo "My WAN/Public IP address: ${myip}"
+        echo "assign reserved ip to droplet"
+        dropletId="$(doctl compute droplet get droplet1 --template {{.ID}})"
 
-        echo "point record/domain to droplet"
-        doctl compute domain records update multiminer.click --record-id $RECORD_ID --record-data $myip
+        doctl compute reserved-ip-action assign 164.90.243.228 $dropletId
+        #myip="$(dig +short myip.opendns.com @resolver1.opendns.com)"
+        #echo "My WAN/Public IP address: ${myip}"
+
+        #echo "point record/domain to droplet"
+        #doctl compute domain records update multiminer.click --record-id $RECORD_ID --record-data $myip
 
         echo "starting git clone"
         git clone https://github.com/lauritsbonde/MultiMiner.git
