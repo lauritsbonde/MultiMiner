@@ -6,7 +6,7 @@ import BuildingContainer from '../Components/BuildingMenus/BuildingContainer';
 import useCanvas from '../Hooks/useCanvas';
 import { MineralData, ConstantData, DynamicData, UpdateGameData } from '../Types/GameTypes';
 import kdTree from '../kdTree';
-import { drawUpperBackground, drawBuildings, drawMinerals, drawPlayers, drawSelf } from '../CanvasStyles/drawHelper';
+import { drawUpperBackground, drawBuildings, drawMinerals, drawPlayers, drawSelf, drawPing, drawPlayerBasket } from '../CanvasStyles/drawHelper';
 import { styling } from './MainPageStyling';
 import { Box, Typography } from '@mui/material';
 import ChatLeaderboardShifter from './ChatLeaderboardShifter/ChatLeaderboardShifter';
@@ -18,19 +18,21 @@ interface Props {
 	startGameData: DynamicData;
 	startMinerals: MineralData[];
 	images: { [key: string]: { [key: string]: any } };
-	allImagesLoaded: boolean;
 	aiTraining: boolean;
 	setMyId?: (id: string) => void;
 }
 
-const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startMinerals, images, allImagesLoaded, aiTraining, setMyId }) => {
+const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startMinerals, images, aiTraining, setMyId }) => {
 	const [mineralsKdTree, setMineralsKdTree] = useState<kdTree>(new kdTree([...startMinerals]));
 	const [gameData, setGameData] = useState<DynamicData>(startGameData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
 	const [leaderBoard, setLeaderBoard] = useState([] as Array<{ id: string; name: string; points: number }>);
+	const [latency, setLatency] = useState(0);
 	// const [skies, setSkies] = useState();
 
 	const newMinerals = (changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>) => {
+		if (changedMinerals.length === 0) return;
+
 		const oldKdTree = mineralsKdTree;
 		for (let i = 0; i < changedMinerals.length; i++) {
 			oldKdTree.changeMineralType(changedMinerals[i].id, changedMinerals[i].toType, changedMinerals[i].boundingBox);
@@ -38,16 +40,30 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 		setMineralsKdTree(oldKdTree);
 	};
 
-	const draw = (ctx: any) => {
+	const draw = (ctx: CanvasRenderingContext2D) => {
 		ctx.clearRect(0, 0, ctx.canvas.clientWidth, ctx.canvas.clientHeight);
 		drawUpperBackground(ctx, constantData, canvasOffSet);
 		drawBuildings(ctx, constantData, canvasOffSet);
-		drawMinerals(ctx, constantData, canvasOffSet, mineralsKdTree, images.mineralImages, allImagesLoaded);
+		drawMinerals(ctx, constantData, canvasOffSet, mineralsKdTree, images.mineralImages);
 		drawPlayers(ctx, gameData, canvasOffSet, myId, images.playerImages);
+		drawPing(ctx, latency);
+		drawPlayerBasket(ctx, gameData.players[myId].basket, images.miscImages.storage);
 		drawSelf(ctx, gameData, myId, canvasOffSet, images.playerImages);
 	};
 
 	const canvasRef = useCanvas(draw);
+
+	useEffect(() => {
+		const interval = setInterval(() => {
+			const start = Date.now();
+			socket.emit('ping', () => {
+				const duration = Date.now() - start;
+				setLatency(duration);
+			});
+		}, 100);
+
+		return () => clearInterval(interval);
+	}, []);
 
 	useEffect(() => {
 		const newOffSet = { ...canvasOffSet };
@@ -77,7 +93,9 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 				newOffSet.y = Math.max(0, player.pos.y - canvasRef.current.height / 2);
 			}
 
-			setCanvasOffSet(newOffSet);
+			if (canvasOffSet.x !== newOffSet.x || canvasOffSet.y !== newOffSet.y) {
+				setCanvasOffSet(newOffSet);
+			}
 		};
 
 		if (!aiTraining) {
@@ -109,6 +127,11 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 				}
 			});
 		}
+
+		return () => {
+			socket.off('update');
+			socket.off('changeBestAi');
+		};
 
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, [gameData.players]);

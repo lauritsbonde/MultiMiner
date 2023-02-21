@@ -10,7 +10,7 @@ export default class PlayerDto extends PosClass {
 	fuel: { max: number; current: number };
 	money: number;
 	isDead: boolean;
-	basket: { items: { [type: string]: number }; amount: number };
+	basket: { items: { [type: string]: number }; amount: number; maxItems: number };
 
 	points: number;
 
@@ -25,7 +25,7 @@ export default class PlayerDto extends PosClass {
 		fuel: { max: number; current: number },
 		money: number,
 		isDead: boolean,
-		basket: { items: { [type: string]: number }; amount: number },
+		basket: { items: { [type: string]: number }; amount: number; maxItems: number },
 		points: number
 	) {
 		super(size, pos);

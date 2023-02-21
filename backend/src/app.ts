@@ -74,8 +74,11 @@ io.on('connection', function (socket: any) {
 		}
 	);
 
-	// PLAYER MOVEMONT
+	socket.on('ping', (callback: () => void) => {
+		callback();
+	});
 
+	// PLAYER MOVEMONT
 	socket.on('move', (data: { dir: 'up' | 'left' | 'right' | 'down'; id: string }) => {
 		world.players[data.id].moving[data.dir] = true;
 	});

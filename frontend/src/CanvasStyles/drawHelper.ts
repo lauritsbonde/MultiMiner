@@ -1,9 +1,10 @@
 import kdTree from '../kdTree';
-import { ConstantData, DynamicData } from '../Types/GameTypes';
+import { Basket, ConstantData, DynamicData } from '../Types/GameTypes';
 import { mineralStyle } from './mineralStyle';
 import { buildingStyle } from './BuildingStyle';
+import { BuildingData } from '../Types/GameTypes';
 
-export const drawUpperBackground = (ctx: any, constantData: ConstantData, canvasOffSet: { x: number; y: number }) => {
+export const drawUpperBackground = (ctx: CanvasRenderingContext2D, constantData: ConstantData, canvasOffSet: { x: number; y: number }) => {
 	ctx.fillStyle = '#87CEEB';
 	ctx.fillRect(0, 0, ctx.canvas.clientWidth, constantData.groundStart === undefined ? ctx.canvas.clientHeight : constantData.groundStart);
 	ctx.fillStyle = '#FFFF00';
@@ -13,9 +14,9 @@ export const drawUpperBackground = (ctx: any, constantData: ConstantData, canvas
 	ctx.stroke();
 };
 
-export const drawBuildings = (ctx: any, constantData: ConstantData, canvasOffSet: { x: number; y: number }) => {
+export const drawBuildings = (ctx: CanvasRenderingContext2D, constantData: ConstantData, canvasOffSet: { x: number; y: number }) => {
 	if (constantData.buildings) {
-		constantData.buildings.forEach((building: any) => {
+		constantData.buildings.forEach((building: BuildingData) => {
 			const styling = buildingStyle[building.title];
 			ctx.fillStyle = styling.outerColor;
 			ctx.fillRect(building.pos.x - canvasOffSet.x, building.pos.y - canvasOffSet.y, building.size.width, building.size.height);
@@ -29,7 +30,7 @@ export const drawBuildings = (ctx: any, constantData: ConstantData, canvasOffSet
 	}
 };
 
-export const drawMinerals = (ctx: any, constantData: ConstantData, canvasOffSet: { x: number; y: number }, mineralsKdTree: kdTree, images: { [key: string]: any }, allImagesLoaded: boolean) => {
+export const drawMinerals = (ctx: CanvasRenderingContext2D, constantData: ConstantData, canvasOffSet: { x: number; y: number }, mineralsKdTree: kdTree, images: { [key: string]: any }) => {
 	const padding = Math.max(ctx.canvas.clientWidth, ctx.canvas.clientHeight) / 10;
 	const boundingBox = {
 		minx: 0 + canvasOffSet.x - padding,
@@ -111,7 +112,7 @@ export const drawMinerals = (ctx: any, constantData: ConstantData, canvasOffSet:
 	}
 };
 
-export const drawPlayers = (ctx: any, gameData: DynamicData, canvasOffSet: { x: number; y: number }, myId: string, playerImages: { [key: string]: any }) => {
+export const drawPlayers = (ctx: CanvasRenderingContext2D, gameData: DynamicData, canvasOffSet: { x: number; y: number }, myId: string, playerImages: { [key: string]: any }) => {
 	if (gameData.players) {
 		for (let player in gameData.players) {
 			if (!gameData.players[player].isDead) {
@@ -131,7 +132,7 @@ export const drawPlayers = (ctx: any, gameData: DynamicData, canvasOffSet: { x: 
 	}
 };
 
-export const drawSelf = (ctx: any, gameData: DynamicData, myId: string, canvasOffSet: { x: number; y: number }, playerImages: { [key: string]: any }) => {
+export const drawSelf = (ctx: CanvasRenderingContext2D, gameData: DynamicData, myId: string, canvasOffSet: { x: number; y: number }, playerImages: { [key: string]: any }) => {
 	if (gameData.players[myId]) {
 		const currentPlayer = gameData.players[myId];
 		if (!currentPlayer.isDead && currentPlayer.id !== 'aiSpectator') {
@@ -147,18 +148,61 @@ export const drawSelf = (ctx: any, gameData: DynamicData, myId: string, canvasOf
 	}
 };
 
-const drawHead = (ctx: any, pos: { x: number; y: number }, canvasOffSet: { x: number; y: number }, images: { [key: string]: any }, index: string, size: { width: number; height: number }) => {
+const drawHead = (
+	ctx: CanvasRenderingContext2D,
+	pos: { x: number; y: number },
+	canvasOffSet: { x: number; y: number },
+	images: { [key: string]: any },
+	index: string,
+	size: { width: number; height: number }
+) => {
 	ctx.drawImage(images[index], pos.x - canvasOffSet.x, pos.y - canvasOffSet.y, size.width, size.height / 2);
 };
 
-const drawBody = (ctx: any, pos: { x: number; y: number }, canvasOffSet: { x: number; y: number }, images: { [key: string]: any }, index: string, size: { width: number; height: number }) => {
+const drawBody = (
+	ctx: CanvasRenderingContext2D,
+	pos: { x: number; y: number },
+	canvasOffSet: { x: number; y: number },
+	images: { [key: string]: any },
+	index: string,
+	size: { width: number; height: number }
+) => {
 	ctx.drawImage(images[index], pos.x - canvasOffSet.x, pos.y + size.height * 0.33 - canvasOffSet.y, size.width, size.height / 3);
 };
 
-const drawBottom = (ctx: any, pos: { x: number; y: number }, canvasOffSet: { x: number; y: number }, images: { [key: string]: any }, index: string, size: { width: number; height: number }) => {
+const drawBottom = (
+	ctx: CanvasRenderingContext2D,
+	pos: { x: number; y: number },
+	canvasOffSet: { x: number; y: number },
+	images: { [key: string]: any },
+	index: string,
+	size: { width: number; height: number }
+) => {
 	ctx.drawImage(images[index], pos.x - canvasOffSet.x, pos.y + size.height * 0.6 - canvasOffSet.y, size.width, size.height / 4);
 };
 
-const drawWheels = (ctx: any, pos: { x: number; y: number }, canvasOffSet: { x: number; y: number }, images: { [key: string]: any }, index: string, size: { width: number; height: number }) => {
+const drawWheels = (
+	ctx: CanvasRenderingContext2D,
+	pos: { x: number; y: number },
+	canvasOffSet: { x: number; y: number },
+	images: { [key: string]: any },
+	index: string,
+	size: { width: number; height: number }
+) => {
 	ctx.drawImage(images[index], pos.x - canvasOffSet.x, pos.y + size.height * 0.75 - canvasOffSet.y, size.width, size.height / 4);
+};
+
+export const drawPing = (ctx: CanvasRenderingContext2D, latency: number) => {
+	ctx.fillStyle = '#000';
+	ctx.font = 'bold 16px Arial';
+	ctx.fillText(latency + ' ms', 10, 20);
+};
+
+export const drawPlayerBasket = (ctx: CanvasRenderingContext2D, basket: Basket, basketImage?: any) => {
+	if (basketImage) {
+		ctx.drawImage(basketImage, 5, 30, 30, 30);
+	}
+	ctx.fillStyle = '#000';
+	ctx.font = 'bold 16px Arial';
+	ctx.fillText(basket.amount + '/' + basket.maxItems, 40, 50);
 };

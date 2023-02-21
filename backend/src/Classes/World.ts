@@ -62,6 +62,7 @@ export default class World {
 			players: this.playersDto,
 			changedMinerals: mineralChanges,
 			leaderBoard: this.leaderBoard,
+			sentTime: Date.now(),
 		};
 	}
 
@@ -228,7 +229,7 @@ export default class World {
 	updatePlayers() {
 		for (let id in this.players) {
 			if (this.players[id].isDead) {
-				this.removePlayer(id);
+				continue;
 			} else {
 				this.players[id].move((mineral) => this.turnDrilledMineralToIndexAndType(mineral));
 				this.playersDto[id] = this.players[id].toDto();

@@ -6,6 +6,12 @@ export interface MineralData {
 	style: number;
 }
 
+export interface Basket {
+	items: { items: { [type: string]: number } };
+	amount: number;
+	maxItems: number;
+}
+
 interface PlayerData {
 	id: string;
 	name: string;
@@ -15,12 +21,12 @@ interface PlayerData {
 	fuel: { max: number; current: number };
 	money: number;
 	isDead: boolean;
-	basket: { items: { [type: string]: number }; amount: number };
+	basket: Basket;
 	imageIndex: { head: string; body: string; bottom: string; wheels: string };
 	points: number;
 }
 
-interface BuildingData {
+export interface BuildingData {
 	pos: { x: number; y: number };
 	size: { width: number; height: number };
 	title: string;
@@ -30,6 +36,7 @@ export interface UpdateGameData {
 	changedMinerals: Array<{ id: number; toType: string; boundingBox: { maxx: number; minx: number; maxy: number; miny: number } }>;
 	players: { [id: string]: PlayerData };
 	leaderBoard: Array<{ id: string; name: string; points: number }>;
+	sentTime: number;
 }
 
 export interface StartData {

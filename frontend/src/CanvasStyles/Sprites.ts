@@ -1,3 +1,6 @@
+// misc
+import * as storage from '../images/storage.svg';
+
 //minerals
 import * as emptybasic from '../mineralTextures/empty.svg';
 import * as mudTop from '../mineralTextures/mud/mud_top.svg';
@@ -64,6 +67,10 @@ import * as bottom1 from '../drillTextures/bottom/bottom1.svg';
 // wheels
 import * as wheel from '../drillTextures/wheel/wheel.svg';
 import * as wheel1 from '../drillTextures/wheel/wheel1.svg';
+
+export const miscSprite = {
+	storage: storage.default,
+};
 
 export const mineralSprite = {
 	empty: emptybasic.default,

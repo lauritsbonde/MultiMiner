@@ -51,11 +51,6 @@ Vagrant.configure('2') do |config|
         dropletId="$(doctl compute droplet get droplet1 --template {{.ID}})"
 
         doctl compute reserved-ip-action assign 164.90.243.228 $dropletId
-        #myip="$(dig +short myip.opendns.com @resolver1.opendns.com)"
-        #echo "My WAN/Public IP address: ${myip}"
-
-        #echo "point record/domain to droplet"
-        #doctl compute domain records update multiminer.click --record-id $RECORD_ID --record-data $myip
 
         echo "starting git clone"
         git clone https://github.com/lauritsbonde/MultiMiner.git

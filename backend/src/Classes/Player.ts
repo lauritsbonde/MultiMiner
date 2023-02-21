@@ -106,6 +106,7 @@ export default class Player extends PosClass {
 			{
 				items: this.basket.items,
 				amount: this.basket.amount,
+				maxItems: this.basket.maxItems,
 			},
 			this.points
 		);
@@ -332,9 +333,12 @@ export default class Player extends PosClass {
 					addDrillMineralToChanged(this.drillingMineral);
 				}
 
+				const pointsFromMineral = this.drillingMineral.destroy();
+
 				if (this.basket.amount < this.basket.maxItems) {
-					this.points += this.drillingMineral.destroy();
+					this.points += pointsFromMineral;
 				}
+
 				this.drillingMineral = undefined;
 
 				this.finalDrillPosition = { x: undefined, y: undefined };

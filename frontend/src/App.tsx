@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import MainPage from './Components/MainPage';
 import { ConstantData, DynamicData, StartData, MineralData } from './Types/GameTypes';
 import { io, Socket } from 'socket.io-client';
-import { mineralSprite, playerSprite } from './CanvasStyles/Sprites';
+import { miscSprite, mineralSprite, playerSprite } from './CanvasStyles/Sprites';
 import { Box, createTheme, ThemeProvider, Button } from '@mui/material';
 import { useAuth0 } from '@auth0/auth0-react';
 
@@ -27,8 +27,8 @@ function App() {
 	const [gameData, setGameData] = useState<DynamicData>({} as DynamicData);
 	const [minerals, setMinerals] = useState<MineralData[]>([]);
 	const [mineralImages, setMineralImages] = useState({} as { [key: string]: any });
-	const [allImagesLoaded, setAllImagesLoaded] = useState(false);
 	const [playerImages, setPlayerImages] = useState({} as { [key: string]: { [key: string]: any } });
+	const [miscImages, setMiscImages] = useState({} as { [key: string]: any });
 
 	//MAYBE REMOVE
 	const [aiTraining, setAiTraining] = useState(false);
@@ -72,8 +72,10 @@ function App() {
 			};
 			const loadedPlayerImages = await load();
 			setPlayerImages(loadedPlayerImages);
-			setAllImagesLoaded(true);
 		})();
+		cacheImages(miscSprite, (loadedImages) => {
+			setMiscImages(loadedImages);
+		});
 	}, []);
 
 	const joinGame = (name: string) => {
@@ -212,8 +214,7 @@ function App() {
 						constantData={constantData}
 						startGameData={gameData}
 						startMinerals={minerals}
-						images={{ mineralImages, playerImages }}
-						allImagesLoaded={allImagesLoaded}
+						images={{ miscImages, mineralImages, playerImages }}
 						aiTraining={aiTraining}
 						setMyId={setMyId}
 					/>
