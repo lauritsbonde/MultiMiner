@@ -3,6 +3,11 @@ import Mineral from './Classes/Mineral';
 import PlayerDto from './Classes/PlayerDto';
 import Building from './Classes/Building';
 
+require('dotenv').config();
+
+import World from './Classes/World';
+import { auth0User } from './Models/UserModel';
+
 const app = express();
 const http = require('http').Server(app);
 
@@ -24,48 +29,56 @@ const io = require('socket.io')(http, {
 	},
 });
 
-require('dotenv').config();
-
-import World from './Classes/World';
 const world = new World();
+
+const socketIdToAuth0Id: { [socketId: string]: string } = {};
 
 io.on('connection', function (socket: any) {
 	socket.on(
 		'join',
 		(
-			data: { canvasSize: { width: number; height: number }; name: string },
-			callback: (response: { id: string; size: { width: number; height: number }; groundStart: number; players: { [id: string]: PlayerDto }; minerals: Mineral[]; buildings: Building[] }) => void
+			data: { canvasSize: { width: number; height: number }; user: auth0User; imageIndex: { head: string; body: string; bottom: string; wheels: string }; name?: string },
+			callback: (response: {
+				success: boolean;
+				data: string | { id: string; size: { width: number; height: number }; groundStart: number; players: { [id: string]: PlayerDto }; minerals: Mineral[]; buildings: Building[] };
+			}) => void
 		) => {
 			if (data.name === 'ai') {
 				world.createAiSpectator(socket.id);
 				callback({
-					id: 'aiSpectator',
-					size: world.size,
-					groundStart: world.groundStart,
-					players: world.playersDto,
-					minerals: world.minerals,
-					buildings: world.shopManager.buildings,
+					success: true,
+					data: {
+						id: 'aiSpectator',
+						size: world.size,
+						groundStart: world.groundStart,
+						players: world.playersDto,
+						minerals: world.minerals,
+						buildings: world.shopManager.buildings,
+					},
 				});
 			} else {
 				world
-					.addPlayer(data.name, socket.id)
-					.then((id: string) => {
-						if (id !== 'err') {
-							world.players[id].setCanvasSize(data.canvasSize);
-							console.log('a user connected');
+					.addPlayerToWorld(data.user, socket.id, data.imageIndex)
+					.then((res) => {
+						if (!res.success) {
+							console.log('error', res.data);
+							callback({ success: false, data: res.data });
+							return;
+						}
+						world.players[res.data].setCanvasSize(data.canvasSize);
+						console.log('a user connected');
 
-							callback({
-								id: id,
+						callback({
+							success: true,
+							data: {
+								id: res.data,
 								size: world.size,
 								groundStart: world.groundStart,
 								players: world.playersDto,
 								minerals: world.minerals,
 								buildings: world.shopManager.buildings,
-							});
-						} else {
-							//TODO: handle error
-							// callback({ err: 'err' });
-						}
+							},
+						});
 					})
 					.catch((err) => {
 						console.log('adderr', err);
@@ -122,6 +135,13 @@ io.on('connection', function (socket: any) {
 		}
 	});
 
+	// SAVING
+	socket.on('save', (data: { auth0Id: string }) => {
+		world.dataBase.updatePlayer(world.players[data.auth0Id]).then((res) => {
+			console.log('saved', res);
+		});
+	});
+
 	// CHAT
 	socket.on('chat', (data: { message: string; id: string }) => {
 		world.addChat(data.message, data.id);
@@ -131,15 +151,28 @@ io.on('connection', function (socket: any) {
 
 	// AI
 	socket.on('newAis', (data: {}, callback: (id: string) => void) => {
-		world.newAiGeneration();
-		callback(world.aiController.getAiSpectator().id);
+		// world.newAiGeneration();
+		// callback(world.aiController.getAiSpectator().id);
 	});
 
 	socket.on('disconnect', () => {
-		//TODO: save the player in the db
-		world.removePlayer(socket.id);
+		world.removePlayer(socketIdToAuth0Id[socket.id]);
 		console.log('user disconnected');
 	});
+});
+
+//Socket io middleware
+io.use((socket: any, next: any) => {
+	const auth0Id = socket.handshake.auth.auth0Id;
+
+	if (socketIdToAuth0Id[socket.id] === undefined) {
+		socketIdToAuth0Id[socket.id] = auth0Id;
+	} else if (socketIdToAuth0Id[socket.id] !== auth0Id) {
+		delete socketIdToAuth0Id[socket.id];
+		socketIdToAuth0Id[socket.id] = auth0Id;
+	}
+
+	next();
 });
 
 setInterval(() => {

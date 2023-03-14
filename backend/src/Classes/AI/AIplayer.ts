@@ -4,6 +4,7 @@ import Brain from './Brain';
 import { savedWeights } from './Brain';
 import ShopManager from '../ShopManager';
 import Mineral from '../Mineral';
+import { mineralFriction } from '../../Lookups/minerals';
 
 export default class AIplayer extends Player {
 	brain: Brain;
@@ -46,7 +47,7 @@ export default class AIplayer extends Player {
 			this.moveTowardsVector(this.finalDrillPosition);
 
 			//check that max speed is not exceeded
-			const mineralMaxSpeed = this.maxSpeed * this.drillingMineral.drillFriction;
+			const mineralMaxSpeed = this.maxSpeed * mineralFriction[this.drillingMineral.type];
 			this.limitMaxSpeed(mineralMaxSpeed);
 
 			//check if player is close enough to final drill position

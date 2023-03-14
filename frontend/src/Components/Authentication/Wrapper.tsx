@@ -4,7 +4,7 @@ import Join from './Join';
 import Login from './Login';
 
 interface props {
-	joinGame: (name: string, password: string, imageIndex: { head: string; body: string; bottom: string; wheels: string }) => void;
+	joinGame: (imageIndex: { head: string; body: string; bottom: string; wheels: string }) => void;
 	playerImages: { [key: string]: any };
 }
 
@@ -62,7 +62,7 @@ const Wrapper: FC<props> = ({ joinGame, playerImages }) => {
 						Log in
 					</Button>
 				</ButtonGroup>
-				{screen === 'join' ? <Join joinGame={joinGame} playerImages={playerImages} /> : <Login />}
+				{screen === 'join' ? <Join joinGame={joinGame} playerImages={playerImages} username="" /> : <Login />}
 			</Box>
 		</Box>
 	);

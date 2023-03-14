@@ -51,9 +51,8 @@ export default class AiController {
 			'spectator',
 			this.getSurroundingMinerals
 		);
-		spectator.id = 'aiSpectator';
+		// spectator.id = 'aiSpectator';
 		spectator.fuel.consumption = 0;
-		spectator.socketId = socketId;
 		spectator.gravityAffect = false;
 		spectator.onBuilding = 'spectating';
 
@@ -76,12 +75,12 @@ export default class AiController {
 			this.getSurroundingMinerals,
 			brainWeights
 		);
-		newPlayer.id = 'ai' + Object.keys(this.ais).length;
+		// newPlayer.id = 'ai' + Object.keys(this.ais).length;
 		if (Object.keys(this.ais).length === 1) {
 			this.bestAI = newPlayer;
 			this.changeId = true;
 		}
-		this.ais[newPlayer.id] = newPlayer;
+		// this.ais[newPlayer.id] = newPlayer;
 		return newPlayer;
 	}
 
@@ -141,16 +140,17 @@ export default class AiController {
 
 	removeAis(players: { [id: string]: Player }) {
 		for (let player in players) {
-			if (players[player].id.includes('ai')) {
-				delete players[player];
-			}
+			// if (players[player].id.includes('ai')) {
+			// 	delete players[player];
+			// }
 		}
 		return players;
 	}
 
 	getFollowAiId() {
-		if (Object.keys(this.ais).length === 0) return this.aiSpectator.id;
-		return this.bestAI.id;
+		// if (Object.keys(this.ais).length === 0) return this.aiSpectator.id;
+		// return this.bestAI.id;
+		return 0;
 	}
 
 	changeAiId() {

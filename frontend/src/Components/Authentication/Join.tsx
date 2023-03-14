@@ -3,23 +3,13 @@ import React, { FC, startTransition, CSSProperties, useState } from 'react';
 import DrillCustomizer from '../Customizer/DrillCustomizer';
 
 interface JoinProps {
-	joinGame: (name: string, password: string, imageIndex: { head: string; body: string; bottom: string; wheels: string }) => void;
+	joinGame: (imageIndex: { head: string; body: string; bottom: string; wheels: string }) => void;
 	playerImages: { [key: string]: any };
+	username: string;
 }
 
-const Join: FC<JoinProps> = ({ joinGame, playerImages }) => {
-	const [username, setUsername] = useState('');
-	const [password, setPassword] = useState('');
-	const [avatar, setAvatar] = useState(`https://avatars.dicebear.com/api/personas/${''}.svg`);
+const Join: FC<JoinProps> = ({ joinGame, playerImages, username }) => {
 	const [imageIndex, setImageIndex] = useState({ head: '0', body: '0', bottom: '0', wheels: '0' });
-
-	const handleInput = (input: string) => {
-		setUsername(input);
-		startTransition(() => {
-			// TODO: do some checks to see if the avatar is valid and if someone else is using it
-			setAvatar(`https://avatars.dicebear.com/api/personas/${input}.svg`);
-		});
-	};
 
 	const updatePart = (part: 'head' | 'body' | 'bottom' | 'wheels', index: number) => {
 		startTransition(() => {
@@ -37,13 +27,13 @@ const Join: FC<JoinProps> = ({ joinGame, playerImages }) => {
 			flexDirection: 'column',
 			alignItems: 'center',
 			marginTop: '10px',
-		},
-		form: {
-			display: 'flex',
-			flexDirection: 'column',
-			alignItems: 'center',
-			justifyContent: 'center',
 			width: '100%',
+			maxWidth: '500px',
+			background: 'rgb(0,133,254) linear-gradient(170deg, rgba(0,133,254,1) 50%, rgba(0,212,255,1) 100%)',
+			padding: '20px 5px',
+			boxSizing: 'border-box',
+			borderRadius: '14px',
+			boxShadow: '0px 0px 10px 0px rgba(0,0,0,0.75)',
 		},
 		avatarContainer: {
 			display: 'flex',
@@ -65,53 +55,14 @@ const Join: FC<JoinProps> = ({ joinGame, playerImages }) => {
 
 	return (
 		<Box sx={styling.playerContainer}>
-			<Typography variant="h5">Sign up</Typography>
-			<form
-				onSubmit={(e) => {
-					e.preventDefault();
-					joinGame(username, password, imageIndex);
-				}}
-				style={styling.form}
-			>
-				<TextField
-					value={username}
-					label="Username"
-					variant="filled"
-					onChange={(e) => {
-						handleInput(e.target.value);
-					}}
-					margin="dense"
-					size="small"
-					InputLabelProps={{ style: { color: '#fff' } }}
-					InputProps={{ style: { color: '#fff' } }}
-				/>
-				<TextField
-					value={password}
-					variant="filled"
-					type="password"
-					label="Password"
-					margin="dense"
-					size="small"
-					onChange={(e) => {
-						setPassword(e.target.value);
-					}}
-					InputLabelProps={{ style: { color: '#fff' } }}
-					InputProps={{ style: { color: '#fff' } }}
-				/>
-				<Box sx={styling.avatarContainer}>
-					<Typography variant="h5">Your random avatar</Typography>
-					<img src={avatar} alt="random avatar" />
-				</Box>
-				{playerImages ? <DrillCustomizer imageIndex={imageIndex} playerImages={playerImages} updatePart={updatePart} /> : <div>Loading...</div>}
-				<Button
-					sx={styling.joinButton}
-					variant="contained"
-					type="submit"
-					onClick={() => joinGame(username || `I AM BORING_${(Math.random() + 1).toString(36).substring(2)}`, password, imageIndex)}
-				>
-					Join
-				</Button>
-			</form>
+			<Box sx={styling.avatarContainer}>
+				<Typography variant="h5">Your random avatar</Typography>
+				<img src={`https://avatars.dicebear.com/api/personas/${username}.svg`} alt="random avatar" />
+			</Box>
+			{playerImages ? <DrillCustomizer imageIndex={imageIndex} playerImages={playerImages} updatePart={updatePart} /> : <div>Loading...</div>}
+			<Button sx={styling.joinButton} variant="contained" type="submit" onClick={() => joinGame(imageIndex)}>
+				Join
+			</Button>
 		</Box>
 	);
 };

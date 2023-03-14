@@ -6,7 +6,6 @@ export default class Mineral extends PosClass {
 
 	type: string;
 	isDrillable: boolean;
-	drillFriction: number; //lower is more friction
 
 	style: number; // this is the number for the style to draw
 
@@ -18,8 +17,6 @@ export default class Mineral extends PosClass {
 
 		this.isDrillable = nonDrillableMineralTypes[type] === undefined;
 
-		this.drillFriction = 0.15;
-
 		const types = 2;
 		this.style = Math.floor(Math.random() * types);
 	}
@@ -27,7 +24,6 @@ export default class Mineral extends PosClass {
 	destroy() {
 		const oldType = this.type;
 		this.type = 'Empty';
-		this.drillFriction = 0;
 		return mineralPoints[oldType];
 	}
 }

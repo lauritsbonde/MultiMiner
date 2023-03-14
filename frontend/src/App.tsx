@@ -1,27 +1,15 @@
 import { useState, useEffect } from 'react';
 import MainPage from './Components/MainPage';
+import MuiThemeProvider from './Components/MuiThemeProvider';
 import { ConstantData, DynamicData, StartData, MineralData } from './Types/GameTypes';
 import { io, Socket } from 'socket.io-client';
 import { miscSprite, mineralSprite, playerSprite } from './CanvasStyles/Sprites';
-import { Box, createTheme, ThemeProvider, Button } from '@mui/material';
-import { useAuth0 } from '@auth0/auth0-react';
-
-declare module '@mui/material/styles' {
-	interface Theme {
-		status: {
-			danger: string;
-		};
-	}
-	// allow configuration using `createTheme`
-	interface ThemeOptions {
-		status?: {
-			danger?: string;
-		};
-	}
-}
+import { Box, Button, LinearProgress, Typography } from '@mui/material';
+import { useAuth0, User } from '@auth0/auth0-react';
+import StartPage from './Components/StartPage';
 
 function App() {
-	const [socket, setSocket] = useState({} as Socket);
+	const [socket, setSocket] = useState(null as unknown as Socket);
 	const [myId, setMyId] = useState<string>('');
 	const [constantData, setConstantData] = useState<ConstantData>({} as ConstantData);
 	const [gameData, setGameData] = useState<DynamicData>({} as DynamicData);
@@ -33,7 +21,7 @@ function App() {
 	//MAYBE REMOVE
 	const [aiTraining, setAiTraining] = useState(false);
 
-	const { loginWithRedirect, logout, user, isAuthenticated, isLoading } = useAuth0();
+	const { loginWithRedirect, logout, user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
 
 	const cacheImages = async (sources: { [key: string]: string }, callback: (loadedImages: { [key: string]: any }) => void) => {
 		const loadedImages = {} as { [key: string]: any };
@@ -78,118 +66,120 @@ function App() {
 		});
 	}, []);
 
-	const joinGame = (name: string) => {
-		if (socket.emit === undefined) {
-			console.error('socket.emit is undefined');
-			return;
-		}
-		socket.emit(
-			'join',
-			{
-				name,
-			},
-			(data: StartData) => {
-				setMyId(data.id);
-				setConstantData({ size: data.size, groundStart: data.groundStart, buildings: data.buildings });
-				setGameData({ players: data.players });
-				setMinerals(data.minerals);
+	const createSocketConnection = () => {
+		return new Promise<Socket>((resolve, reject) => {
+			if (socket === null) {
+				const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
+				const socket = io(BACKEND_URL, {
+					path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
+					withCredentials: true,
+					autoConnect: true,
+					extraHeaders: {
+						'Access-Control-Allow-Origin': '*',
+						'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+						'my-custom-header': 'abcd',
+					},
+					transports: ['websocket', 'polling'],
+					auth: {
+						auth0Id: user?.sub,
+					},
+				});
+
+				socket.on('connect', () => {
+					resolve(socket);
+				});
+
+				socket.on('connect_error', (err) => {
+					console.log(err);
+					reject(err);
+				});
+
+				resolve(socket);
+			} else {
+				console.log('socket connection already exists');
+				reject(null);
 			}
-		);
-		setSocket(socket);
+		});
 	};
 
-	useEffect(() => {
-		const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
-
-		const socket = io(BACKEND_URL, {
-			path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
-			withCredentials: true,
-			autoConnect: true,
-			extraHeaders: {
-				'Access-Control-Allow-Origin': '*',
-				'Access-Control-Allow-Methods': 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
-				'my-custom-header': 'abcd',
-			},
-			transports: ['websocket', 'polling'],
-		});
-
-		socket.on('connect', () => {
-			setSocket(socket);
-		});
-
-		socket.on('connect_error', (err) => {
-			console.log('connect_error', err.message);
-			socket.connect();
-		});
-
-		return () => {
-			if (socket.connected === true) {
-				socket.close();
-			}
-		};
-	}, []);
-
-	const theme = createTheme({
-		status: {
-			danger: '#f44336',
-		},
-		typography: {
-			fontFamily: ['Roboto', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', '"Helvetica Neue"', 'Arial', 'sans-serif', '"Apple Color Emoji"', '"Segoe UI Emoji"', '"Segoe UI Symbol"'].join(
-				','
-			),
-			h1: {
-				fontWeight: '600',
-			},
-			h4: {
-				fontWeight: '600',
-			},
-			h5: {
-				fontWeight: '500',
-			},
-		},
-	});
-
-	useEffect(() => {
-		document.title = isAuthenticated ? 'MultiMiner' : 'MultiMiner - Join';
-		if (isAuthenticated) {
-			joinGame(user?.nickname || 'boring');
+	const joinGame = (imageIndex: { head: string; body: string; bottom: string; wheels: string }) => {
+		if (socket === null) {
+			createSocketConnection()
+				.then((socket: Socket) => {
+					if (socket === null) {
+						return;
+					}
+					setSocket(socket);
+					socket.emit(
+						'join',
+						{
+							user,
+							imageIndex,
+						},
+						(res: { success: boolean; data: string | StartData }) => {
+							if (!res.success) {
+								console.log('error joining game', res.data);
+								return;
+							}
+							if (typeof res.data === 'string') {
+								console.log(res.data);
+								return;
+							}
+							setMyId(res.data.id);
+							setConstantData({ size: res.data.size, groundStart: res.data.groundStart, buildings: res.data.buildings });
+							setGameData({ players: res.data.players });
+							setMinerals(res.data.minerals);
+						}
+					);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
+		} else {
+			console.log('socket connection already exists2');
+			console.log(socket);
 		}
-	}, [isAuthenticated]);
+	};
+
+	const logOut = () => {
+		if (socket !== undefined) socket.disconnect();
+		logout({ returnTo: window.location.href });
+	};
 
 	if (!aiTraining) {
 		if (isLoading) {
-			return <div>Loading...</div>;
-		}
-		if (!isAuthenticated) {
 			return (
-				<>
-					<Button variant="contained" onClick={() => loginWithRedirect({ redirectUri: window.location.href })}>
-						Login
-					</Button>
-					{process.env.REACT_APP_ENVIRONMENT === 'development' && (
-						<Button
-							variant="contained"
-							onClick={() => {
-								setAiTraining(true);
-								joinGame('ai');
-							}}
-						>
-							AI
-						</Button>
-					)}
-				</>
+				<MuiThemeProvider>
+					<LinearProgress />
+					<Typography variant="h1" sx={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%)' }}>
+						Loading MultiMiner...
+					</Typography>
+				</MuiThemeProvider>
 			);
 		}
 	}
 
+	if (socket === null) {
+		return (
+			<MuiThemeProvider>
+				<StartPage
+					loginWithRedirect={() => loginWithRedirect({ redirectUri: window.location.href })}
+					authenticated={isAuthenticated}
+					logout={() => logout()}
+					joinGame={joinGame}
+					playerImages={playerImages}
+					username={user?.nickname || 'boring'}
+				/>
+			</MuiThemeProvider>
+		);
+	}
+
 	return (
-		<ThemeProvider theme={theme}>
+		<MuiThemeProvider>
 			<Button
 				variant="contained"
 				onClick={() => {
-					console.log(socket);
-					socket.disconnect();
-					logout({ returnTo: window.location.href });
+					logOut();
 				}}
 			>
 				Logout
@@ -220,7 +210,7 @@ function App() {
 					/>
 				)}
 			</Box>
-		</ThemeProvider>
+		</MuiThemeProvider>
 	);
 }
 export default App;

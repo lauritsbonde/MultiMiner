@@ -22,12 +22,8 @@ Vagrant.configure('2') do |config|
       end
 
 
-      config.vm.synced_folder ".", "/vagrant", disabled: true
-
-      config.vagrant.plugins = "vagrant-docker-compose"
-      # install docker and docker-compose
-      config.vm.provision :docker
-      config.vm.provision :docker_compose
+      config.vm.synced_folder "remote_files", "/minitwit", type: "rsync"
+      config.vm.synced_folder '.', '/vagrant', disabled: true
 
       config.vm.provision "shell", inline: <<-SHELL
         echo "finished docker install"
@@ -86,8 +82,42 @@ Vagrant.configure('2') do |config|
 
         cd ..
 
-        docker-compose up -d --build
-        echo "finished docker-compose"
+        # Install docker and docker-compose
+        sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
+        curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+        sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu focal stable"
+        apt-cache policy docker-ce
+        sudo apt install -y docker-ce
+        sudo systemctl status docker
+        sudo usermod -aG docker ${USER}
+        sudo apt install -y docker-compose
+        
+
+        # Install make
+        sudo apt-get install -y make
+        
+        echo -e "\nVerifying that docker works ...\n"
+        docker run --rm hello-world
+        docker rmi hello-world
+
+        echo -e "\nOpening port for minitwit ...\n"
+        ufw allow 3000 && \
+        ufw allow 22/tcp
+
+        echo ". $HOME/.bashrc" >> $HOME/.bash_profile
+
+        echo -e "\nConfiguring credentials as environment variables...\n"
+
+        source $HOME/.bash_profile
+
+        echo -e "\nSelecting Minitwit Folder as default folder when you ssh into the server...\n"
+        echo "cd /minitwit" >> ~/.bash_profile
+
+        chmod +x /minitwit/deploy.sh
+
+        echo -e "\nVagrant setup done ..."
+        echo -e "minitwit will later be accessible at http://$(hostname -I | awk '{print $1}'):3000"
+        echo -e "The mysql database needs a minute to initialize, if the landing page is stack-trace ..."
       
       SHELL
   end

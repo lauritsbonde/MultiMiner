@@ -1,10 +1,13 @@
 import { mineralSpawn } from '../Lookups/minerals';
-// import DatabaseHelper from './DatabaseHelper';
+import DatabaseHelper from './DatabaseHelper';
 import Mineral from './Mineral';
 import Player from './Player';
 import PlayerDto from './PlayerDto';
 import ShopManager from './ShopManager';
 import AiController from './AI/AiController';
+import { IUser, auth0User } from '../Models/UserModel';
+import UserModel from '../Models/UserModel';
+import { ResolveOptions } from 'dns';
 
 export default class World {
 	size: { width: number; height: number };
@@ -26,7 +29,7 @@ export default class World {
 
 	leaderBoard: Array<{ id: string; name: string; points: number }>;
 
-	// dataBase: DatabaseHelper;
+	dataBase: DatabaseHelper;
 
 	constructor() {
 		this.size = { width: 4000, height: 4000 }; //there is a concrete level after the height
@@ -49,7 +52,28 @@ export default class World {
 
 		this.leaderBoard = [];
 
-		// this.dataBase = new DatabaseHelper();
+		this.dataBase = new DatabaseHelper();
+		this.dataBase
+			.connectToDatabase()
+			.then((res) => {
+				console.log('DB Connection response: ' + res);
+
+				this.dataBase
+					.checkAllTablesExists()
+					.then((res: { [key: string]: any }) => {
+						console.log('DB Check Tables response:');
+						const keys = Object.keys(res);
+						for (let i = 0; i < keys.length; i++) {
+							console.log(`\t - ${res[keys[i]].name}`);
+						}
+					})
+					.catch((err) => {
+						console.log('DB Check Tables error: ' + err);
+					});
+			})
+			.catch((err) => {
+				console.log('DB Connection error: ' + err);
+			});
 
 		this.aiController = new AiController(this.size, this.groundStart, this.shopManager, this.mineralSize, this.getSurroundingMinerals.bind(this));
 	}
@@ -92,77 +116,98 @@ export default class World {
 		this.minerals[index].isDrillable = false;
 	}
 
-	addPlayer(name: string, socketId: string) {
+	addPlayerToWorld(user: auth0User, socketId: string, imageIndex?: { head: string; body: string; bottom: string; wheels: string }): Promise<{ success: boolean; data: string }> {
 		return new Promise((resolve, reject) => {
-			const randx = Math.floor((Math.random() * this.size.width) / 10);
-			const randy = Math.floor(Math.random() * (this.groundStart - 50 - 300 + 1) + 300);
-			const newPlayer = new Player(
-				socketId,
-				{ x: randx, y: randy },
-				{ width: this.size.width, height: this.size.height },
-				this.groundStart,
-				this.shopManager.buildings,
-				name,
-				this.getSurroundingMinerals.bind(this)
-			);
+			this.dataBase.checkIfUserExistsInDB(user).then((res: { success: boolean; data: IUser | undefined; errmsg: string }) => {
+				if (res.success && res.data) {
+					console.log('user exists in db, adding to world');
+					const randx = Math.floor((Math.random() * this.size.width) / 10);
+					const randy = Math.floor(Math.random() * (this.groundStart - 50 - 300 + 1) + 300);
+					const newPlayer = new Player(
+						user.sub,
+						{ x: randx, y: randy },
+						{ width: this.size.width, height: this.size.height },
+						this.groundStart,
+						this.shopManager.buildings,
+						res.data.name,
+						this.getSurroundingMinerals.bind(this),
+						imageIndex,
+						res.data.points
+					);
 
-			this.players[socketId] = newPlayer;
-			this.playersDto[socketId] = newPlayer.toDto();
-			resolve(socketId);
+					this.players[res.data.auth0Id] = newPlayer;
+					this.playersDto[res.data.auth0Id] = newPlayer.toDto();
 
-			// this.dataBase
-			// 	.saveUser(newPlayer)
-			// 	.then((res: { success: boolean; data: any; errmsg: string }) => {
-			// 		if (res.success) {
-			// 			const id = res.data._id.toString();
-			// 			newPlayer.id = id;
-			// 			this.players[id] = newPlayer;
-			// 			this.playersDto[id] = newPlayer.toDto();
-			// 			resolve(id);
-			// 		} else {
-			// 			reject(res.errmsg);
-			// 		}
-			// 	})
-			// 	.catch((err) => {
-			// 		reject(err);
-			// 	});
+					resolve({ success: true, data: res.data.auth0Id });
+				} else if (res.success && !res.data) {
+					console.log("user doesn't exist in db, adding to world");
+					const randx = Math.floor((Math.random() * this.size.width) / 10);
+					const randy = Math.floor(Math.random() * (this.groundStart - 50 - 300 + 1) + 300);
+					const newPlayer = new Player(
+						user.sub,
+						{ x: randx, y: randy },
+						{ width: this.size.width, height: this.size.height },
+						this.groundStart,
+						this.shopManager.buildings,
+						user.nickname,
+						this.getSurroundingMinerals.bind(this),
+						imageIndex
+					);
+
+					this.dataBase
+						.saveUser(newPlayer)
+						.then((res: { success: boolean; data: any; errmsg: string }) => {
+							if (res.success) {
+								this.players[user.sub] = newPlayer;
+								this.playersDto[user.sub] = newPlayer.toDto();
+								resolve({ success: true, data: user.sub });
+							} else {
+								console.log("couldn't save user to db: " + res.errmsg);
+								reject({ success: false, data: res.errmsg });
+							}
+						})
+						.catch((err) => {
+							reject({ success: false, data: err.toString() });
+						});
+				}
+			});
 		});
 	}
 
-	removePlayer(socketId: string) {
+	removePlayer(auth0Id: string) {
 		Object.values(this.players).find((player) => {
-			if (player.socketId === socketId) {
-				if (player.id === 'aiSpectator') {
-					this.aiController.removeSpectator();
-					this.players = this.aiController.removeAis(this.players);
-				}
-				delete this.players[player.socketId];
-				delete this.playersDto[player.socketId];
+			if (player.auth0id === auth0Id) {
+				// if (player.id === 'aiSpectator') {
+				// 	this.aiController.removeSpectator();
+				// 	this.players = this.aiController.removeAis(this.players);
+				// }
+				delete this.players[player.auth0id];
+				delete this.playersDto[player.auth0id];
 				return true;
 				// this.playersKdTree.remove(player.toDto());
 			}
 		});
-		Object.values(this.aiController.getAis()).find((ai) => {
-			if (ai.socketId === socketId) {
-				this.aiController.removeAi(ai.id);
-				delete this.playersDto[ai.id];
-				return true;
-				// this.playersKdTree.remove(player.toDto());
-			}
-		});
+		// Object.values(this.aiController.getAis()).find((ai) => {
+		// 	if (ai.socketId === socketId) {
+		// 		this.aiController.removeAi(ai.id);
+		// 		delete this.playersDto[ai.id];
+		// 		return true;
+		// 		// this.playersKdTree.remove(player.toDto());
+		// 	}
+		// });
 
-		if (this.aiController.aiSpectator !== undefined && this.aiController.aiSpectator.socketId === socketId) {
-			this.aiController.removeSpectator();
-		}
+		// if (this.aiController.aiSpectator !== undefined && this.aiController.aiSpectator.socketId === socketId) {
+		// 	this.aiController.removeSpectator();
+		// }
 	}
 
 	update() {
 		this.updatePlayers();
 		this.aiController.updateAis(this.minerals, this.mineralSize, this.size, this.groundStart, this.turnDrilledMineralToIndexAndType.bind(this));
 
-		if (this.aiController.aiSpectator !== undefined) {
-			this.playersDto[this.aiController.aiSpectator.id] = this.aiController.aiSpectator.toDto();
-		}
+		// if (this.aiController.aiSpectator !== undefined) {
+		// 	this.playersDto[this.aiController.aiSpectator.id] = this.aiController.aiSpectator.toDto();
+		// }
 		this.createLeaderBoard();
 		//this.buildKdTrees();
 	}
@@ -238,6 +283,7 @@ export default class World {
 	}
 
 	addChat(message: string, id: string) {
+		this.dataBase.saveChatMessage(message, id, Date.now());
 		this.chatMessages.push({ message, id });
 	}
 
@@ -255,8 +301,8 @@ export default class World {
 	}
 
 	createAiSpectator(socketId: string) {
-		const spectator = this.aiController.createAiSpectator(socketId);
-		this.playersDto[spectator.id] = spectator.toDto();
+		// const spectator = this.aiController.createAiSpectator(socketId);
+		// this.playersDto[spectator.id] = spectator.toDto();
 	}
 
 	newAiGeneration() {
