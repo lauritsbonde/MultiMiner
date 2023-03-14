@@ -22,14 +22,17 @@ Vagrant.configure('2') do |config|
       end
 
 
-      config.vm.synced_folder "remote_files", "/minitwit", type: "rsync"
+      config.vm.synced_folder "remote_files", "/multiminer", type: "rsync"
       config.vm.synced_folder '.', '/vagrant', disabled: true
 
       config.vm.provision "shell", inline: <<-SHELL
         echo "finished docker install"
       SHELL
 
-      config.vm.provision "shell", env: {"MONGODB_PASSWORD" => settings['MONGODB_PASSWORD'],"NODE_ENV" => settings['NODE_ENV'],"REACT_APP_BACKEND_URL" => settings['REACT_APP_BACKEND_URL'],"REACT_APP_ENVIRONMENT" => settings['REACT_APP_ENVIRONMENT'],"BASEURL" => settings['BASEURL'], "provider_token" => settings['provider_token'], "RECORD_ID" => settings["RECORD_ID"]}, inline: <<-SHELL
+      config.vm.provision "shell", inline: 'echo "export DOCKER_USERNAME=' + "'" + settings["DOCKER_USERNAME"] + "'" + '" >> ~/.bash_profile'
+      config.vm.provision "shell", inline: 'echo "export DOCKER_PASSWORD=' + "'" + settings["DOCKER_PASSWORD"] + "'" + '" >> ~/.bash_profile'
+
+      config.vm.provision "shell", env: {"BASEURL" => settings['BASEURL'], "provider_token" => settings['provider_token']}, inline: <<-SHELL
         echo "installing doctl"
         cd ~
         wget https://github.com/digitalocean/doctl/releases/download/v1.92.0/doctl-1.92.0-linux-amd64.tar.gz
@@ -48,39 +51,11 @@ Vagrant.configure('2') do |config|
 
         doctl compute reserved-ip-action assign 164.90.243.228 $dropletId
 
-        echo "starting git clone"
-        git clone https://github.com/lauritsbonde/MultiMiner.git
-        echo "finished git clone"
-
-        echo "starting docker-compose"
-        cd MultiMiner
-
         # set the env variables
-        # BACKEND
-        echo "MONGODB_PASSWORD=$MONGODB_PASSWORD">> .env
-        echo "NODE_ENV=$NODE_ENV">> .env
-
-        # FRONTEND
-        echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL">> .env
-        echo "REACT_APP_ENVIRONMENT=$REACT_APP_ENVIRONMENT">> .env
-
         # GLOBAL
+        cd /multiminer
         echo "BASEURL=$BASEURL">> .env
         echo "CERT_RESOLVER=production">> .env
-
-        # set the env variables for frontend
-        cd frontend
-        echo "REACT_APP_BACKEND_URL=$REACT_APP_BACKEND_URL">> .env
-        echo "REACT_APP_ENVIRONMENT=$REACT_APP_ENVIRONMENT">> .env
-
-        cd ..
-
-        set the env variables for backend
-        cd backend  
-        echo "MONGODB_PASSWORD=$MONGODB_PASSWORD">> .env
-        echo "NODE_ENV=$NODE_ENV">> .env
-
-        cd ..
 
         # Install docker and docker-compose
         sudo apt install -y apt-transport-https ca-certificates curl software-properties-common
@@ -100,7 +75,7 @@ Vagrant.configure('2') do |config|
         docker run --rm hello-world
         docker rmi hello-world
 
-        echo -e "\nOpening port for minitwit ...\n"
+        echo -e "\nOpening port for multiminer ...\n"
         ufw allow 3000 && \
         ufw allow 22/tcp
 
@@ -110,13 +85,13 @@ Vagrant.configure('2') do |config|
 
         source $HOME/.bash_profile
 
-        echo -e "\nSelecting Minitwit Folder as default folder when you ssh into the server...\n"
-        echo "cd /minitwit" >> ~/.bash_profile
+        echo -e "\nSelecting multiminer Folder as default folder when you ssh into the server...\n"
+        echo "cd /multiminer" >> ~/.bash_profile
 
-        chmod +x /minitwit/deploy.sh
+        chmod +x /multiminer/deploy.sh
 
         echo -e "\nVagrant setup done ..."
-        echo -e "minitwit will later be accessible at http://$(hostname -I | awk '{print $1}'):3000"
+        echo -e "multiminer will later be accessible at http://$(hostname -I | awk '{print $1}'):3000"
         echo -e "The mysql database needs a minute to initialize, if the landing page is stack-trace ..."
       
       SHELL

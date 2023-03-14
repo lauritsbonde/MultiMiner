@@ -64,6 +64,7 @@ function App() {
 		cacheImages(miscSprite, (loadedImages) => {
 			setMiscImages(loadedImages);
 		});
+		document.title = 'Multiminer!';
 	}, []);
 
 	const createSocketConnection = () => {
