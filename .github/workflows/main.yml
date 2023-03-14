@@ -35,13 +35,13 @@ jobs:
 
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v1
-
+            
             - name: Build and push frontend
               uses: docker/build-push-action@v2
               with:
                   context: .
-                  working-directory: ./frontend
-                  file: Dockerfile
+                  path: ./frontend
+                  file: ./Dockerfile
                   push: true
                   tags: ${{ secrets.DOCKER_USERNAME }}/multiminerfrontend:latest
                   cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontend:multiminerfrontendcache
