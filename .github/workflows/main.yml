@@ -41,7 +41,7 @@ jobs:
               with:
                   context: .
                   working-directory: ./frontend
-                  file: ./Dockerfile
+                  file: Dockerfile
                   push: true
                   tags: ${{ secrets.DOCKER_USERNAME }}/multiminerfrontend:latest
                   cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontend:multiminerfrontendcache
