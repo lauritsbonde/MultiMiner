@@ -46,7 +46,7 @@ jobs:
                   cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontend:multiminerfrontendcache
                   cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontend:multiminerfrontendcache,mode=max
                   secrets: |
-                      "REACT_APP_API_URL=${{secrets.REACT_APP_BACKEND_URL}}"
+                      "REACT_APP_BACKEND_URL=${{secrets.REACT_APP_BACKEND_URL}}"
 
                       "REACT_APP_AUTH0_DOMAIN=${{secrets.REACT_APP_AUTH0_DOMAIN}}"
                       "REACT_APP_AUTH0_CLIENT_ID=${{secrets.REACT_APP_AUTH0_CLIENT_ID}}"
