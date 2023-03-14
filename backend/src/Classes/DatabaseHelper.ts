@@ -1,5 +1,5 @@
 import mongoose, { Model } from 'mongoose';
-const URI = process.env.NODE_ENV === 'development' ? 'mongodb://root:rootpassword@localhost/' : 'mongodb://root:rootpassword@mongo?directConnection=true';
+const URI = process.env.NODE_ENV === 'development' ? 'mongodb://root:rootpassword@localhost/' : 'mongodb://mongo:27017/';
 // const URI = `mongodb+srv://lauritsbonde:${process.env.MONGODB_PASSWORD}@multiminer.pn1fzrq.mongodb.net/?retryWrites=true&w=majority`;
 import UserModel, { IUser } from '../Models/UserModel';
 import Player from './Player';

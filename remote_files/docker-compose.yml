@@ -41,6 +41,8 @@ services:
         container_name: multiminerbackend
         depends_on:
             - mongodb_container
+        links:
+            - mongodb_container
         labels:
             - traefik.enable=true
 
