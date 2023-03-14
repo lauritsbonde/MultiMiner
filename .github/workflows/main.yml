@@ -53,21 +53,11 @@ jobs:
                       "REACT_APP_AUTH0_CALLBACK_URL=${{secrets.REACT_APP_BACKEND_URL}}"
                       "REACT_APP_API_SERVER_URL=${{secrets.REACT_APP_BACKEND_URL}}"
 
-            - name: Build and push minitwitdb
+            - name: Build and push backend
               uses: docker/build-push-action@v2
               with:
-                  context: .
-                  file: ./database/Dockerfile
-                  push: true
-                  tags: ${{ secrets.DOCKER_USERNAME }}/multiminerdb:latest
-                  cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerdb:multiminerdbcachce
-                  cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerdb:multiminerdbcachce,mode=max
-
-            - name: Build and push minitwitbackend
-              uses: docker/build-push-action@v2
-              with:
-                  context: .
-                  file: ./backend/Dockerfile
+                  context: "{{defaultContext}}:backend"
+                  file: ./Dockerfile
                   push: true
                   tags: ${{ secrets.DOCKER_USERNAME }}/multiminerbackend:latest
                   cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerbackend:multiminerbackendcache
