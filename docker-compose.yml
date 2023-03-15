@@ -66,3 +66,17 @@ services:
 
         depends_on:
             - backend
+
+    mongodb_container:
+        image: mongo:4.4
+        container_name: mongodb
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+        volumes:
+            - ./data/db:/data/db
+        labels:
+            - traefik.enable=false
+
+volumes:
+    data:
