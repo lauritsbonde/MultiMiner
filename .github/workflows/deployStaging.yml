@@ -42,9 +42,9 @@ jobs:
                   context: '{{defaultContext}}:frontend'
                   file: ./Dockerfile
                   push: true
-                  tags: ${{ secrets.DOCKER_USERNAME }}/multiminerfrontendStaging:latest
-                  cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontendStaging:multiminerfrontendcacheStaging
-                  cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontendStaging:multiminerfrontendcacheStaging,mode=max
+                  tags: ${{ secrets.DOCKER_USERNAME }}/multiminerfrontendstaging:latest
+                  cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontendstaging:multiminerfrontendcachestaging
+                  cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontendstaging:multiminerfrontendcachestaging,mode=max
                   secrets: |
                       "AUTH0_SECRET=${{secrets.AUTH0_SECRET}}"
                       "AUTH0_BASE_URL=${{secrets.AUTH0_BASE_URL}}"
@@ -60,9 +60,9 @@ jobs:
                   context: '{{defaultContext}}:backend'
                   file: ./Dockerfile
                   push: true
-                  tags: ${{ secrets.DOCKER_USERNAME }}/multiminerbackendStaging:latest
-                  cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerbackendStaging:multiminerbackendcacheStaging
-                  cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerbackendStaging:multiminerbackendcacheStaging,mode=max
+                  tags: ${{ secrets.DOCKER_USERNAME }}/multiminerbackendstaging:latest
+                  cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerbackendstaging:multiminerbackendcachestaging
+                  cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerbackendstaging:multiminerbackendcachestaging,mode=max
                   secrets: |
                       "MONGODB_PASSWORD=${{secrets.MONGODB_PASSWORD}}"
                       "MONGODB_USERNAME=${{secrets.MONGODB_USERNAME}}"
