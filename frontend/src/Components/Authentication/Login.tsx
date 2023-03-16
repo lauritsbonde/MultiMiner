@@ -1,6 +1,6 @@
 import { Box, Typography, TextField, Button } from '@mui/material';
 import React from 'react';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useRouter } from 'next/router';
 
 const styling = {
 	container: {
@@ -19,13 +19,13 @@ const styling = {
 };
 
 const Login = () => {
-	const { loginWithRedirect } = useAuth0();
+	const router = useRouter();
 	return (
 		<Box sx={styling.container}>
 			<Button
 				variant="contained"
 				onClick={() => {
-					loginWithRedirect();
+					router.push('/api/auth/login');
 				}}
 			>
 				Login

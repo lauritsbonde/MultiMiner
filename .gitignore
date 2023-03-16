@@ -574,4 +574,7 @@ vagrantSettings.yaml
 data/db/**/
 *data/
 
+### Next.js ###
+.next
+
 # End of https://www.toptal.com/developers/gitignore/api/node,react,visualstudio

@@ -1,12 +1,12 @@
 ---
-name: Continuous Deployment
+name: STAGING - Continuous Deployment
 
 on:
     push:
         # Run workflow every time something is pushed to the main branch
         branches:
-            - main
-            - master
+            - 'feat/**'
+            - nextRefactor
     # allow manual triggers for now too
     workflow_dispatch:
         manual: true
@@ -42,17 +42,17 @@ jobs:
                   context: '{{defaultContext}}:frontend'
                   file: ./Dockerfile
                   push: true
-                  tags: ${{ secrets.DOCKER_USERNAME }}/multiminerfrontend:latest
-                  cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontend:multiminerfrontendcache
-                  cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontend:multiminerfrontendcache,mode=max
+                  tags: ${{ secrets.DOCKER_USERNAME }}/multiminerfrontendstaging:latest
+                  cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontendstaging:multiminerfrontendcachestaging
+                  cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerfrontendstaging:multiminerfrontendcachestaging,mode=max
                   secrets: |
                       "AUTH0_SECRET=${{secrets.AUTH0_SECRET}}"
-                      "AUTH0_BASE_URL=${{secrets.AUTH0_BASE_URL}}"
+                      "AUTH0_BASE_URL=${{secrets.AUTH0_BASE_URL_STAGING}}"
                       "AUTH0_ISSUER_BASE_URL=${{secrets.AUTH0_ISSUER_BASE_URL}}"
                       "AUTH0_CLIENT_ID=${{secrets.AUTH0_CLIENT_ID}}"
                       "AUTH0_CLIENT_SECRET=${{secrets.AUTH0_CLIENT_SECRET}}"
-                      "NEXT_PUBLIC_BACKEND_URL=${{secrets.NEXT_PUBLIC_BACKEND_URL}}"
-                      "NEXT_PUBLIC_ENVIRONMENT=${{secrets.NEXT_PUBLIC_ENVIRONMENT}}"
+                      "NEXT_PUBLIC_BACKEND_URL=${{secrets.NEXT_PUBLIC_BACKEND_URL_STAGING}}"
+                      "NEXT_PUBLIC_ENVIRONMENT=${{secrets.NEXT_PUBLIC_ENVIRONMENT_STAGING}}"
 
             - name: Build and push backend
               uses: docker/build-push-action@v2
@@ -60,9 +60,9 @@ jobs:
                   context: '{{defaultContext}}:backend'
                   file: ./Dockerfile
                   push: true
-                  tags: ${{ secrets.DOCKER_USERNAME }}/multiminerbackend:latest
-                  cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerbackend:multiminerbackendcache
-                  cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerbackend:multiminerbackendcache,mode=max
+                  tags: ${{ secrets.DOCKER_USERNAME }}/multiminerbackendstaging:latest
+                  cache-from: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerbackendstaging:multiminerbackendcachestaging
+                  cache-to: type=registry,ref=${{ secrets.DOCKER_USERNAME }}/multiminerbackendstaging:multiminerbackendcachestaging,mode=max
                   secrets: |
                       "MONGODB_PASSWORD=${{secrets.MONGODB_PASSWORD}}"
                       "MONGODB_USERNAME=${{secrets.MONGODB_USERNAME}}"
@@ -83,4 +83,4 @@ jobs:
                   '/multiminer/deploy.sh'
               env:
                   SSH_USER: ${{ secrets.SSH_USER }}
-                  SSH_HOST: ${{ secrets.SSH_HOST }}
+                  SSH_HOST: ${{ secrets.SSH_HOST_STAGING }}

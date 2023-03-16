@@ -1,10 +1,10 @@
 import React, { FC, CSSProperties } from 'react';
 import socketProps from '../../Types/Socket';
 import { Box, Button, Typography } from '@mui/material';
-import { useAuth0 } from '@auth0/auth0-react';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 const SaverMenu: FC<socketProps> = ({ socket, myId }) => {
-	const { user } = useAuth0();
+	const { user } = useUser();
 	const styling = {
 		container: {
 			margin: 'auto',

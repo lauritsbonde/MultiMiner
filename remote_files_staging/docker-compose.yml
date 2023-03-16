@@ -15,8 +15,8 @@ services:
             - './traefik-ssl-certs:/ssl-certs'
 
     multiminerfrontend:
-        image: ${DOCKER_USERNAME}/multiminerfrontend
-        container_name: multiminerfrontend
+        image: ${DOCKER_USERNAME}/multiminerfrontendstaging
+        container_name: multiminerfrontendstaging
         depends_on:
             - multiminerbackend
 
@@ -34,8 +34,8 @@ services:
             - traefik.http.routers.multiminerfrontend.tls.certresolver=production
 
     multiminerbackend:
-        image: ${DOCKER_USERNAME}/multiminerbackend
-        container_name: multiminerbackend
+        image: ${DOCKER_USERNAME}/multiminerbackendstaging
+        container_name: multiminerbackendstaging
         depends_on:
             - mongodb_container
         links:

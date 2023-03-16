@@ -25,7 +25,7 @@ const io = require('socket.io')(http, {
 		methods: ['GET', 'POST', 'OPTIONS'],
 		allowedHeaders: ['my-custom-header', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Methods', 'Content-Type', 'Authorization'],
 		credentials: true,
-		path: process.env.NODE_ENV === 'production' ? '/api/socket.io' : '/socket.io',
+		path: process.env.NODE_ENV === 'production' ? '/game/socket.io' : '/socket.io',
 	},
 });
 
@@ -148,7 +148,7 @@ io.on('connection', function (socket: any) {
 	socket.on('chat', (data: { message: string; id: string }) => {
 		world.addChat(data.message, data.id);
 		// TODO: check the message for bad words
-		io.emit('newchat', { message: data.message, senderName: world.players[data.id].name, senderId: data.id });
+		io.emit('newchat', { message: data.message, senderName: world.players[data.id].name });
 	});
 
 	// AI

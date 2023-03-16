@@ -1,143 +1,73 @@
-// misc
-import * as storage from '../images/storage.svg';
-
-//minerals
-import * as emptybasic from '../mineralTextures/empty.svg';
-import * as mudTop from '../mineralTextures/mud/mud_top.svg';
-import * as concrete from '../mineralTextures/concrete.svg';
-
-import * as mudBasic0 from '../mineralTextures/mud/mud_basic0.svg';
-import * as mudBasic1 from '../mineralTextures/mud/mud_basic1.svg';
-
-import * as coalBasic0 from '../mineralTextures/coal/coal_basic0.svg';
-import * as coalBasic1 from '../mineralTextures/coal/coal_basic1.svg';
-
-import * as ironBasic0 from '../mineralTextures/iron/iron_basic0.svg';
-import * as ironBasic1 from '../mineralTextures/iron/iron_basic1.svg';
-
-import * as goldBasic0 from '../mineralTextures/gold/gold_basic0.svg';
-import * as goldBasic1 from '../mineralTextures/gold/gold_basic1.svg';
-
-import * as diamondBasic0 from '../mineralTextures/diamond/diamond_basic0.svg';
-import * as diamondBasic1 from '../mineralTextures/diamond/diamond_basic1.svg';
-
-import * as emeraldBasic0 from '../mineralTextures/emerald/emerald_basic0.svg';
-import * as emeraldBasic1 from '../mineralTextures/emerald/emerald_basic1.svg';
-
-import * as rubyBasic0 from '../mineralTextures/ruby/ruby_basic0.svg';
-import * as rubyBasic1 from '../mineralTextures/ruby/ruby_basic1.svg';
-
-import * as sapphireBasic0 from '../mineralTextures/sapphire/sapphire_basic0.svg';
-import * as sapphireBasic1 from '../mineralTextures/sapphire/sapphire_basic1.svg';
-
-import * as topazBasic0 from '../mineralTextures/topaz/topaz_basic0.svg';
-import * as topazBasic1 from '../mineralTextures/topaz/topaz_basic1.svg';
-
-import * as amethystBasic0 from '../mineralTextures/amethyst/amethyst_basic0.svg';
-import * as amethystBasic1 from '../mineralTextures/amethyst/amethyst_basic1.svg';
-
-import * as quartzBasic0 from '../mineralTextures/quartz/quartz_basic0.svg';
-import * as quartzBasic1 from '../mineralTextures/quartz/quartz_basic1.svg';
-
-import * as amberBasic0 from '../mineralTextures/amber/amber_basic0.svg';
-import * as amberBasic1 from '../mineralTextures/amber/amber_basic1.svg';
-
-import * as jadeBasic0 from '../mineralTextures/jade/jade_basic0.svg';
-import * as jadeBasic1 from '../mineralTextures/jade/jade_basic1.svg';
-
-import * as pearlBasic0 from '../mineralTextures/pearl/pearl_basic0.svg';
-import * as pearlBasic1 from '../mineralTextures/pearl/pearl_basic1.svg';
-
-import * as opalBasic0 from '../mineralTextures/opal/opal_basic0.svg';
-import * as opalBasic1 from '../mineralTextures/opal/opal_basic1.svg';
-
-// player sprites
-// heads
-import * as head from '../drillTextures/head/head.svg';
-import * as head1 from '../drillTextures/head/head1.svg';
-
-// bodys
-import * as body from '../drillTextures/body/body.svg';
-import * as body1 from '../drillTextures/body/body1.svg';
-
-// bottoms
-import * as bottom from '../drillTextures/bottom/bottom.svg';
-import * as bottom1 from '../drillTextures/bottom/bottom1.svg';
-
-// wheels
-import * as wheel from '../drillTextures/wheel/wheel.svg';
-import * as wheel1 from '../drillTextures/wheel/wheel1.svg';
-
 export const miscSprite = {
-	storage: storage.default,
+	storage: '/images/storage.svg',
 };
 
 export const mineralSprite = {
-	empty: emptybasic.default,
-	concrete: concrete.default,
+	empty: '/mineralTextures/empty.svg',
+	concrete: '/mineralTextures/concrete.svg',
 
-	mudtop: mudTop.default,
-	mudbasic0: mudBasic0.default,
-	mudbasic1: mudBasic1.default,
+	mudtop: '/mineralTextures/mud/mud_top.svg',
+	mudbasic0: '/mineralTextures/mud/mud_basic0.svg',
+	mudbasic1: '/mineralTextures/mud/mud_basic1.svg',
 
-	coalbasic0: coalBasic0.default,
-	coalbasic1: coalBasic1.default,
+	coalbasic0: '/mineralTextures/coal/coal_basic0.svg',
+	coalbasic1: '/mineralTextures/coal/coal_basic1.svg',
 
-	ironbasic0: ironBasic0.default,
-	ironbasic1: ironBasic1.default,
+	ironbasic0: '/mineralTextures/iron/iron_basic0.svg',
+	ironbasic1: '/mineralTextures/iron/iron_basic1.svg',
 
-	goldbasic0: goldBasic0.default,
-	goldbasic1: goldBasic1.default,
+	goldbasic0: '/mineralTextures/gold/gold_basic0.svg',
+	goldbasic1: '/mineralTextures/gold/gold_basic1.svg',
 
-	diamondbasic0: diamondBasic0.default,
-	diamondbasic1: diamondBasic1.default,
+	diamondbasic0: '/mineralTextures/diamond/diamond_basic0.svg',
+	diamondbasic1: '/mineralTextures/diamond/diamond_basic1.svg',
 
-	emeraldbasic0: emeraldBasic0.default,
-	emeraldbasic1: emeraldBasic1.default,
+	emeraldbasic0: '/mineralTextures/emerald/emerald_basic0.svg',
+	emeraldbasic1: '/mineralTextures/emerald/emerald_basic1.svg',
 
-	rubybasic0: rubyBasic0.default,
-	rubybasic1: rubyBasic1.default,
+	rubybasic0: '/mineralTextures/ruby/ruby_basic0.svg',
+	rubybasic1: '/mineralTextures/ruby/ruby_basic1.svg',
 
-	sapphirebasic0: sapphireBasic0.default,
-	sapphirebasic1: sapphireBasic1.default,
+	sapphirebasic0: '/mineralTextures/sapphire/sapphire_basic0.svg',
+	sapphirebasic1: '/mineralTextures/sapphire/sapphire_basic1.svg',
 
-	topazbasic0: topazBasic0.default,
-	topazbasic1: topazBasic1.default,
+	topazbasic0: '/mineralTextures/topaz/topaz_basic0.svg',
+	topazbasic1: '/mineralTextures/topaz/topaz_basic1.svg',
 
-	amethystbasic0: amethystBasic0.default,
-	amethystbasic1: amethystBasic1.default,
+	amethystbasic0: '/mineralTextures/amethyst/amethyst_basic0.svg',
+	amethystbasic1: '/mineralTextures/amethyst/amethyst_basic1.svg',
 
-	quartzbasic0: quartzBasic0.default,
-	quartzbasic1: quartzBasic1.default,
+	quartzbasic0: '/mineralTextures/quartz/quartz_basic0.svg',
+	quartzbasic1: '/mineralTextures/quartz/quartz_basic1.svg',
 
-	amberbasic0: amberBasic0.default,
-	amberbasic1: amberBasic1.default,
+	amberbasic0: '/mineralTextures/amber/amber_basic0.svg',
+	amberbasic1: '/mineralTextures/amber/amber_basic1.svg',
 
-	jadebasic0: jadeBasic0.default,
-	jadebasic1: jadeBasic1.default,
+	jadebasic0: '/mineralTextures/jade/jade_basic0.svg',
+	jadebasic1: '/mineralTextures/jade/jade_basic1.svg',
 
-	pearlbasic0: pearlBasic0.default,
-	pearlbasic1: pearlBasic1.default,
+	pearlbasic0: '/mineralTextures/pearl/pearl_basic0.svg',
+	pearlbasic1: '/mineralTextures/pearl/pearl_basic1.svg',
 
-	opalbasic0: opalBasic0.default,
-	opalbasic1: opalBasic1.default,
+	opalbasic0: '/mineralTextures/opal/opal_basic0.svg',
+	opalbasic1: '/mineralTextures/opal/opal_basic1.svg',
 };
 
 export const playerSprite = {
 	head: {
-		'0': head.default,
-		'1': head1.default,
+		'0': '/drillTextures/head/head.svg',
+		'1': '/drillTextures/head/head1.svg',
 	},
 	body: {
-		'0': body.default,
-		'1': body1.default,
+		'0': '/drillTextures/body/body.svg',
+		'1': '/drillTextures/body/body1.svg',
 	},
 	bottom: {
-		'0': bottom.default,
-		'1': bottom1.default,
+		'0': '/drillTextures/bottom/bottom.svg',
+		'1': '/drillTextures/bottom/bottom1.svg',
 	},
 	wheels: {
-		'0': wheel.default,
-		'1': wheel1.default,
+		'0': '/drillTextures/wheel/wheel.svg',
+		'1': '/drillTextures/wheel/wheel1.svg',
 	},
 } as { [key: string]: any };

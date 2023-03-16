@@ -63,7 +63,7 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 		}, 100);
 
 		return () => clearInterval(interval);
-	}, []);
+	}, [socket]);
 
 	useEffect(() => {
 		const newOffSet = { ...canvasOffSet };
@@ -140,37 +140,39 @@ const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startM
 
 	return (
 		<Box sx={styling.container}>
-			<Box>
-				{gameData.players !== undefined && gameData.players[myId].isDead && <Typography variant="h3">You died!</Typography>}
+			<Box>{gameData.players !== undefined && gameData.players[myId].isDead && <Typography variant="h3">You died!</Typography>}</Box>
+			<Box sx={styling.gameContainer}>
 				{gameData.players && (
 					<Box sx={styling.infoContainer}>
-						<Typography variant="h6" sx={{ display: 'flex' }}>
-							Fuel:
+						<Box sx={styling.infoElement}>
+							<Typography variant="h6">Fuel:</Typography>
 							<Box sx={styling.fuelDisplayContainer}>
-								<Typography sx={{ position: 'absolute', zIndex: 1, top: '0', left: '20%', margin: 0, padding: 0 }}>
+								<Typography sx={styling.fuelText}>
 									{gameData.players[myId].fuel.current.toFixed(2)} / {gameData.players[myId].fuel.max} L
 								</Typography>
-								<Box sx={{ width: fuelRatio + '%', height: '100%', backgroundColor: fuelRatio < 15 ? 'red' : fuelRatio < 30 ? 'orange' : 'green' }}></Box>
+								<Box sx={{ width: fuelRatio + '%', height: '100%', backgroundColor: fuelRatio < 15 ? 'red' : fuelRatio < 30 ? 'orange' : 'green' }} />
 							</Box>
-						</Typography>
-						<Typography variant="h6">Money: {gameData.players[myId].money.toFixed(2)}</Typography>
+						</Box>
+						<Box sx={styling.infoElement}>
+							<Typography variant="h6">Money: {gameData.players[myId].money.toFixed(2)}</Typography>
+						</Box>
 					</Box>
 				)}
-			</Box>
-			<Box sx={styling.canvasAndChat}>
-				<Canvas draw={draw} canvasRef={canvasRef} />
-				{gameData.players !== undefined &&
-					gameData.players[myId].onBuilding !== '' &&
-					gameData.players[myId].onBuilding !== 'graveyard' &&
-					gameData.players[myId].onBuilding !== 'spectating' && (
-						<BuildingContainer
-							socket={socket}
-							building={gameData.players[myId].onBuilding}
-							bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
-							myId={myId}
-						/>
-					)}
-				<ChatLeaderboardShifter socket={socket} leaderboard={leaderBoard} myId={myId} />
+				<Box sx={styling.canvasAndChat}>
+					<Canvas draw={draw} canvasRef={canvasRef} />
+					{gameData.players !== undefined &&
+						gameData.players[myId].onBuilding !== '' &&
+						gameData.players[myId].onBuilding !== 'graveyard' &&
+						gameData.players[myId].onBuilding !== 'spectating' && (
+							<BuildingContainer
+								socket={socket}
+								building={gameData.players[myId].onBuilding}
+								bgColor={gameData.players[myId].onBuilding !== '' ? buildingStyle[gameData.players[myId].onBuilding].innerColor : '#00ff00'}
+								myId={myId}
+							/>
+						)}
+					<ChatLeaderboardShifter socket={socket} leaderboard={leaderBoard} myId={myId} />
+				</Box>
 			</Box>
 		</Box>
 	);
