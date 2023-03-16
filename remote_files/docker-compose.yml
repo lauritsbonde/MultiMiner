@@ -44,11 +44,11 @@ services:
             - traefik.enable=true
 
             # Define the router for HTTPS
-            - traefik.http.routers.multiminerbackend.rule=Host(`${BASEURL}`) && PathPrefix(`/api`)
+            - traefik.http.routers.multiminerbackend.rule=Host(`${BASEURL}`) && PathPrefix(`/game`)
             - traefik.http.routers.multiminerbackend.entrypoints=websecure
 
             # Create a middleware to strip the /api prefix
-            - 'traefik.http.middlewares.myservice-strip.stripprefix.prefixes=/api'
+            - 'traefik.http.middlewares.myservice-strip.stripprefix.prefixes=/game'
             - 'traefik.http.middlewares.myservice-strip.stripprefix.forceslash=false'
             # Add the middleware to the router (backend)
             - 'traefik.http.routers.multiminerbackend.middlewares=myservice-strip'
