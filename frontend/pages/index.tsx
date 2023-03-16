@@ -9,8 +9,7 @@ import { useUser } from '@auth0/nextjs-auth0/client';
 import StartPage from '../src/Components/StartPage';
 import { useRouter } from 'next/router';
 
-function App({ secrets }) {
-	console.log(secrets);
+function App() {
 	const [socket, setSocket] = useState(null as unknown as Socket);
 	const [myId, setMyId] = useState<string>('');
 	const [constantData, setConstantData] = useState<ConstantData>({} as ConstantData);
@@ -47,9 +46,6 @@ function App({ secrets }) {
 		await Promise.all(promises);
 		callback(loadedImages);
 	};
-
-	console.log('backendURL: ', process.env.NEXT_PUBLIC_BACKEND_URL);
-	console.log('environment: ', process.env.NEXT_PUBLIC_ENVIRONMENT);
 
 	useEffect(() => {
 		cacheImages(mineralSprite, (loadedImages) => {
@@ -226,20 +222,6 @@ function App({ secrets }) {
 			</Box>
 		</Box>
 	);
-}
-
-export async function getStaticProps() {
-	return {
-		props: {
-			secrets: {
-				secret: process.env.AUTH0_SECRET,
-				base: process.env.AUTH0_BASE_URL,
-				issuer: process.env.AUTH0_ISSUER_BASE_URL,
-				clientId: process.env.AUTH0_CLIENT_ID,
-				clientSecret: process.env.AUTH0_CLIENT_SECRET,
-			},
-		},
-	};
 }
 
 export default App;
