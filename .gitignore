@@ -570,5 +570,8 @@ vagrantSettings.yaml
 ### Vagrant Patch ###
 *.box
 
+### Data from database ###
+data/*
+
 
 # End of https://www.toptal.com/developers/gitignore/api/node,react,visualstudio
