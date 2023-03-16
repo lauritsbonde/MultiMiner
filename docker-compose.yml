@@ -16,8 +16,9 @@ services:
 
     backend:
         environment:
+            MONGODB_USERNAME: ${MONGODB_USERNAME}
             MONGODB_PASSWORD: ${MONGODB_PASSWORD}
-            NODE_ENV: ${NODE_ENV}
+            NODE_ENV: 'production'
         build: ./backend
         image: lauritsbonde/backend
         container_name: backend
@@ -46,8 +47,14 @@ services:
 
     frontend:
         environment:
-            REACT_APP_BACKEND_URL: ${REACT_APP_BACKEND_URL}
-            REACT_APP_ENVIRONMENT: ${REACT_APP_ENVIRONMENT}
+            NEXT_PUBLIC_BACKEND_URL: ${NEXT_PUBLIC_BACKEND_URL}
+            NEXT_PUBLIC_ENVIRONMENT: ${NEXT_PUBLIC_ENVIRONMENT}
+
+            AUTH0_SECRET: ${AUTH0_SECRET}
+            AUTH0_BASE_URL: ${AUTH0_BASE_URL}
+            AUTH0_ISSUER_BASE_URL: ${AUTH0_ISSUER_BASE_URL}
+            AUTH0_CLIENT_ID: ${AUTH0_CLIENT_ID}
+            AUTH0_CLIENT_SECRET: ${AUTH0_CLIENT_SECRET}
         build: ./frontend
         image: lauritsbonde/frontend
         container_name: frontend
