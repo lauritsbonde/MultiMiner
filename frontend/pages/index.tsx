@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import MainPage from '../src/Components/MainPage';
 import { ConstantData, DynamicData, StartData, MineralData } from '../src/Types/GameTypes';
 import { io, Socket } from 'socket.io-client';
-// import { miscSprite, mineralSprite, playerSprite } from '../src/CanvasStyles/Sprites';
+import { miscSprite, mineralSprite, playerSprite } from '../src/CanvasStyles/Sprites';
 import { Box, Button, LinearProgress, Typography } from '@mui/material';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import StartPage from '../src/Components/StartPage';
@@ -48,25 +48,25 @@ function App() {
 	};
 
 	useEffect(() => {
-		// cacheImages(mineralSprite, (loadedImages) => {
-		// 	setMineralImages(loadedImages);
-		// });
-		// (async () => {
-		// 	const load = async () => {
-		// 		const loadingPLayerImages = {} as { [key: string]: any };
-		// 		Object.keys(playerSprite).forEach((key) => {
-		// 			cacheImages(playerSprite[key], (loadedImages) => {
-		// 				loadingPLayerImages[key] = loadedImages;
-		// 			});
-		// 		});
-		// 		return loadingPLayerImages;
-		// 	};
-		// 	const loadedPlayerImages = await load();
-		// 	setPlayerImages(loadedPlayerImages);
-		// })();
-		// cacheImages(miscSprite, (loadedImages) => {
-		// 	setMiscImages(loadedImages);
-		// });
+		cacheImages(mineralSprite, (loadedImages) => {
+			setMineralImages(loadedImages);
+		});
+		(async () => {
+			const load = async () => {
+				const loadingPLayerImages = {} as { [key: string]: any };
+				Object.keys(playerSprite).forEach((key) => {
+					cacheImages(playerSprite[key], (loadedImages) => {
+						loadingPLayerImages[key] = loadedImages;
+					});
+				});
+				return loadingPLayerImages;
+			};
+			const loadedPlayerImages = await load();
+			setPlayerImages(loadedPlayerImages);
+		})();
+		cacheImages(miscSprite, (loadedImages) => {
+			setMiscImages(loadedImages);
+		});
 		document.title = 'Multiminer!';
 	}, []);
 

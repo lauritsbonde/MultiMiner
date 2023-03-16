@@ -17,12 +17,12 @@ interface Props {
 	constantData: ConstantData;
 	startGameData: DynamicData;
 	startMinerals: MineralData[];
+	images: { [key: string]: { [key: string]: any } };
 	aiTraining: boolean;
 	setMyId?: (id: string) => void;
-	images?: { [key: string]: { [key: string]: any } };
 }
 
-const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startMinerals, aiTraining, setMyId, images }) => {
+const MainPage: FC<Props> = ({ socket, myId, constantData, startGameData, startMinerals, images, aiTraining, setMyId }) => {
 	const [mineralsKdTree, setMineralsKdTree] = useState<kdTree>(new kdTree([...startMinerals]));
 	const [gameData, setGameData] = useState<DynamicData>(startGameData);
 	const [canvasOffSet, setCanvasOffSet] = useState({ x: 0, y: 0 });
