@@ -128,7 +128,7 @@ Vagrant.configure('2') do |config|
       config.vm.provision "shell", inline: 'echo "export DOCKER_USERNAME=' + "'" + settings["DOCKER_USERNAME"] + "'" + '" >> ~/.bash_profile'
       config.vm.provision "shell", inline: 'echo "export DOCKER_PASSWORD=' + "'" + settings["DOCKER_PASSWORD"] + "'" + '" >> ~/.bash_profile'
 
-      config.vm.provision "shell", env: {"BASEURL" => settings['BASEURL'], "provider_token" => settings['provider_token'], "MONGODB_USERNAME" => settings['MONGODB_USERNAME'], "MONGODB_PASSWORD" => settings["MONGODB_PASSWORD"]}, inline: <<-SHELL
+      config.vm.provision "shell", env: {"BASEURLSTAGING" => settings['BASEURLSTAGING'], "provider_token" => settings['provider_token'], "MONGODB_USERNAME" => settings['MONGODB_USERNAME'], "MONGODB_PASSWORD" => settings["MONGODB_PASSWORD"]}, inline: <<-SHELL
         echo "installing doctl"
         cd ~
         wget https://github.com/digitalocean/doctl/releases/download/v1.92.0/doctl-1.92.0-linux-amd64.tar.gz
@@ -150,7 +150,7 @@ Vagrant.configure('2') do |config|
         # set the env variables
         # GLOBAL
         cd /multiminer
-        echo "BASEURL=$BASEURL">> .env
+        echo "BASEURL=$BASEURLSTAGING">> .env
         echo "CERT_RESOLVER=production">> .env
         echo "MONGODB_USERNAME=$MONGODB_USERNAME">> .env
         echo "MONGODB_PASSWORD=$MONGODB_PASSWORD">> .env
