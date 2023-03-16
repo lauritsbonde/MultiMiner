@@ -571,6 +571,6 @@ vagrantSettings.yaml
 *.box
 
 ### Data from database ###
-data/
+data/**
 
 # End of https://www.toptal.com/developers/gitignore/api/node,react,visualstudio
