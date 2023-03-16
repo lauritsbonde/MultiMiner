@@ -75,7 +75,7 @@ function App() {
 			if (socket === null) {
 				const BACKEND_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}`;
 				const socket = io(BACKEND_URL, {
-					path: process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
+					path: process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? '/socket.io' : '/game/socket.io',
 					withCredentials: true,
 					autoConnect: true,
 					extraHeaders: {

@@ -25,7 +25,7 @@ const io = require('socket.io')(http, {
 		methods: ['GET', 'POST', 'OPTIONS'],
 		allowedHeaders: ['my-custom-header', 'Access-Control-Allow-Origin', 'Access-Control-Allow-Methods', 'Content-Type', 'Authorization'],
 		credentials: true,
-		path: process.env.NODE_ENV === 'production' ? '/api/socket.io' : '/socket.io',
+		path: process.env.NODE_ENV === 'production' ? '/game/socket.io' : '/socket.io',
 	},
 });
 
