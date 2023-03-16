@@ -1,0 +1,78 @@
+version: '3.3'
+
+services:
+    reverse-proxy:
+        # The official v2 Traefik docker image
+        image: traefik:v2.9
+        container_name: 'traefik'
+        ports:
+            - 80:80
+            - 443:443
+            - 8080:8080
+        volumes:
+            - '/var/run/docker.sock:/var/run/docker.sock:ro'
+            - './etc/traefik/:/etc/traefik/:ro'
+            - './traefik-ssl-certs:/ssl-certs'
+
+    multiminerfrontend:
+        image: ${DOCKER_USERNAME}/multiminerfrontendstaging
+        container_name: multiminerfrontendstaging
+        depends_on:
+            - multiminerbackend
+
+        labels:
+            - traefik.enable=true
+            - traefik.http.routers.multiminerfrontend.rule=Host(`${BASEURL}`)
+            - traefik.http.routers.multiminerfrontend.entrypoints=websecure
+
+            - 'traefik.http.middlewares.testheader.headers.accesscontrolallowmethods=GET,OPTIONS,PUT'
+            - 'traefik.http.middlewares.testheader.headers.accesscontrolalloworiginlist=https://api.localhost,http://api.localhost, https://104.248.101.163/api, http://104.248.101.163/api'
+            - 'traefik.http.middlewares.testheader.headers.accesscontrolmaxage=100'
+            - 'traefik.http.middlewares.testheader.headers.addvaryheader=true'
+
+            - traefik.http.routers.multiminerfrontend.tls=true
+            - traefik.http.routers.multiminerfrontend.tls.certresolver=production
+
+    multiminerbackend:
+        image: ${DOCKER_USERNAME}/multiminerbackendstaging
+        container_name: multiminerbackendstaging
+        depends_on:
+            - mongodb_container
+        links:
+            - mongodb_container
+        labels:
+            - traefik.enable=true
+
+            # Define the router for HTTPS
+            - traefik.http.routers.multiminerbackend.rule=Host(`${BASEURL}`) && PathPrefix(`/game`)
+            - traefik.http.routers.multiminerbackend.entrypoints=websecure
+
+            # Create a middleware to strip the /api prefix
+            - 'traefik.http.middlewares.myservice-strip.stripprefix.prefixes=/game'
+            - 'traefik.http.middlewares.myservice-strip.stripprefix.forceslash=false'
+            # Add the middleware to the router (backend)
+            - 'traefik.http.routers.multiminerbackend.middlewares=myservice-strip'
+
+            - traefik.http.middlewares.sslheader.headers.customrequestheaders.X-Forwarded-Proto = https
+
+            - 'traefik.http.middlewares.multiminerbackend.headers.accesscontrolallowmethods=GET,OPTIONS,PUT'
+            - 'traefik.http.middlewares.multiminerbackend.headers.accesscontrolalloworiginlist=https://localhost,https://104.248.101.163,http://104.248.101.163/'
+            - 'traefik.http.middlewares.multiminerbackend.headers.accesscontrolmaxage=100'
+            - 'traefik.http.middlewares.multiminerbackend.headers.addvaryheader=true'
+
+            - traefik.http.routers.multiminerbackend.tls=true
+            - traefik.http.routers.multiminerbackend.tls.certresolver=production
+
+    mongodb_container:
+        image: mongo:4.4
+        container_name: mongodb
+        environment:
+            MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USERNAME}
+            MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+        volumes:
+            - ./data/db:/data/db
+        labels:
+            - traefik.enable=false
+
+volumes:
+    data:

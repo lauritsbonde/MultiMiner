@@ -118,7 +118,7 @@ Vagrant.configure('2') do |config|
       end
 
 
-      config.vm.synced_folder "remote_files", "/multiminer", type: "rsync"
+      config.vm.synced_folder "remote_files_staging", "/multiminer", type: "rsync"
       config.vm.synced_folder '.', '/vagrant', disabled: true
 
       config.vm.provision "shell", inline: <<-SHELL
