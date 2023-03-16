@@ -15,15 +15,11 @@ const styling = {
 		width: '20vw',
 		minWidth: '300px',
 		maxWidth: '600px',
-		height: '85vh',
-		maxHeight: '1000px',
 		border: '1px solid black',
-		borderRadius: '5px',
 		padding: '2px',
 		boxSizing: 'border-box',
 		overflow: 'hidden',
 		backgroundColor: '#0093E9',
-		backgroundImage: 'linear-gradient(160deg, #0093E9 0%, #80D0C7 100%)',
 		color: '#fff',
 	},
 	buttonGroup: {
@@ -32,10 +28,12 @@ const styling = {
 	},
 	activeButton: {
 		backgroundColor: '#0093E9',
+		fontSize: 'clamp(.8rem, 1vw, 1.2rem)',
 	},
 	inactiveButton: {
 		backgroundColor: '#0093E9',
-		opacity: 0.3,
+		opacity: 0.4,
+		fontSize: 'clamp(.8rem, 1vw, 1.2rem)',
 	},
 };
 

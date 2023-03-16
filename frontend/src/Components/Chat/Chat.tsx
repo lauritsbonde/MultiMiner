@@ -1,9 +1,9 @@
 import React, { FC, useRef, useEffect, FormEvent } from 'react';
 import { Socket } from 'socket.io-client';
-import { Box, Fab, TextField } from '@mui/material';
+import { Box, Fab, TextField, Typography } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import { styling } from './ChatStyling';
-import css from './styling.module.css';
+import { useUser } from '@auth0/nextjs-auth0/client';
 
 interface Props {
 	socket: Socket;
@@ -11,8 +11,10 @@ interface Props {
 }
 
 const Chat: FC<Props> = ({ socket, myId }) => {
-	const [chats, setChats] = React.useState<Array<{ senderId: string; senderName: string; message: string }>>([]);
+	const [chats, setChats] = React.useState<Array<{ senderName: string; message: string }>>([]);
 	const [input, setInput] = React.useState('');
+
+	const { error, user } = useUser();
 
 	const sendChat = (e: FormEvent) => {
 		e.preventDefault();
@@ -20,7 +22,7 @@ const Chat: FC<Props> = ({ socket, myId }) => {
 		setInput('');
 	};
 
-	socket.on('newchat', (data: { senderId: string; senderName: string; message: string }) => {
+	socket.on('newchat', (data: { senderName: string; message: string }) => {
 		setChats([...chats, data]);
 	});
 
@@ -36,14 +38,18 @@ const Chat: FC<Props> = ({ socket, myId }) => {
 
 	return (
 		<Box style={styling.chat}>
-			<Box style={styling.chats} ref={chatRef} className={css.noScrollBar}>
+			<Box style={styling.chats} ref={chatRef}>
 				{chats.map((chat, i) => (
-					<Box key={i} style={chat.senderId === socket.id ? styling.myChat : styling.otherChat}>
+					<Box key={i} style={chat.senderName === user?.nickname ? { ...styling.baseChat, backgroundColor: '#00bae9' } : { ...styling.baseChat, backgroundColor: '#0080e9' }}>
 						<Box style={styling.avatarAndName}>
 							<img style={styling.chatAvatar} src={`https://avatars.dicebear.com/api/personas/${chat.senderName}.svg`} alt="Avatar" />
-							<p style={styling.sender}>{chat.senderName}</p>
+							<Typography variant="h6" sx={styling.sender}>
+								{chat.senderName}
+							</Typography>
 						</Box>
-						<Box sx={styling.message}>{chat.message}</Box>
+						<Box sx={styling.message}>
+							<Typography variant="body1">{chat.message}</Typography>
+						</Box>
 					</Box>
 				))}
 			</Box>

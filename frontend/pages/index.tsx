@@ -1,11 +1,13 @@
+import React from 'react';
 import { useState, useEffect } from 'react';
-import MainPage from './Components/MainPage';
-import { ConstantData, DynamicData, StartData, MineralData } from './Types/GameTypes';
+import MainPage from '../src/Components/MainPage';
+import { ConstantData, DynamicData, StartData, MineralData } from '../src/Types/GameTypes';
 import { io, Socket } from 'socket.io-client';
-import { miscSprite, mineralSprite, playerSprite } from './CanvasStyles/Sprites';
+// import { miscSprite, mineralSprite, playerSprite } from '../src/CanvasStyles/Sprites';
 import { Box, Button, LinearProgress, Typography } from '@mui/material';
-import { useAuth0, User } from '@auth0/auth0-react';
-import StartPage from './Components/StartPage';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import StartPage from '../src/Components/StartPage';
+import { useRouter } from 'next/router';
 
 function App() {
 	const [socket, setSocket] = useState(null as unknown as Socket);
@@ -17,10 +19,12 @@ function App() {
 	const [playerImages, setPlayerImages] = useState({} as { [key: string]: { [key: string]: any } });
 	const [miscImages, setMiscImages] = useState({} as { [key: string]: any });
 
+	const router = useRouter();
+
 	//MAYBE REMOVE
 	const [aiTraining, setAiTraining] = useState(false);
 
-	const { loginWithRedirect, logout, user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+	const { error, user, isLoading } = useUser();
 
 	const cacheImages = async (sources: { [key: string]: string }, callback: (loadedImages: { [key: string]: any }) => void) => {
 		const loadedImages = {} as { [key: string]: any };
@@ -44,34 +48,34 @@ function App() {
 	};
 
 	useEffect(() => {
-		cacheImages(mineralSprite, (loadedImages) => {
-			setMineralImages(loadedImages);
-		});
-		(async () => {
-			const load = async () => {
-				const loadingPLayerImages = {} as { [key: string]: any };
-				Object.keys(playerSprite).forEach((key) => {
-					cacheImages(playerSprite[key], (loadedImages) => {
-						loadingPLayerImages[key] = loadedImages;
-					});
-				});
-				return loadingPLayerImages;
-			};
-			const loadedPlayerImages = await load();
-			setPlayerImages(loadedPlayerImages);
-		})();
-		cacheImages(miscSprite, (loadedImages) => {
-			setMiscImages(loadedImages);
-		});
+		// cacheImages(mineralSprite, (loadedImages) => {
+		// 	setMineralImages(loadedImages);
+		// });
+		// (async () => {
+		// 	const load = async () => {
+		// 		const loadingPLayerImages = {} as { [key: string]: any };
+		// 		Object.keys(playerSprite).forEach((key) => {
+		// 			cacheImages(playerSprite[key], (loadedImages) => {
+		// 				loadingPLayerImages[key] = loadedImages;
+		// 			});
+		// 		});
+		// 		return loadingPLayerImages;
+		// 	};
+		// 	const loadedPlayerImages = await load();
+		// 	setPlayerImages(loadedPlayerImages);
+		// })();
+		// cacheImages(miscSprite, (loadedImages) => {
+		// 	setMiscImages(loadedImages);
+		// });
 		document.title = 'Multiminer!';
 	}, []);
 
 	const createSocketConnection = () => {
 		return new Promise<Socket>((resolve, reject) => {
 			if (socket === null) {
-				const BACKEND_URL = `${process.env.REACT_APP_BACKEND_URL}`;
+				const BACKEND_URL = `${process.env.NEXT_PUBLIC_BACKEND_URL}`;
 				const socket = io(BACKEND_URL, {
-					path: process.env.REACT_APP_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
+					path: process.env.NEXT_PUBLIC_ENVIRONMENT === 'development' ? '/socket.io' : '/api/socket.io',
 					withCredentials: true,
 					autoConnect: true,
 					extraHeaders: {
@@ -143,18 +147,18 @@ function App() {
 
 	const logOut = () => {
 		if (socket !== undefined) socket.disconnect();
-		logout({ returnTo: window.location.href });
+		router.push('/api/auth/logout');
 	};
 
 	if (!aiTraining) {
 		if (isLoading) {
 			return (
-				<>
+				<Box>
 					<LinearProgress />
 					<Typography variant="h1" sx={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%)' }}>
 						Loading MultiMiner...
 					</Typography>
-				</>
+				</Box>
 			);
 		}
 	}
@@ -162,9 +166,9 @@ function App() {
 	if (socket === null) {
 		return (
 			<StartPage
-				loginWithRedirect={() => loginWithRedirect({ redirectUri: window.location.href })}
-				authenticated={isAuthenticated}
-				logout={() => logout()}
+				loginWithRedirect={() => router.push('/api/auth/login')}
+				authenticated={user !== undefined}
+				logout={() => logOut()}
 				joinGame={joinGame}
 				playerImages={playerImages}
 				username={user?.nickname || 'boring'}
@@ -219,4 +223,5 @@ function App() {
 		</Box>
 	);
 }
+
 export default App;

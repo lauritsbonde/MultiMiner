@@ -1,8 +1,5 @@
 version: '3.3'
 
-networks:
-    main:
-
 services:
     reverse-proxy:
         # The official v2 Traefik docker image

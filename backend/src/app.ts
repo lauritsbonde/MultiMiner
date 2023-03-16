@@ -148,7 +148,7 @@ io.on('connection', function (socket: any) {
 	socket.on('chat', (data: { message: string; id: string }) => {
 		world.addChat(data.message, data.id);
 		// TODO: check the message for bad words
-		io.emit('newchat', { message: data.message, senderName: world.players[data.id].name, senderId: data.id });
+		io.emit('newchat', { message: data.message, senderName: world.players[data.id].name });
 	});
 
 	// AI

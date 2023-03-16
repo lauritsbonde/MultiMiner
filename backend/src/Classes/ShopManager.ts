@@ -19,8 +19,8 @@ export default class ShopManager {
 
 		for (let i = 0; i < buildingsNeeded.length; i++) {
 			if (buildingsNeeded[i] === 'Saver') {
-				const x = 500;
-				const y = groundStart - buildingSize.height - 200;
+				const x = 450;
+				const y = groundStart - buildingSize.height - 250;
 				this.buildings.push(new Bulding({ x, y }, buildingSize, buildingsNeeded[i]));
 			} else {
 				const x = xDistanceBetweenBuildings * (i + 1);
