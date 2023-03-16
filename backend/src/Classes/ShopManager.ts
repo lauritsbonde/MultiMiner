@@ -13,19 +13,25 @@ export default class ShopManager {
 	}
 
 	setupBuildings(mineralSize: number, worldSize: { width: number; height: number }, groundStart: number, changeMineral: (index: number) => void) {
-		const buildingsNeeded = ['Fuelstation', 'Mineral Shop', 'Upgrade Shop', 'Research Lab'];
+		const buildingsNeeded = ['Fuelstation', 'Mineral Shop', 'Upgrade Shop', 'Research Lab', 'Saver'];
 		const buildingSize = this.buildingSize;
 		const xDistanceBetweenBuildings = worldSize.width / (buildingsNeeded.length + 1);
 
 		for (let i = 0; i < buildingsNeeded.length; i++) {
-			const x = xDistanceBetweenBuildings * (i + 1);
-			const y = groundStart - buildingSize.height;
-			this.buildings.push(new Bulding({ x, y }, buildingSize, buildingsNeeded[i]));
+			if (buildingsNeeded[i] === 'Saver') {
+				const x = 500;
+				const y = groundStart - buildingSize.height - 200;
+				this.buildings.push(new Bulding({ x, y }, buildingSize, buildingsNeeded[i]));
+			} else {
+				const x = xDistanceBetweenBuildings * (i + 1);
+				const y = groundStart - buildingSize.height;
+				this.buildings.push(new Bulding({ x, y }, buildingSize, buildingsNeeded[i]));
 
-			// make the minerals under the buildings concrete
-			for (let j = x - mineralSize; j < x + buildingSize.width + mineralSize; j += mineralSize) {
-				const mineralIndex = Math.floor(j / mineralSize);
-				changeMineral(mineralIndex);
+				// make the minerals under the buildings concrete
+				for (let j = x - mineralSize; j < x + buildingSize.width + mineralSize; j += mineralSize) {
+					const mineralIndex = Math.floor(j / mineralSize);
+					changeMineral(mineralIndex);
+				}
 			}
 		}
 	}

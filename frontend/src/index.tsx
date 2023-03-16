@@ -5,14 +5,17 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { Auth0Provider } from '@auth0/auth0-react';
 import { settings } from './Components/Authentication/auth0Settings';
+import MuiThemeProvider from './Components/MuiThemeProvider';
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 
 root.render(
 	<React.StrictMode>
-		<Auth0Provider domain={`${settings.domain}`} clientId={`${settings.clientID}`} redirectUri={window.location.origin}>
-			<App />
-		</Auth0Provider>
+		<MuiThemeProvider>
+			<Auth0Provider domain={`${settings.domain}`} clientId={`${settings.clientID}`} redirectUri={window.location.origin}>
+				<App />
+			</Auth0Provider>
+		</MuiThemeProvider>
 	</React.StrictMode>
 );
 

@@ -137,6 +137,8 @@ io.on('connection', function (socket: any) {
 
 	// SAVING
 	socket.on('save', (data: { auth0Id: string }) => {
+		console.log('saving', data.auth0Id);
+		console.log('world', world.players);
 		world.dataBase.updatePlayer(world.players[data.auth0Id]).then((res) => {
 			console.log('saved', res);
 		});

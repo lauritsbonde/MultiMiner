@@ -1,7 +1,6 @@
 import React, { FC, ReactNode } from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import Join from './Authentication/Join';
-import MuiThemeProvider from './MuiThemeProvider';
 
 interface props {
 	loginWithRedirect: () => void;
@@ -18,12 +17,10 @@ const StartPage: FC<props> = ({ loginWithRedirect, authenticated, logout, joinGa
 	}
 
 	const Container: FC<ContainerProps> = ({ children }) => (
-		<MuiThemeProvider>
-			<Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
-				<Typography variant="h1">Welcome to the MultiMiner!</Typography>
-				{children}
-			</Box>
-		</MuiThemeProvider>
+		<Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+			<Typography variant="h1">Welcome to the MultiMiner!</Typography>
+			{children}
+		</Box>
 	);
 
 	if (authenticated) {

@@ -1,9 +1,7 @@
 import mongoose, { Model } from 'mongoose';
-const URI =
-	process.env.NODE_ENV === 'development'
-		? `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@mongodb_container:27017`
-		: `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@mongodb_container:27017`;
+const URI = process.env.NODE_ENV === 'development' ? `mongodb://localhost:27017` : `mongodb://${process.env.MONGODB_USERNAME}:${process.env.MONGODB_PASSWORD}@mongodb_container:27017`;
 // const URI = `mongodb+srv://lauritsbonde:${process.env.MONGODB_PASSWORD}@multiminer.pn1fzrq.mongodb.net/?retryWrites=true&w=majority`;
+console.log(URI);
 import UserModel, { IUser } from '../Models/UserModel';
 import Player from './Player';
 import ChatMessageModel from '../Models/ChatMessageModel';
@@ -130,6 +128,7 @@ export default class DatabaseHelper {
 	}
 
 	updatePlayer(player: Player) {
+		console.log('Updating player: ' + player.name);
 		return new Promise((resolve, reject) => {
 			const model = this.turnPlayerToUser(player);
 			user.findOneAndUpdate({ auth0Id: player.auth0id }, { points: player.points }, { new: true })

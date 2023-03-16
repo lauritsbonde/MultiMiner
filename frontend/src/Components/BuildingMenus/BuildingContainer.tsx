@@ -5,6 +5,7 @@ import Fuelstation from './Fuelstation';
 import MineralShop from './MineralShop';
 import ResearchLab from './ResearchLab';
 import UpgradeShop from './UpgradeShop';
+import SaverMenu from './SaverMenu';
 
 interface BuildingContainerProps {
 	building: string;
@@ -37,6 +38,8 @@ const BuildingContainer: FC<BuildingContainerProps> = ({ building, bgColor, sock
 				<UpgradeShop socket={socket} myId={myId} />
 			) : building === 'Research Lab' ? (
 				<ResearchLab socket={socket} myId={myId} />
+			) : building === 'Saver' ? (
+				<SaverMenu socket={socket} myId={myId} />
 			) : (
 				<h2>Building Error</h2>
 			)}

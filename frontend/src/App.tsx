@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import MainPage from './Components/MainPage';
-import MuiThemeProvider from './Components/MuiThemeProvider';
 import { ConstantData, DynamicData, StartData, MineralData } from './Types/GameTypes';
 import { io, Socket } from 'socket.io-client';
 import { miscSprite, mineralSprite, playerSprite } from './CanvasStyles/Sprites';
@@ -150,33 +149,39 @@ function App() {
 	if (!aiTraining) {
 		if (isLoading) {
 			return (
-				<MuiThemeProvider>
+				<>
 					<LinearProgress />
 					<Typography variant="h1" sx={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%)' }}>
 						Loading MultiMiner...
 					</Typography>
-				</MuiThemeProvider>
+				</>
 			);
 		}
 	}
 
 	if (socket === null) {
 		return (
-			<MuiThemeProvider>
-				<StartPage
-					loginWithRedirect={() => loginWithRedirect({ redirectUri: window.location.href })}
-					authenticated={isAuthenticated}
-					logout={() => logout()}
-					joinGame={joinGame}
-					playerImages={playerImages}
-					username={user?.nickname || 'boring'}
-				/>
-			</MuiThemeProvider>
+			<StartPage
+				loginWithRedirect={() => loginWithRedirect({ redirectUri: window.location.href })}
+				authenticated={isAuthenticated}
+				logout={() => logout()}
+				joinGame={joinGame}
+				playerImages={playerImages}
+				username={user?.nickname || 'boring'}
+			/>
 		);
 	}
 
 	return (
-		<MuiThemeProvider>
+		<Box>
+			{minerals.length === 0 && (
+				<>
+					<LinearProgress />
+					<Typography variant="h1" sx={{ position: 'absolute', left: '50%', top: '50%', transform: 'translate(-50%)' }}>
+						Loading Game...
+					</Typography>
+				</>
+			)}
 			<Button
 				variant="contained"
 				onClick={() => {
@@ -211,7 +216,7 @@ function App() {
 					/>
 				)}
 			</Box>
-		</MuiThemeProvider>
+		</Box>
 	);
 }
 export default App;
